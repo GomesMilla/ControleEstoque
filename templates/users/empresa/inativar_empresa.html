@@ -1,0 +1,21 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Criar Empresa</h2>
+        <div class="alert alert-danger" role="alert">
+            <form method="post">
+                {% csrf_token %}
+                <h4 class="alert-heading">Atenção!</h4>
+                <p>Você tem certeza de que deseja inativar a empresa "{{ object.nome }}"?. Ao confirmar, todos os usuário serão inativados juntos e também não será possivel mais acessar.</p>
+                <hr>
+                <p class="mb-0">
+                    <button type="submit" class="btn btn-danger">Inativar</button>
+                    <a href="{% url 'lista_empresas' %}" class="btn btn-success">Cancelar</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+{% endblock conteudo %}

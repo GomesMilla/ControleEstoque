@@ -1,0 +1,82 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <p>Bem-vindo(a), {{ objuser.nome }}!</p>
+        {% if not objuser.if_funcionario %}
+            <p>Este é o seu painel de controle principal, onde você pode gerenciar sua loja - {{objuser.empresa}}! Atualmente, estamos com uma meta <b>'{{meta_atual}}'</b>  em aberto: Meta de <b>{{ valor_meta }}</b>  com <b>{{ valor_alcancado }}</b> já alcançado.</p>
+            <div class="row text-center justify-content-center">
+                <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Meta Atual:</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ valor_meta }}</h5>
+                    </div>
+                </div>                
+                <div class="card text-bg-success mb-3 mx-3" style="max-width: 18rem;">
+                    <div class="card-header">Valor Alcançado:</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ valor_alcancado }}</h5>
+                    </div>
+                </div>
+                <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Falta:</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ falta_para_meta }}</h5>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mt-3">Últimas 5 Vendas da Empresa</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data da Venda</th>
+                        <th>Vendedor</th>
+                        <th>Cliente</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venda in ultimas_vendas %}
+                        <tr>
+                            <td>{{ venda.id }}</td>
+                            <td>{{ venda.data_venda }}</td>
+                            <td>{{ venda.vendedor.nome }}</td>
+                            <td>{{ venda.cliente.nome }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h3>Suas Últimas 5 Vendas</h3>
+            {% if ultimas_vendas %}
+                <table class="table table-striped mt-4">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data da Venda</th>
+                            <th>Vendedor</th>
+                            <th>Cliente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in ultimas_vendas %}
+                            <tr>
+                                <td>{{ venda.id }}</td>
+                                <td>{{ venda.data_venda }}</td>
+                                <td>{{ venda.vendedor.nome }}</td>
+                                <td>{{ venda.cliente.nome }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    Você não efetuou nenhuma venda para atual meta.
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+{% endblock conteudo %}

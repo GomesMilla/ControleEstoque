@@ -1,0 +1,29 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Cadastrar Cliente</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.media}}
+            {{ form|bootstrap }}
+            <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
+                <button type="submit" class="btn btn-success rounded-pill">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        $('document').ready(function() {
+            $('#id_telefone_celular').mask('(00) 0000-0000');
+            $('#id_cpf').mask('000.000.000-00');    
+        });
+        $('#id_data_aniversario').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            language: 'pt-BR'
+        });
+    </script>
+
+{% endblock conteudo %}

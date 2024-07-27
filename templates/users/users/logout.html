@@ -1,0 +1,12 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Logout</h2>
+        <p>Você saiu com sucesso.</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Login novamente</a>
+    </div>
+
+
+{% endblock conteudo %}

@@ -1,0 +1,45 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>{{ empresa.nome }}</h2>
+        <ul class="list-group mt-4">
+            <li class="list-group-item">Nome: {{empresa.nome}}</li>
+            <li class="list-group-item">Razão Social: {{empresa.razao_social}}</li>
+            <li class="list-group-item">CNPJ: {{empresa.cnpj}}</li>
+            <li class="list-group-item">E-mail: {{empresa.email}}</li>
+            <li class="list-group-item">Descrição: {{empresa.descricao}}</li>
+        </ul>
+        <h2 class="mt-4">Colaboradores</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Email</th>
+                    <th>Função</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for funcionario in funcionarios %}
+                <tr>
+                    <td>{{ funcionario.id }}</td>
+                    <td>{{ funcionario.nome }}</td>
+                    <td>{{ funcionario.cpf }}</td>
+                    <td>{{ funcionario.email }}</td>
+                    <td>
+                        {% if funcionario.if_funcionario %}
+                            Funcionário
+                        {% else %}
+                            Dona da Empresa
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock conteudo %}

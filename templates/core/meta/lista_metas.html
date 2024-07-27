@@ -1,0 +1,59 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Metas</h2>
+    <table class="table table-hover text-center mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Valor Meta</th>
+                <th>Valor Alcançado</th>
+                <th>Fechado</th>
+                <th>Foi Lucro</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meta in metas %}
+            <tr>
+                <td>{{ meta.id }}</td>
+                <td>{{ meta.nome|default:"-" }}</td>
+                <td>{{ meta.data_inicio }}</td>
+                <td>{{ meta.data_fim|default:"Em aberto" }}</td>
+                <td>{{ meta.valor_meta }}</td> 
+                <td>{{ meta.progresso }}</td>
+                {% if meta.fechado %}
+                    <td>Fechado</td>
+                {% else %}
+                    <td>Em aberto</td>
+                {% endif %}
+                {% if meta.fechado %}
+                    {% if meta.foi_lucro %}
+                        <td>Sim</td>
+                    {% else %}
+                        <td>Não</td>
+                    {% endif %}
+                {% else %}
+                    <td>Em aberto</td>
+                {% endif %}
+                <td>
+                    {% if meta.fechado %}
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% else %}
+                        <a href="{% url 'fechar_meta' meta.pk %}" class="btn btn-danger">Fechar Meta</a>
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% endif %}
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock conteudo %}

@@ -1,0 +1,50 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+    <style>
+        .cor{
+            color: #844CFF !important;
+        }
+    </style>
+    <div class="container">
+        <div class="text-justify">
+            <div class="row mt-5">
+                <div class="col-12 col-md-6 col-sm-12 mt-5">
+                    <div class="d-flex justify-content-start mt-1">
+                        <img src="{% static 'images/undraw_website_u6x8.svg' %}" alt="Foto de Apresentação" width="60%" height="60%" class="d-none d-sm-block">      
+                    </div>
+                    <h4 class="cor mt-4">Comece Hoje Mesmo!</h4>
+                    <h6>
+                        Transforme a gestão do seu negócio com Athenis. Aumente a eficiência, reduza custos e melhore a experiência do cliente. 
+                    </h6>
+                    <h6>Solicite uma demonstração gratuita e veja como podemos ajudar sua loja a prosperar.</h6> 
+                    <h6>Quer saber mais sobre nosso serviço?  Clique <a href="{% url 'infosistema' %}">aqui</a></h6>
+                </div>
+                <div class="col-12 col-md-6 col-sm-12">
+                    <h5>Athenis - Seu Parceiro Ideal para o Controle de Estoque e Gerenciamento de Loja.</h5>
+                    <br>
+                    <h4 class="cor">Otimize sua Gestão de Estoque e Melhore a Eficiência da sua Loja</h4>
+                    <br>
+                    <p>No competitivo mercado atual, a eficiência no gerenciamento de estoque e o controle preciso das operações da loja são essenciais para o sucesso. Pensando nisso, apresentamos o Athenis, uma solução completa e intuitiva para o controle de estoque e gerenciamento de lojas, projetada para atender às necessidades de negócios de todos os tamanhos.</p>
+                    <br>
+                    <h5>Funcionalidades</h5>
+                    <p>
+                        <b>Controle de Estoque em Tempo Real: </b> Monitore seus níveis de estoque com precisão. Garanta que você nunca fique sem os produtos mais vendidos e evite excessos que ocupam espaço e capital.
+                    </p>
+                    <p>
+                        <b>Vendas e Caixa:</b> Realize vendas de forma rápida e eficiente, integrando seu sistema de ponto de venda com o controle de estoque. Garanta a precisão nas transações e mantenha seus clientes satisfeitos.                   
+                    </p>
+                    <p>
+                        <b>Relatórios e Análises:</b>
+                        Tome decisões informadas com relatórios detalhados e análises de desempenho. Visualize tendências de vendas, identifique produtos de alta rotatividade e ajuste suas estratégias de marketing e compras de acordo.
+                    </p>
+                    <p>
+                        <b> Gestão de Clientes:</b>
+                        Mantenha um registro detalhado dos seus clientes, acompanhe o histórico de compras e implemente programas de fidelidade para aumentar a satisfação e a retenção de clientes.
+                    </p>
+                </div>
+            </div>
+        </div>       
+    </div>
+
+{% endblock conteudo %}

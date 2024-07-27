@@ -1,0 +1,43 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Pedidos</h2>
+        <div class="row">
+            <form method="get" class="form-inline mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar pedido" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Produto</th>
+                    <th>Telefone</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.id }}</td>
+                    <td>{{ pedido.cliente_nome }}</td>
+                    <td>{{ pedido.produto.nome }}</td>
+                    <td>{{ pedido.cliente_telefone }}</td>
+                    <td>{{ pedido.descricao|safe }}</td>
+                    <td>{{ pedido.status }}</td>
+                    <td>
+                        <a href="{% url 'atualizar_pedido' pedido.pk %}" class="btn btn-primary">Editar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock conteudo %}

@@ -1,0 +1,20 @@
+{% extends "base/index.html" %}
+{% load static bootstrap form_tags %}
+{% block conteudo %}
+
+    <div class="container mt-5">
+        <h2>Cadastrar Venda</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{form.media}}
+            {{ form|bootstrap }}
+            {{ item_form|bootstrap }}
+            <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
+                <button type="submit" class="btn btn-success rounded-pill">Cadastrar Venda</button>
+            </div>
+        </form>
+    </div>
+
+
+
+{% endblock conteudo %}

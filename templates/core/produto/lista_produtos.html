@@ -1,0 +1,86 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Produtos</h2>
+        <div class="row">
+            <form method="get" class="form-inline mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar produto" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
+        </div>
+        <table class="table table-hover mt-3">
+            <thead>
+                <tr class="text-center">
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td class="text-center">{{ produto.id }}</td>
+                    <td class="text-center">{{ produto.codigo }}</td>
+                    <td class="text-center">{{ produto.nome }}</td>
+                    <td class="text-center">{{ produto.descricao|slice:":100"|safe }}</td>
+                    <td class="text-center">{{ produto.preco }}</td>
+                    <td class="text-center">{{ produto.quantidade }}</td>
+                    {% if produto.vendido %}
+                        <td class="text-center">Vendido</td>
+                    {% else %}
+                        <td class="text-center">Disponível</td>
+                    {% endif %}
+                    <td>
+                        <div class="row">
+                            <div class="col-auto d-inline-block text-nowrap">
+                                <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-primary me-2">Editar</a>
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{produto.pk}}">
+                                    Ver Detalhes
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="staticBackdrop{{produto.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre o produto: '{{produto.nome}}'</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {% if produto.quantidade < 5 %}
+                                <div class="alert alert-danger" role="alert">
+                                    Produto em baixa no estoque.
+                                  </div>
+                                {% endif %}
+                                <ul class="list-group mt-4">
+                                    <li class="list-group-item">Nome do Produto: {{produto.nome}}</li>
+                                    <li class="list-group-item">Código do Produto: {{produto.codigo}}</li>
+                                    <li class="list-group-item">ID do Produto: {{produto.pk}}</li>
+                                    <li class="list-group-item">Preço do Produto Isoladamente: {{produto.pk}}</li>
+                                    <li class="list-group-item">Quantidade de Produto Disponível: {{produto.quantidade}}</li>
+                                    <li class="list-group-item">Status do Produto: Disponível</li>
+                                    <li class="list-group-item">Descrição: {{produto.descricao|safe}}</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock conteudo %}

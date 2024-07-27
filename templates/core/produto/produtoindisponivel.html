@@ -1,0 +1,52 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Produtos Indisponível</h2>
+        <div class="row">
+            <form method="get" class="form-inline mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar produto" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
+        </div>
+        <table class="table table-hover text-center mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Estoque</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.id }}</td>
+                    <td>{{ produto.codigo }}</td>
+                    <td>{{ produto.nome }}</td>
+                    <td>{{ produto.descricao|safe }}</td>
+                    <td>{{ produto.preco }}</td>
+                    <td>{{ produto.quantidade }}</td>
+                    <td>{{ produto.estoque.nome }}</td>
+                    {% if produto.vendido %}
+                        <td>Vendido</td>
+                    {% else %}
+                        <td>Disponível</td>
+                    {% endif %}
+                    <td>
+                        <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-primary">Editar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock conteudo %}
