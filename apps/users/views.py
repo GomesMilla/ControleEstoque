@@ -281,6 +281,29 @@ class ClienteListView(LoginRequiredMixin, ListView):
         
         return queryset
 
+class DetalheCliente(LoginRequiredMixin, DetailView):
+    model = Empresa
+    template_name = 'users/cliente/detalhe_cliente.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        objcliente = Cliente.objects.get(pk=self.kwargs['pk'])
+        compras_cliente = Venda.objects.filter(empresa=self.request.user.empresa, cliente=objcliente)
+
+        context['objcliente'] = objcliente
+        context['compras_cliente'] = compras_cliente
+        return context
+
+    def test_func(self):
+        empresa = self.get_object()
+        return self.request.user.is_superuser or (self.request.user.empresa == empresa and not self.request.user.if_funcionario)
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+
 class AniversariantesListView(LoginRequiredMixin, ListView):
     model = Cliente
     template_name = 'users/cliente/aniversariantes.html'
