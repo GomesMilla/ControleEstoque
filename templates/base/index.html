@@ -158,37 +158,9 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Meta
+                                        Produto
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_meta'%}">Cadastrar Meta</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'lista_metas'%}">Metas</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Empresa
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'editar_empresa' objuser.empresa.pk %}">Editar Empresa</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'detalhes_empresa' objuser.empresa.pk %}">Visualizar Empresa</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Colaborador
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_usuario' %}">Cadastrar Colaborador</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_usuarios' objuser.empresa.pk %}">Listar Colaborador</a></li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Produto e Estoque
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_estoque' %}">Cadastrar Estoque</a></li>
                                         <li><a class="dropdown-item" href="{% url 'cadastrar_produto' %}">Cadastrar Produto</a></li>
                                         <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}">Produtos Disponível</a></li>
                                         <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}">Produtos Indisponível</a></li>
@@ -205,6 +177,15 @@
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Vale Presente
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_vale_presente' %}">Cadastrar Vale Presente</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_vale_presente' %}">LIstar Vale Presente</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Cliente
                                     </a>
                                     <ul class="dropdown-menu">
@@ -213,6 +194,9 @@
                                         <li><a class="dropdown-item" aria-current="page" href="{% url 'lista_clientes' %}">Clientes</a></li>
                                     </ul>
                                 </li>
+                                <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>                      
                             {% endif %}
                         </ul>
                     {% endif %}
@@ -224,6 +208,43 @@
                 {% endif %}
             </div>
         </nav>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Configurações</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>                
+                <div class="offcanvas-body">
+                    {% if not objuser.if_funcionario %}
+                        <h6>Empresa</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" href="{% url 'editar_empresa' objuser.empresa.pk %}">Editar Empresa</a>
+                            <a class="list-group-item list-group-item-action" href="{% url 'detalhes_empresa' objuser.empresa.pk %}">Visualizar Empresa</a>
+                        </ul>
+                        <h6 class="mt-3">Meta</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'cadastrar_meta'%}">Cadastrar Meta</a>
+                            <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'lista_metas'%}">Listagem de Metas</a>
+                        </ul>
+                        <h6 class="mt-3">Estoque</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'cadastrar_estoque' %}">Cadastrar Estoque</a>
+                        </ul>
+                        <h6 class="mt-3">Colaborador</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" href="{% url 'cadastrar_usuario' %}">Cadastrar Colaborador</a>
+                            <a class="list-group-item list-group-item-action" href="{% url 'lista_usuarios' objuser.empresa.pk %}">Listar Colaborador</a>
+                        </ul>
+                        <h6 class="mt-3">Agenda(FAZER)</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" href="{% url 'cadastrar_usuario' %}">Agenda</a>
+                        </ul>
+                        <h6 class="mt-3">Fonecedores(FAZER)</h6>
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" href="{% url 'cadastrar_usuario' %}">Fonecedores</a>
+                        </ul>
+                    {% endif %}
+                </div>
+        </div> 
         {% if objuser and not objuser.is_superuser %}
             <a type="button" class="btn btn-primary ms-5" href="{% url 'cadastrar_venda' %}"
             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">

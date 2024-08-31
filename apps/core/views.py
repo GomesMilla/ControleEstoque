@@ -237,10 +237,8 @@ class PedidoListView(LoginRequiredMixin, ListView):
         query = self.request.GET.get('q')
         if self.request.user.is_superuser:
             queryset = Pedido.objects.all()
-        elif self.request.user.if_funcionario:
-            queryset = Pedido.objects.filter(vendedor=self.request.user)
         else:
-            queryset = Pedido.objects.filter(vendedor__empresa=self.request.user.empresa)
+            queryset = Pedido.objects.filter(empresa=self.request.user.empresa)
         
         if query:
             queryset = queryset.filter(
@@ -353,3 +351,55 @@ class VendaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         periodometa_id = self.kwargs.get('periodometa_id')
         context['periodometa'] = get_object_or_404(PeriodoMeta, id=periodometa_id, empresa=self.request.user.empresa)
         return context
+
+class ValePresenteCreateView(LoginRequiredMixin, CreateView):
+    model = ValePresente
+    form_class = ValePresenteForm
+    template_name = 'core/valepresente/cadastrar.html'
+    success_url = reverse_lazy('listar_vale_presente')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.vendedor = self.request.user
+        form.instance.empresa = self.request.user.empresa  # Define a empresa do pedido como a empresa do usuário logado
+        # Garantir que o produto pertence à mesma empresa do vendedor
+        return super().form_valid(form)
+
+class ValePresenteList(LoginRequiredMixin, ListView):
+    model = ValePresente
+    template_name = 'core/valepresente/listar.html'
+    context_object_name = 'vales'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if self.request.user.is_superuser:
+            queryset = ValePresente.objects.all()
+        else:
+            queryset = ValePresente.objects.filter(empresa=self.request.user.empresa)
+        
+        if query:
+            queryset = queryset.filter(
+                Q(cliente_nome__icontains=query) |
+                Q(cliente_ganhador_nome__icontains=query)
+            )
+        
+        return queryset
+
+class ValePresenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ValePresente
+    form_class = ValePresenteUpdateForm
+    template_name = 'core/valepresente/editar.html'
+    success_url = reverse_lazy('listar_vale_presente')
+
+    def test_func(self):
+        valepresente = self.get_object()
+        return self.request.user.is_superuser or self.request.user == valepresente.vendedor or self.request.user.empresa == valepresente.vendedor.empresa
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()

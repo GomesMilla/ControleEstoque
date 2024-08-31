@@ -23,4 +23,9 @@ urlpatterns = [
 
     # venda
     path('cadastrar_venda/', VendaCreateView.as_view(), name='cadastrar_venda'),
+
+    # Vale Presente
+    path('cadastrar_vale_presente/', ValePresenteCreateView.as_view(), name='cadastrar_vale_presente'),
+    path('listar_vale_presente/', ValePresenteList.as_view(), name='listar_vale_presente'),
+    path('editar_pedido/<int:pk>/', ValePresenteUpdateView.as_view(), name='editar_pedido'),
 ]

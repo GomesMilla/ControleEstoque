@@ -1,0 +1,53 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Listagem de Vale Presente</h2>
+        <div class="row">
+            <form method="get" class="form-inline mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar vale" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente Comprador</th>
+                    <th>Telefone Comprador</th>
+                    <th>Cliente Ganhador</th>
+                    <th>Telefone Ganhador</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vale in vales %}
+                <tr>
+                    <td>{{ vale.id }}</td>
+                    {% if vale.cliente_nome %}
+                        <td>{{ vale.cliente_nome }}</td>
+                    {% else %}
+                        <td>{{ vale.cliente|default:"" }}</td>
+                    {% endif %}                    
+                    <td>{{ vale.cliente_telefone }}</td>                    
+                    {% if vale.cliente_ganhador_nome %}
+                        <td>{{ vale.cliente_ganhador_nome }}</td>
+                    {% else %}
+                        <td>{{ vale.cliente_ganhador }}</td>
+                    {% endif %}
+                    <td>{{ vale.cliente_ganhador_telefone }}</td>
+                    <td>{{ vale.preco }}</td>
+                    <td>{{ vale.get_status_display }}</td>
+                    <td>
+                        <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock conteudo %}

@@ -2,7 +2,7 @@ from django import forms
 from .models import Estoque, Produto
 
 from django import forms
-from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda
+from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente
 from users.models import Cliente
 
 class EstoqueForm(forms.ModelForm):
@@ -120,3 +120,47 @@ class ItemVendaForm(forms.ModelForm):
         if quantidade <= 0:
             raise forms.ValidationError("A quantidade deve ser um valor positivo.")
         return quantidade
+
+
+class ValePresenteForm(forms.ModelForm):
+    # Form para a criação do Vale Presente
+    class Meta:
+        model = ValePresente
+        fields = ['cliente_nome', 'cliente' ,'cliente_email', 'cliente_telefone', 'cliente_ganhador_nome', 'cliente_ganhador', 'cliente_ganhador_telefone','cliente_email_cliente_ganhador' ,'cliente_ganhador', 'preco', 'descricao', 'data_periodo_final']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ValePresenteForm, self).__init__(*args, **kwargs)
+        self.fields['cliente_nome'].label = "Nome do Cliente Comprador (Obrigatório):"
+        self.fields['cliente_email'].label = "E-mail do Cliente Comprador:"
+        self.fields['cliente_telefone'].label = "Telefone do Cliente Comprador:"
+        self.fields['cliente'].label = "Cliente Comprador:"
+        self.fields['cliente_ganhador'].label = "Cliente Ganhador (Obrigatório):"
+        self.fields['cliente_ganhador_nome'].label = "Nome do Cliente Ganhador (Obrigatório):"
+        self.fields['cliente_email_cliente_ganhador'].label = "E-mail do Cliente Ganhador:"
+        self.fields['cliente_ganhador_telefone'].label = "Telefone do Cliente Ganhador:"
+        self.fields['cliente_ganhador'].label = "Cliente Ganhador:"
+        self.fields['preco'].label = "Preço:"
+        self.fields['descricao'].label = "Descrição do pedido e seu produto:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para melhor descrever as informações sobre o seu vale. Para ajuda-lá na hora de gerenciar."
+
+class ValePresenteUpdateForm(forms.ModelForm):
+    # Form para a criação do Vale Presente
+    class Meta:
+        model = ValePresente
+        fields = ['cliente_nome', 'cliente' ,'cliente_email', 'cliente_telefone', 'cliente_ganhador_nome' , 'cliente_ganhador', 'cliente_ganhador_telefone','cliente_email_cliente_ganhador' ,'cliente_ganhador', 'preco', 'descricao', 'data_periodo_final', 'status']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ValePresenteUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['cliente_nome'].label = "Nome do Cliente Comprador: (Obrigatório)"
+        self.fields['cliente_email'].label = "E-mail do Cliente Comprador:"
+        self.fields['cliente_telefone'].label = "Telefone do Cliente Comprador: (Obrigatório)"
+        self.fields['cliente'].label = "Cliente Comprador:"
+        self.fields['cliente_ganhador_nome'].label = "Nome do Cliente Ganhador: (Obrigatório)"
+        self.fields['cliente_email_cliente_ganhador'].label = "E-mail do Cliente Ganhador:"
+        self.fields['cliente_ganhador_telefone'].label = "Telefone do Cliente Ganhador:"
+        self.fields['cliente_ganhador'].label = "Cliente Ganhador:"
+        self.fields['preco'].label = "Preço:"
+        self.fields['descricao'].label = "Descrição do pedido e seu produto:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para melhor descrever as informações sobre o seu vale. Para ajuda-lá na hora de gerenciar."

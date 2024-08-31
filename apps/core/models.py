@@ -124,3 +124,32 @@ class Pedido(BaseModel):
 
     def __str__(self):
         return f"Pedido de {self.cliente_nome} - {self.descricao}"
+
+class ValePresente(BaseModel):
+    STATUS_VALEPRESENTE_CHOICES = [
+        ('pendente', 'Pendente'),
+        ('comprado', 'Comprado'),
+        ('notificado', 'Notificado'),
+        ('expirado', 'Expirado'),
+    ]
+    # comprador
+    cliente_nome = models.CharField(max_length=255)
+    cliente_email = models.EmailField(blank=True, null=True)
+    cliente_comprador = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='valepresente_cliente_comprador', blank=True, null=True)
+    cliente_telefone = models.CharField(max_length=15, blank=True, null=True)
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='valepresente_cliente', blank=True, null=True)
+    # ganhador
+    cliente_ganhador_nome = models.CharField(max_length=255, blank=True, null=True)
+    cliente_ganhador_telefone = models.CharField(max_length=15, blank=True, null=True)
+    cliente_ganhador = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='valepresente_cliente_ganhador', blank=True, null=True)
+    cliente_email_cliente_ganhador = models.EmailField(blank=True, null=True)
+    vendedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='valepresente_vendedor')
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+    data_pedido = models.DateTimeField(default=timezone.now)
+    data_periodo_final = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_VALEPRESENTE_CHOICES, default='pendente')
+    descricao = RichTextUploadingField("Descrição da venda:")
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='valepresente_empresa')
+
+    def __str__(self):
+        return f"Vale presente de {self.cliente_nome} - {self.descricao}"
