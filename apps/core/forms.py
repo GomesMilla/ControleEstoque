@@ -53,7 +53,7 @@ class ProdutoForm(forms.ModelForm):
 class PeriodoMetaForm(forms.ModelForm):
     class Meta:
         model = PeriodoMeta
-        fields = ['nome', 'data_inicio', 'valor_meta']
+        fields = ['nome', 'data_inicio', 'valor_meta', 'descricao']
 
     def __init__(self, *args, **kwargs):
         super(PeriodoMetaForm, self).__init__(*args, **kwargs)
@@ -62,6 +62,8 @@ class PeriodoMetaForm(forms.ModelForm):
         self.fields['data_inicio'].help_text = "A meta será uma forma de organizar a gestão das suas vendas."
         self.fields['valor_meta'].label = "Valor da Meta:"
         self.fields['valor_meta'].help_text = "Valor de vendas planejado para a meta."
+        self.fields['descricao'].label = "Observação:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para descrever sobre seu planejamento para essa meta."
 
 class PedidoForm(forms.ModelForm):
     class Meta:

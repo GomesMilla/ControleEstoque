@@ -15,9 +15,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Cliente Comprador</th>
-                    <th>Telefone Comprador</th>
                     <th>Cliente Ganhador</th>
-                    <th>Telefone Ganhador</th>
                     <th>Preço</th>
                     <th>Status</th>
                     <th>Ações</th>
@@ -31,18 +29,57 @@
                         <td>{{ vale.cliente_nome }}</td>
                     {% else %}
                         <td>{{ vale.cliente|default:"" }}</td>
-                    {% endif %}                    
-                    <td>{{ vale.cliente_telefone }}</td>                    
+                    {% endif %}                                     
                     {% if vale.cliente_ganhador_nome %}
                         <td>{{ vale.cliente_ganhador_nome }}</td>
                     {% else %}
                         <td>{{ vale.cliente_ganhador }}</td>
                     {% endif %}
-                    <td>{{ vale.cliente_ganhador_telefone }}</td>
                     <td>{{ vale.preco }}</td>
                     <td>{{ vale.get_status_display }}</td>
-                    <td>
+                    <td class="">
                         <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{vale.pk}}">
+                            Detalhes
+                        </button>
+                        <div class="modal fade" id="staticBackdrop{{vale.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre o vale: '{{vale.pk}}'</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h6 class="text-danger fst-italic">Informações sobre o cliente comprador:</h6>
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item"><b>Nome do Cliente Comprador:</b> {{vale.cliente_nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Cliente Comprador:</b> {{vale.cliente|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_telefone|default:"-"}}</li>
+                                            <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email|default:"-"}}</li>
+                                        </ul>
+                                        <h6 class="text-danger fst-italic mt-3">Informações sobre o cliente ganhador:</h6>
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item"><b>Nome do Cliente Ganhador:</b> {{vale.cliente_ganhador_nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Cliente Ganhador:</b> {{vale.cliente_ganhador|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_ganhador_telefone|default:"-"}}</li>
+                                            <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email_cliente_ganhador|default:"-"}}</li>
+                                        </ul>
+                                        <h6 class="text-danger fst-italic mt-3">Informações gerais:</h6>
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item"><b>Vendedor:</b> {{vale.vendedor|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Data da compra:</b> {{vale.data_pedido|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Data de Expiração do Vale:</b> {{vale.data_periodo_final|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Preço:</b> {{vale.preco|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Status:</b> {{vale.status|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Observações:</b> {{vale.descricao|safe|default:"-"}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

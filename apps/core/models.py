@@ -49,6 +49,7 @@ class PeriodoMeta(models.Model):
     valor_alcancado = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     fechado = models.BooleanField(default=False)
     foi_lucro = models.BooleanField(default=False)
+    descricao = RichTextUploadingField("Observações:", null=True, blank=True)
 
     def __str__(self):
         return f"Meta {self.data_inicio.strftime('%B %Y')} - {self.empresa.nome}"
@@ -131,11 +132,11 @@ class ValePresente(BaseModel):
         ('comprado', 'Comprado'),
         ('notificado', 'Notificado'),
         ('expirado', 'Expirado'),
+        ('cancelado', 'Cancelado'),
     ]
     # comprador
     cliente_nome = models.CharField(max_length=255)
     cliente_email = models.EmailField(blank=True, null=True)
-    cliente_comprador = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='valepresente_cliente_comprador', blank=True, null=True)
     cliente_telefone = models.CharField(max_length=15, blank=True, null=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='valepresente_cliente', blank=True, null=True)
     # ganhador

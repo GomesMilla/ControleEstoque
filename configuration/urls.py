@@ -14,6 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/',  include('users.urls')),
     path('core/',  include('core.urls')),
+    path('agenda/',  include('agenda.urls')),
     path("", TemplateView.as_view(template_name="base/inicio.html"), name='inicio'),
     path("infosistema", TemplateView.as_view(template_name="base/infosistema.html"), name='infosistema'),
     path('login/', auth_views.LoginView.as_view(template_name='users/users/login.html'), name='login'),

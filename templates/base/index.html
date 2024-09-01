@@ -214,7 +214,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>                
                 <div class="offcanvas-body">
-                    {% if not objuser.if_funcionario %}
+                    {% if objuser and not objuser.if_funcionario %}
                         <h6>Empresa</h6>
                         <ul class="list-group">
                             <a class="list-group-item list-group-item-action" href="{% url 'editar_empresa' objuser.empresa.pk %}">Editar Empresa</a>
