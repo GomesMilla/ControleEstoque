@@ -23,8 +23,8 @@
             <tr>
                 <td>{{ meta.id }}</td>
                 <td>{{ meta.nome|default:"-" }}</td>
-                <td>{{ meta.data_inicio }}</td>
-                <td>{{ meta.data_fim|default:"Em aberto" }}</td>
+                <td>{{ meta.data_inicio|date:"d/m/Y" }}</td>
+                <td>{{ meta.data_fim|date:"d/m/Y"|default:"Em aberto" }}</td>
                 <td>{{ meta.valor_meta }}</td> 
                 <td>{{ meta.progresso }}</td>
                 {% if meta.fechado %}

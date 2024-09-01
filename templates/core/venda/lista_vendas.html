@@ -4,7 +4,7 @@
 
 <div class="container mt-5">
     <h2>Lista de Vendas para a Meta: '{{ periodometa.nome }}'</h2>
-    <ul class="list-group list-group-horizontal">
+    <ul class="list-group list-group-horizontal d-flex justify-content-center">
         <li class="list-group-item"><b>Data de Ínicio:</b> {{periodometa.data_inicio}}</li>
         <li class="list-group-item"><b>Data Fim:</b> {{periodometa.data_fim|default:"Em aberto"}}</li>
         <li class="list-group-item"><b>Foi lucro:</b> 
@@ -15,6 +15,10 @@
             {% endif %}
         </li>
     </ul>
+    <ul class="list-group list-group-horizontal mt-2 d-flex justify-content-center">
+        <li class="list-group-item"><b>Descrição:</b> {{periodometa.descricao|safe|default:"-"}}</li>
+    </ul>
+    
     <div class="row text-center justify-content-center mt-3">
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
             <div class="card-header">Valor da Meta:</div>
