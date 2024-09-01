@@ -2,7 +2,7 @@ from django import forms
 from .models import Estoque, Produto
 
 from django import forms
-from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente
+from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores
 from users.models import Cliente
 
 class EstoqueForm(forms.ModelForm):
@@ -23,7 +23,7 @@ class EstoqueForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa']
+        fields = ['nome','cor','tamanho','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', ]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -42,6 +42,13 @@ class ProdutoForm(forms.ModelForm):
             self.fields['empresa'].required = False
         else:
             self.fields['estoque'].queryset = Estoque.objects.none()
+
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['estoque'].queryset = Fornecedores.objects.filter(empresa=user.empresa)
+            self.fields['empresa'].required = False
+        else:
+            self.fields['estoque'].queryset = Fornecedores.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()

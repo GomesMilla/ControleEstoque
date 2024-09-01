@@ -24,15 +24,56 @@
             </thead>
             <tbody>
                 {% for pedido in pedidos %}
-                <tr>
+                <tr {% if pedido.status == 'pendente' %}class="table-danger"{% endif %}>
                     <td>{{ pedido.id }}</td>
                     <td>{{ pedido.cliente_nome }}</td>
-                    <td>{{ pedido.produto.nome }}</td>
+                    <td>{{ pedido.produto.nome|default:"-" }}</td>
                     <td>{{ pedido.cliente_telefone }}</td>
                     <td>{{ pedido.descricao|safe }}</td>
-                    <td>{{ pedido.status }}</td>
+                    <td>{{ pedido.get_status_display }}</td>
                     <td>
-                        <a href="{% url 'atualizar_pedido' pedido.pk %}" class="btn btn-primary">Editar</a>
+                        {% if not pedido.status != 'pendente' %}
+                            <a href="{% url 'atualizar_pedido' pedido.pk %}" class="btn btn-primary">Editar</a>
+                        {% endif %}                        
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{pedido.pk}}">
+                            Detalhes
+                        </button>
+                        <div class="modal fade" id="staticBackdrop{{pedido.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5 text-light" id="staticBackdropLabel">Informações sobre o pedido da: '{{pedido.cliente_nome}}'</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if pedido.status == 'pendente' %}
+                                            <div class="alert alert-danger" role="alert">
+                                                O pedido ainda não foi atendido!
+                                            </div>
+                                        {% endif %}
+                                        <h6 class="text-danger-emphasis fst-italic">Informações sobre o cliente:</h6>
+                                        <ul class="list-group mt-3">
+                                            <li class="list-group-item"><b>Cliente:</b> {{pedido.cliente|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Nome do Cliente:</b> {{pedido.cliente_nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Telefone:</b> {{pedido.cliente_telefone|default:"-"}}</li>
+                                            <li class="list-group-item"><b>E-mail:</b> {{pedido.cliente_email|default:"-"}}</li>
+                                        </ul>
+                                        <h6 class="text-danger-emphasis fst-italic mt-4">Informações gerais:</h6>
+                                        <ul class="list-group mt-3">
+                                            <li class="list-group-item"><b>Produto:</b> {{pedido.produto.nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Vendedor:</b> {{pedido.vendedor|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Quantidade:</b> {{pedido.quantidade|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Data da Solicitação:</b> {{pedido.data_pedido|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Status:</b> {{pedido.get_status_display}}</li>
+                                            <li class="list-group-item"><b>Descrição:</b> {{pedido.descricao|safe|default:"-"}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

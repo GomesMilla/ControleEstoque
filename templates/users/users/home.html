@@ -5,7 +5,7 @@
     <div class="container mt-5">
         <p>Bem-vindo(a), {{ objuser.nome }}!</p>
         {% if not objuser.if_funcionario %}
-            <p>Este é o seu painel de controle principal, onde você pode gerenciar sua loja - {{objuser.empresa}}! Atualmente, estamos com uma meta <b>'{{meta_atual}}'</b>  em aberto: Meta de <b>{{ valor_meta }}</b>  com <b>{{ valor_alcancado }}</b> já alcançado.</p>
+            <p>Este é o seu painel de controle principal, onde você pode gerenciar sua loja - {{objuser.empresa}}! Atualmente, estamos com uma meta <b class="text-danger-emphasis fst-italic">'{{meta_atual.nome}}'</b>  em aberto: Meta de <b class="text-danger-emphasis fst-italic">{{ valor_meta }}</b>  com <b class="text-danger-emphasis fst-italic">{{ valor_alcancado }}</b> já alcançado.</p>
             <div class="row text-center justify-content-center">
                 <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
                     <div class="card-header">Meta Atual:</div>
@@ -27,27 +27,34 @@
                 </div>
             </div>
 
-            <h3 class="mt-3">Últimas 5 Vendas da Empresa</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data da Venda</th>
-                        <th>Vendedor</th>
-                        <th>Cliente</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for venda in ultimas_vendas %}
+            <h4 class="mt-3">Vendas do dia: <span class="text-danger-emphasis fst-italic">{{data_atual}}</span> </h4>
+            {% if not ultimas_vendas %}
+                <div class="alert alert-primary" role="alert">
+                    Até o momento, não há vendas realizadas hoje.
+                </div>              
+            {% else %}
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ venda.id }}</td>
-                            <td>{{ venda.data_venda }}</td>
-                            <td>{{ venda.vendedor.nome }}</td>
-                            <td>{{ venda.cliente.nome }}</td>
+                            <th>ID</th>
+                            <th>Data da Venda</th>
+                            <th>Vendedor</th>
+                            <th>Cliente</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for venda in ultimas_vendas %}
+                            <tr>
+                                <td>{{ venda.id }}</td>
+                                <td>{{ venda.data_venda }}</td>
+                                <td>{{ venda.vendedor.nome }}</td>
+                                <td>{{ venda.cliente.nome }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
         {% else %}
             <h3>Suas Últimas 5 Vendas</h3>
             {% if ultimas_vendas %}

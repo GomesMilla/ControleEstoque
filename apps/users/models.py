@@ -102,7 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     imagemperfil = models.ImageField("Foto de Perfil", upload_to="ImagemPerfil/")
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True, related_name='usuarios')    
     theme = models.CharField(max_length=5, default="dark", choices=THEME_CHOICES)
-    if_funcionario = models.BooleanField(default=True)
+    if_funcionario = models.BooleanField(default=True) #define se é socio ou apenas funcionário.
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

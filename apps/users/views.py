@@ -14,6 +14,7 @@ from django.utils import timezone
 from core.models import PeriodoMeta, Venda
 from django.db.models import Q
 from django.views import View
+from datetime import date
 
 def base(request):
     context = {
@@ -36,7 +37,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         empresa = user.empresa
-
+        data_de_hoje = date.today()
         # Informações da meta para a dona da empresa
         if not user.if_funcionario:
             meta_atual = PeriodoMeta.objects.filter(empresa=empresa, fechado=False).first()
@@ -45,12 +46,12 @@ class HomePageView(LoginRequiredMixin, TemplateView):
                 context['valor_meta'] = meta_atual.valor_meta
                 context['valor_alcancado'] = meta_atual.progresso()
                 context['falta_para_meta'] = meta_atual.falta_para_meta()
-                context['ultimas_vendas'] = Venda.objects.filter(empresa=empresa).order_by('-data_venda')[:5]
+                context['ultimas_vendas'] = Venda.objects.filter(empresa=empresa, data_venda__date=data_de_hoje).order_by('-data_venda')
                 context['objuser'] = self.request.user
-
+                context['data_atual'] = data_de_hoje
         else:
             # Informações para funcionários
-            context['ultimas_vendas'] = Venda.objects.filter(vendedor=user).order_by('-data_venda')[:5]
+            context['ultimas_vendas'] = Venda.objects.filter(vendedor=user, data_venda__date=data_de_hoje).order_by('-data_venda')
 
         return context
 

@@ -12,16 +12,54 @@ class Estoque(BaseModel):
     def __str__(self):
         return self.nome
 
-class Produto(BaseModel):
+class Fornecedores(BaseModel):
     nome = models.CharField(max_length=255)
+    razao_social = models.CharField(max_length=255)
+    cnpj = models.CharField(max_length=14, unique=True)
+    endereco = models.CharField(max_length=255)
+    cep = models.CharField(max_length=9)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2)
+    inscricao_estadual = models.CharField(max_length=50, blank=True, null=True)
+    inscricao_municipal = models.CharField(max_length=50, blank=True, null=True)
+
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    site = models.URLField(max_length=255, blank=True, null=True)
+    localizacao = models.CharField(max_length=255, blank=True, null=True)
+    condicoes_pagamento = models.TextField(blank=True, null=True)
+    condicoes_entrega = models.TextField(blank=True, null=True)
+    historico_compras = models.TextField(blank=True, null=True)
+
+    avaliacao = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    descricao = RichTextUploadingField("Descrição do produto:")
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='fornecedores_empresa')
+
+    def __str__(self):
+        return self.nome
+
+class Produto(BaseModel):
+    TAMANHOS_DE_ROUPAS = [
+        ('pp', 'PP'),
+        ('p', 'P'),
+        ('m', 'M'),
+        ('g', 'G'),
+        ('gg', 'GG'),
+        ('xgg', 'XGG'),
+    ]
+    nome = models.CharField(max_length=255)
+    cor = models.CharField(max_length=50, null=True, blank=True)
     descricao = RichTextUploadingField("Descrição do produto:")
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     quantidade = models.PositiveIntegerField()
+    tamanho = models.CharField(max_length=20, choices=TAMANHOS_DE_ROUPAS, null=True, blank=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='produtos')
     imagemperfil = models.ImageField("Foto de Produto", upload_to="fotoproduto/", null=True, blank=True)
     estoque = models.ForeignKey(Estoque, on_delete=models.CASCADE, related_name='produto_estoque')
     codigo = models.CharField(max_length=5, unique=True, editable=False)
+    fornecedor = models.ForeignKey(Fornecedores, on_delete=models.SET_NULL, null=True, blank=True, related_name='produtos_fornecedor')
     vendido = models.BooleanField(default=False)
+    is_promocao = models.BooleanField("Produto em promoção",default=False)
 
     def __str__(self):
         return f"{self.nome} ({self.empresa.nome})"

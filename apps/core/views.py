@@ -74,7 +74,7 @@ class ProdutoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             produtos = Produto.objects.filter(empresa=self.request.user.empresa, vendido=False)
 
         if query:
-            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query))
+            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query))
 
         return produtos
 
@@ -105,7 +105,7 @@ class ProdutoListIndisponivelView(LoginRequiredMixin, UserPassesTestMixin, ListV
             produtos = Produto.objects.filter(empresa=self.request.user.empresa, vendido=True)
 
         if query:
-            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query))
+            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query))
 
         return produtos
 
