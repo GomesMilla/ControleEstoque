@@ -1,0 +1,33 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Notificações</h2>
+    <ol class="list-group list-group-numbered">
+      {% if aniversariantes %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Aniversáriantes!</div>
+              Você tem clientes fazendo aniversário hoje.
+              <br>
+              <a href="{% url 'aniversariantes' %}">Clique aqui para saber mais.</a>
+          </div>          
+          <span class="badge bg-primary rounded-pill">{{qtd_aniversariantes}}</span>
+        </li>
+      {% endif %}
+      <br><br>
+      {% if vales_presentes_vencendo %}
+        <li class="list-group-item d-flex justify-content-between align-items-start mt-2">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">Vale Presente Vencendo!</div>
+              Você tem vale presente vencendo hoje.
+              <br>
+              <a href="{% url 'aniversariantes' %}">Clique aqui para saber mais.</a>
+          </div>          
+          <span class="badge bg-primary rounded-pill">{{qtd_vales_presentes_vencendo}}</span>
+        </li>
+      {% endif %}
+      </ol>
+</div>
+{% endblock conteudo %}

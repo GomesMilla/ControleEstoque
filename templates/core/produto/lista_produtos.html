@@ -13,24 +13,28 @@
         <table class="table table-hover mt-3">
             <thead>
                 <tr class="text-center">
-                    <th>ID</th>
-                    <th>Código</th>
-                    <th>Nome</th>
-                    <th>Descrição</th>
-                    <th>Preço</th>
-                    <th>Quantidade</th>
-                    <th>Status</th>
-                    <th>Ações</th>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Tipo Produto</th>
+                    <th class="text-center">TAM</th>
+                    <th class="text-center">Cor</th>
+                    <th class="text-center">Preço</th>
+                    <th class="text-center">Quantidade</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for produto in produtos %}
                 <tr>
-                    <td class="text-center">{{ produto.id }}</td>
-                    <td class="text-center">{{ produto.codigo }}</td>
-                    <td class="text-center">{{ produto.nome }}</td>
-                    <td class="text-center">{{ produto.descricao|slice:":100"|safe }}</td>
-                    <td class="text-center">{{ produto.preco }}</td>
+                    <td class="text-center">{{ produto.id|default:"-" }}</td>
+                    <td class="text-center">{{ produto.codigo|default:"-" }}</td>
+                    <td class="text-center">{{ produto.nome|default:"-" }}</td>
+                    <td class="text-center">{{ produto.tipo_produto|default:"-" }}</td>
+                    <td class="text-center">{{ produto.tamanho|default:"-" }}</td>
+                    <td class="text-center">{{ produto.cor|default:"-" }}</td>
+                    <td class="text-center">{{ produto.preco|default:"-" }}</td>
                     <td class="text-center">{{ produto.quantidade }}</td>
                     {% if produto.vendido %}
                         <td class="text-center">Vendido</td>
@@ -41,7 +45,7 @@
                         <div class="row">
                             <div class="col-auto d-inline-block text-nowrap">
                                 <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-primary me-2">Editar</a>
-                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{produto.pk}}">
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{produto.pk}}">
                                     Ver Detalhes
                                 </button>
                             </div>
@@ -54,19 +58,24 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                {% if produto.quantidade < 5 %}
-                                <div class="alert alert-danger" role="alert">
-                                    Produto em baixa no estoque.
-                                  </div>
+                                {% if produto.quantidade < 2 %}
+                                    <div class="alert alert-danger" role="alert">
+                                        Produto em baixa no estoque.
+                                    </div>
                                 {% endif %}
                                 <ul class="list-group mt-4">
-                                    <li class="list-group-item">Nome do Produto: {{produto.nome}}</li>
-                                    <li class="list-group-item">Código do Produto: {{produto.codigo}}</li>
-                                    <li class="list-group-item">ID do Produto: {{produto.pk}}</li>
-                                    <li class="list-group-item">Preço do Produto Isoladamente: {{produto.pk}}</li>
-                                    <li class="list-group-item">Quantidade de Produto Disponível: {{produto.quantidade}}</li>
-                                    <li class="list-group-item">Status do Produto: Disponível</li>
-                                    <li class="list-group-item">Descrição: {{produto.descricao|safe}}</li>
+                                    <li class="list-group-item"><b>Nome do Produto:</b> {{produto.nome|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Código do Produto:</b> {{produto.codigo|default:"-"}}</li>
+                                    <li class="list-group-item"><b>ID do Produto:</b> {{produto.pk|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Cor:</b> {{produto.cor|default:"-"}}</li>
+                                    <li class="list-group-item"><b>TAM:</b> {{produto.tamanho|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Fornecedor:</b> {{produto.fornecedor|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Marca:</b> {{produto.marca|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Tipo Produto:</b> {{produto.tipo_produto|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Preço do Produto Isoladamente:</b> {{produto.preco|default:"-"}}</li>
+                                    <li class="list-group-item"><b>Quantidade de Produto Disponível:</b> {{produto.quantidade}}</li>
+                                    <li class="list-group-item"><b>Status do Produto:</b> Disponível</li>
+                                    <li class="list-group-item"><b>Descrição:</b> {{produto.descricao|safe|default:"-"}}</li>
                                 </ul>
                             </div>
                             <div class="modal-footer">

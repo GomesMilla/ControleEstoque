@@ -8,7 +8,8 @@ from .forms import *
 from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q
 from django.views.generic.edit import UpdateView
-
+from django.views.generic.detail import DetailView
+from datetime import date
 
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
@@ -160,11 +161,77 @@ class MarcaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             return redirect('home')
         return super().handle_no_permission()
 
+class FornecedorCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Fornecedores
+    form_class = FornecedoresForm
+    template_name = 'core/fornecedores/criar.html'
+    success_url = reverse_lazy('listar_fornecedores')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            form.instance.empresa = self.request.user.empresa
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class FornecedoresListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Fornecedores
+    template_name = 'core/fornecedores/listar.html'
+    context_object_name = 'fornecedores'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Fornecedores.objects.all()
+        return Fornecedores.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class DetalheFornecedorView(LoginRequiredMixin, DetailView):
+    model = Fornecedores
+    template_name = 'core/fornecedores/detalhe.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        objforncedor = Fornecedores.objects.get(pk=self.kwargs['pk'])
+        produtos = Produto.objects.filter(empresa=self.request.user.empresa, fornecedor=objforncedor)
+
+        context['objforncedor'] = objforncedor
+        context['produtos'] = produtos
+        return context
+
+    def test_func(self):
+        empresa = self.get_object()
+        return self.request.user.is_superuser or (self.request.user.empresa == empresa and not self.request.user.if_funcionario)
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
 class ProdutoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Produto
     form_class = ProdutoForm
     template_name = 'core/produto/cadastrar_produto.html'
-    success_url = reverse_lazy('home')
+    
+    def get_success_url(self):
+        return reverse_lazy('lista_produtos_empresa', kwargs={'pk': self.request.user.empresa.pk})
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -529,3 +596,33 @@ class ValePresenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         if self.request.user.is_authenticated:
             return redirect('home')
         return super().handle_no_permission()
+class GenericDetailView(ListView):
+    model = ValePresente 
+    template_name = 'core/notificacao/notificacao.html'
+
+    def get_context_data(self, **kwargs):
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        data_de_hoje = timezone.now().date()
+        today = timezone.now().date()
+        context = super().get_context_data(**kwargs)
+
+        inicio_do_dia = timezone.make_aware(datetime.combine(data_de_hoje, datetime.min.time()))
+        fim_do_dia = timezone.make_aware(datetime.combine(data_de_hoje, datetime.max.time()))
+
+        vales_presentes_vencendo = ValePresente.objects.filter(
+            data_periodo_final__range=(inicio_do_dia, fim_do_dia), 
+            empresa=self.request.user.empresa
+        )
+        
+        aniversariantes = Cliente.objects.filter(
+                    empresa=self.request.user.empresa,
+                    data_aniversario__month=today.month,
+                    data_aniversario__day=today.day)
+
+        
+        context["vales_presentes_vencendo"] = vales_presentes_vencendo
+        context["aniversariantes"] = aniversariantes
+        context["qtd_aniversariantes"] = aniversariantes.count()
+        context["qtd_vales_presentes_vencendo"] = vales_presentes_vencendo.count()
+        return context

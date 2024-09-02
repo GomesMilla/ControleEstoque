@@ -39,7 +39,7 @@
                     <td>{{ vale.get_status_display }}</td>
                     <td class="">
                         <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{vale.pk}}">
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{vale.pk}}">
                             Detalhes
                         </button>
                         <div class="modal fade" id="staticBackdrop{{vale.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

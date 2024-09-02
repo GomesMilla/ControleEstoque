@@ -35,7 +35,7 @@
                         {% if not pedido.status != 'pendente' %}
                             <a href="{% url 'atualizar_pedido' pedido.pk %}" class="btn btn-primary">Editar</a>
                         {% endif %}                        
-                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{pedido.pk}}">
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{pedido.pk}}">
                             Detalhes
                         </button>
                         <div class="modal fade" id="staticBackdrop{{pedido.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

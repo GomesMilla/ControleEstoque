@@ -43,8 +43,29 @@ class FornecedoresForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(FornecedoresForm, self).__init__(*args, **kwargs)
-        self.fields['nome'].label = "Nome:"
-        self.fields['descricao'].label = "Descrição:"
+        self.fields['nome'].label = "Nome(Obrigatório):"
+        self.fields['razao_social'].label = "Razão Social:"
+        self.fields['cnpj'].label = "CNPJ:"
+        self.fields['endereco'].label = "Endereço:"
+        self.fields['cep'].label = "CEP:"
+        self.fields['cidade'].label = "Cidade:"
+        self.fields['cidade'].label = "Estado:"
+        self.fields['localizacao'].label = "Localização:"
+        self.fields['inscricao_estadual'].label = "Inscrição Estadual:"
+        self.fields['inscricao_municipal'].label = "Inscrição Municipal:"
+        self.fields['telefone'].label = "Telefone:"
+        self.fields['email'].label = "E-mail:"
+        self.fields['site'].label = "Site:"
+        self.fields['site'].help_text = "DICA: Cole aqui a URL do site para que você possa ter essa informação cadastrada para possíveis pesquisas."        
+        self.fields['condicoes_pagamento'].label = "Condições de Pagamento:"
+        self.fields['condicoes_pagamento'].help_text = "DICA: Use esse campo para descrever as formas de pagamentos que ele aceita."
+        self.fields['condicoes_entrega'].label = "Condições de Entrega:"
+        self.fields['condicoes_entrega'].help_text = "DICA: Use esse campo para descrever as formas de entrega que ele aceita."
+        self.fields['historico_compras'].label = "Histórico de Compras:"
+        self.fields['historico_compras'].help_text = "DICA: Use esse campo para descrever as formas descrever um breve resumo sobre o histórico de compras se foi válido ou não."
+        self.fields['avaliacao'].label = "Avaliação:"
+        self.fields['avaliacao'].help_text = "DICA: Use esse campo para avaliar a satisfação com o fornecedor."
+        self.fields['descricao'].label = "Descrição(Obrigatório):"
         self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu fornecedor."
         if not user.is_superuser:
             self.fields['empresa'].widget = forms.HiddenInput()
@@ -101,16 +122,14 @@ class ProdutoForm(forms.ModelForm):
         if not user.is_superuser:
             self.fields['empresa'].widget = forms.HiddenInput()
             self.fields['estoque'].queryset = Estoque.objects.filter(empresa=user.empresa)
+            self.fields['fornecedor'].queryset = Fornecedores.objects.filter(empresa=user.empresa)
+            self.fields['tamanho'].queryset = Tamanho.objects.filter(empresa=user.empresa)
+            self.fields['marca'].queryset = Marca.objects.filter(empresa=user.empresa)
+            self.fields['tipo_produto'].queryset = TipoProduto.objects.filter(empresa=user.empresa)
             self.fields['empresa'].required = False
         else:
             self.fields['estoque'].queryset = Estoque.objects.none()
-
-        if not user.is_superuser:
-            self.fields['empresa'].widget = forms.HiddenInput()
-            self.fields['estoque'].queryset = Fornecedores.objects.filter(empresa=user.empresa)
-            self.fields['empresa'].required = False
-        else:
-            self.fields['estoque'].queryset = Fornecedores.objects.none()
+            self.fields['fornecedor'].queryset = Fornecedores.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()
