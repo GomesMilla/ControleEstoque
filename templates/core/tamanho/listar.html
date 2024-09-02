@@ -1,0 +1,37 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Tamanhos</h2>
+    <table class="table table-hover text-center mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tamanho in tamanhos %}
+            <tr>
+                <td>{{ tamanho.id }}</td>
+                <td>{{ tamanho.nome|default:"-" }}</td>
+                <td>{{ tamanho.descricao|safe|default:"-" }}</td>
+                <td>
+                    {% comment %} {% if meta.fechado %}
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% else %}
+                        <a href="{% url 'fechar_meta' meta.pk %}" class="btn btn-danger">Fechar Meta</a>
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% endif %} {% endcomment %}
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock conteudo %}

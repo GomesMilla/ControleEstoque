@@ -34,6 +34,132 @@ class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
             return redirect('home')
         return super().handle_no_permission()
 
+class TamanhoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Tamanho
+    form_class = TamanhoForm
+    template_name = 'core/tamanho/criar.html'
+    success_url = reverse_lazy('listar_tamanho')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            form.instance.empresa = self.request.user.empresa
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class TamanhoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Tamanho
+    template_name = 'core/tamanho/listar.html'
+    context_object_name = 'tamanhos'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Tamanho.objects.all()
+        return Tamanho.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class TipoProdutoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = TipoProduto
+    form_class = TipoProdutoForm
+    template_name = 'core/tipoproduto/criar.html'
+    success_url = reverse_lazy('listar_tipos_de_produtos')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            form.instance.empresa = self.request.user.empresa
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class TipoProdutoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = TipoProduto
+    template_name = 'core/tipoproduto/listar.html'
+    context_object_name = 'tiposdeprodutos'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return TipoProduto.objects.all()
+        return TipoProduto.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class MarcaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Marca
+    form_class = MarcaForm
+    template_name = 'core/marca/criar.html'
+    success_url = reverse_lazy('listar_marcas')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            form.instance.empresa = self.request.user.empresa
+        return super().form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class MarcaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Marca
+    template_name = 'core/marca/listar.html'
+    context_object_name = 'marcas'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Marca.objects.all()
+        return Marca.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
+
+    def test_func(self):
+        return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
 class ProdutoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Produto
     form_class = ProdutoForm

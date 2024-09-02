@@ -2,7 +2,20 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    # estoque
     path('cadastrar_estoque/', EstoqueCreateView.as_view(), name='cadastrar_estoque'),
+
+    #tamanho
+    path('cadastrar_tamanho/', TamanhoCreateView.as_view(), name='cadastrar_tamanho'),
+    path('listar_tamanho/', TamanhoListView.as_view(), name='listar_tamanho'),
+
+    #tipo produto
+    path('cadastrar_tipo_produto/', TipoProdutoCreateView.as_view(), name='tipo_produto_criar'),
+    path('listar_tipo/', TipoProdutoListView.as_view(), name='listar_tipos_de_produtos'),
+
+    #marca
+    path('cadastrar_marca/', MarcaCreateView.as_view(), name='cadastrar_marca'),
+    path('listar_marcas/', MarcaListView.as_view(), name='listar_marcas'),
     
     # produto
     path('cadastrar_produto/', ProdutoCreateView.as_view(), name='cadastrar_produto'),

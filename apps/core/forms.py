@@ -2,7 +2,7 @@ from django import forms
 from .models import Estoque, Produto
 
 from django import forms
-from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores
+from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores, Marca, TipoProduto, Tamanho
 from users.models import Cliente
 
 class EstoqueForm(forms.ModelForm):
@@ -20,10 +20,72 @@ class EstoqueForm(forms.ModelForm):
             self.fields['empresa'].widget = forms.HiddenInput()
             self.fields['empresa'].required = False
 
+class TamanhoForm(forms.ModelForm):
+    class Meta:
+        model = Tamanho
+        fields = ['nome', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TamanhoForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu tamanho."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class FornecedoresForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedores
+        fields = ['nome', 'razao_social', 'cnpj', 'endereco', 'cep', 'cidade', 'estado', 'inscricao_estadual', 'inscricao_municipal', 'telefone', 'email', 'site', 'localizacao', 'condicoes_pagamento', 'condicoes_entrega', 'historico_compras', 'avaliacao', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(FornecedoresForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu fornecedor."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class TipoProdutoForm(forms.ModelForm):
+    class Meta:
+        model = TipoProduto
+        fields = ['nome', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TipoProdutoForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu tipo de produto."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class MarcaForm(forms.ModelForm):
+    class Meta:
+        model = Marca
+        fields = ['nome', 'descricao', 'logo', 'site', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(MarcaForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome da marca:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['logo'].label = "Logo da marca:"
+        self.fields['site'].label = "URL da marca:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre a marca."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome','cor','tamanho','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', ]
+        fields = ['nome','cor','tamanho','marca','tipo_produto','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', 'is_promocao' ]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
