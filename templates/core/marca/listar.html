@@ -1,0 +1,39 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Marcas</h2>
+    <table class="table table-hover text-center mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>URL</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for marca in marcas %}
+            <tr>
+                <td>{{ marca.id }}</td>
+                <td>{{ marca.nome|default:"-" }}</td>
+                <td>{{ marca.url|default:"-" }}</td>
+                <td>{{ marca.descricao|safe|default:"-" }}</td>
+                <td>
+                    {% comment %} {% if meta.fechado %}
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% else %}
+                        <a href="{% url 'fechar_meta' meta.pk %}" class="btn btn-danger">Fechar Meta</a>
+                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
+                    {% endif %} {% endcomment %}
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock conteudo %}

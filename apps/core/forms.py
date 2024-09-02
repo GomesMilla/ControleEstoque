@@ -2,7 +2,7 @@ from django import forms
 from .models import Estoque, Produto
 
 from django import forms
-from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente
+from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores, Marca, TipoProduto, Tamanho
 from users.models import Cliente
 
 class EstoqueForm(forms.ModelForm):
@@ -20,10 +20,93 @@ class EstoqueForm(forms.ModelForm):
             self.fields['empresa'].widget = forms.HiddenInput()
             self.fields['empresa'].required = False
 
+class TamanhoForm(forms.ModelForm):
+    class Meta:
+        model = Tamanho
+        fields = ['nome', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TamanhoForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu tamanho."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class FornecedoresForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedores
+        fields = ['nome', 'razao_social', 'cnpj', 'endereco', 'cep', 'cidade', 'estado', 'inscricao_estadual', 'inscricao_municipal', 'telefone', 'email', 'site', 'localizacao', 'condicoes_pagamento', 'condicoes_entrega', 'historico_compras', 'avaliacao', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(FornecedoresForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome(Obrigatório):"
+        self.fields['razao_social'].label = "Razão Social:"
+        self.fields['cnpj'].label = "CNPJ:"
+        self.fields['endereco'].label = "Endereço:"
+        self.fields['cep'].label = "CEP:"
+        self.fields['cidade'].label = "Cidade:"
+        self.fields['cidade'].label = "Estado:"
+        self.fields['localizacao'].label = "Localização:"
+        self.fields['inscricao_estadual'].label = "Inscrição Estadual:"
+        self.fields['inscricao_municipal'].label = "Inscrição Municipal:"
+        self.fields['telefone'].label = "Telefone:"
+        self.fields['email'].label = "E-mail:"
+        self.fields['site'].label = "Site:"
+        self.fields['site'].help_text = "DICA: Cole aqui a URL do site para que você possa ter essa informação cadastrada para possíveis pesquisas."        
+        self.fields['condicoes_pagamento'].label = "Condições de Pagamento:"
+        self.fields['condicoes_pagamento'].help_text = "DICA: Use esse campo para descrever as formas de pagamentos que ele aceita."
+        self.fields['condicoes_entrega'].label = "Condições de Entrega:"
+        self.fields['condicoes_entrega'].help_text = "DICA: Use esse campo para descrever as formas de entrega que ele aceita."
+        self.fields['historico_compras'].label = "Histórico de Compras:"
+        self.fields['historico_compras'].help_text = "DICA: Use esse campo para descrever as formas descrever um breve resumo sobre o histórico de compras se foi válido ou não."
+        self.fields['avaliacao'].label = "Avaliação:"
+        self.fields['avaliacao'].help_text = "DICA: Use esse campo para avaliar a satisfação com o fornecedor."
+        self.fields['descricao'].label = "Descrição(Obrigatório):"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu fornecedor."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class TipoProdutoForm(forms.ModelForm):
+    class Meta:
+        model = TipoProduto
+        fields = ['nome', 'descricao', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TipoProdutoForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre o seu tipo de produto."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
+class MarcaForm(forms.ModelForm):
+    class Meta:
+        model = Marca
+        fields = ['nome', 'descricao', 'logo', 'site', 'empresa']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(MarcaForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome da marca:"
+        self.fields['descricao'].label = "Descrição:"
+        self.fields['logo'].label = "Logo da marca:"
+        self.fields['site'].label = "URL da marca:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para detalhar o máximo possível de informações sobre a marca."
+        if not user.is_superuser:
+            self.fields['empresa'].widget = forms.HiddenInput()
+            self.fields['empresa'].required = False
+
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome', 'descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa']
+        fields = ['nome','cor','tamanho','marca','tipo_produto','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', 'is_promocao' ]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -39,9 +122,14 @@ class ProdutoForm(forms.ModelForm):
         if not user.is_superuser:
             self.fields['empresa'].widget = forms.HiddenInput()
             self.fields['estoque'].queryset = Estoque.objects.filter(empresa=user.empresa)
+            self.fields['fornecedor'].queryset = Fornecedores.objects.filter(empresa=user.empresa)
+            self.fields['tamanho'].queryset = Tamanho.objects.filter(empresa=user.empresa)
+            self.fields['marca'].queryset = Marca.objects.filter(empresa=user.empresa)
+            self.fields['tipo_produto'].queryset = TipoProduto.objects.filter(empresa=user.empresa)
             self.fields['empresa'].required = False
         else:
             self.fields['estoque'].queryset = Estoque.objects.none()
+            self.fields['fornecedor'].queryset = Fornecedores.objects.none()
 
     def clean(self):
         cleaned_data = super().clean()

@@ -25,8 +25,20 @@ class VendaAdmin(admin.ModelAdmin):
     list_filter = ['empresa', 'forma_pagamento', 'periodometa']
     search_fields = ['cliente', 'vendedor']
 
+class TamanhoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao', 'empresa')
+    list_filter = ['empresa']
+    search_fields = ['nome']
+
+class TipoProdutoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'descricao', 'empresa')
+    list_filter = ['empresa']
+    search_fields = ['nome']
+
 admin.site.register(Estoque, EstoqueAdmin)
 admin.site.register(Pedido, PedidoAdmin)
 admin.site.register(Produto, ProdutoAdmin)
 admin.site.register(PeriodoMeta, PeriodoMetaAdmin)
 admin.site.register(Venda, VendaAdmin)
+admin.site.register(Tamanho, TamanhoAdmin)
+admin.site.register(TipoProduto, TipoProdutoAdmin)

@@ -2,7 +2,25 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    # estoque
     path('cadastrar_estoque/', EstoqueCreateView.as_view(), name='cadastrar_estoque'),
+
+    #tamanho
+    path('cadastrar_tamanho/', TamanhoCreateView.as_view(), name='cadastrar_tamanho'),
+    path('listar_tamanho/', TamanhoListView.as_view(), name='listar_tamanho'),
+
+    #tipo produto
+    path('cadastrar_tipo_produto/', TipoProdutoCreateView.as_view(), name='tipo_produto_criar'),
+    path('listar_tipo/', TipoProdutoListView.as_view(), name='listar_tipos_de_produtos'),
+
+    #marca
+    path('cadastrar_marca/', MarcaCreateView.as_view(), name='cadastrar_marca'),
+    path('listar_marcas/', MarcaListView.as_view(), name='listar_marcas'),
+
+    #fornecedores
+    path('cadastrar_fornecedores/', FornecedorCreateView.as_view(), name='cadastrar_fornecedor'),
+    path('listar_fornecedores/', FornecedoresListView.as_view(), name='listar_fornecedores'),
+    path('detalhes_fornecedor/<int:pk>/', DetalheFornecedorView.as_view(), name='detalhes_fornecedor'),
     
     # produto
     path('cadastrar_produto/', ProdutoCreateView.as_view(), name='cadastrar_produto'),
@@ -28,4 +46,7 @@ urlpatterns = [
     path('cadastrar_vale_presente/', ValePresenteCreateView.as_view(), name='cadastrar_vale_presente'),
     path('listar_vale_presente/', ValePresenteList.as_view(), name='listar_vale_presente'),
     path('editar_pedido/<int:pk>/', ValePresenteUpdateView.as_view(), name='editar_pedido'),
+
+    #Notificações
+    path('notificacoes/', GenericDetailView.as_view(), name='notificacoes'),
 ]

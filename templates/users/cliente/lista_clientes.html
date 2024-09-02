@@ -29,7 +29,7 @@
                     <td>{{ cliente.telefone_celular }}</td>
                     <td>
                         <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-primary">Editar</a>
-                        <a href="{% url 'detalhe_cliente' cliente.pk %}" class="btn btn-info">Detalhes</a>                         
+                        <a href="{% url 'detalhe_cliente' cliente.pk %}" class="btn btn-warning">Detalhes</a>                         
                     </td>
                 </tr>
                 {% endfor %}
