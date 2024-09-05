@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from .ajax import *
 
 urlpatterns = [
     # estoque
@@ -48,5 +49,16 @@ urlpatterns = [
     path('editar_pedido/<int:pk>/', ValePresenteUpdateView.as_view(), name='editar_pedido'),
 
     #Notificações
-    path('notificacoes/', GenericDetailView.as_view(), name='notificacoes'),
+    path('pendencias/', GenericDetailView.as_view(), name='pendencias'),
+
+
+
+
+    #AJAX
+    path('fornecedores_pesquisar/', fornecedor_por_empresa, name='fornecedores_pesquisar'),
+    path('marca_pesquisar/', marca_por_empresa, name='marca_pesquisar'),
+    path('tamanho_pesquisar/', tamanho_por_empresa, name='tamanho_pesquisar'),
+    path('tipos_pesquisar/', tipo_por_empresa, name='tipos_pesquisar'),
+    path('cliente_pesquisar/', cliente_por_empresa, name='cliente_pesquisar'),
+    path('produto_pesquisar/', produto_por_empresa, name='produto_pesquisar'),
 ]

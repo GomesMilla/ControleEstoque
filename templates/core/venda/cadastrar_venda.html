@@ -15,6 +15,47 @@
         </form>
     </div>
 
-
-
 {% endblock conteudo %}
+
+<script>    
+    $(document).ready(function() {
+        $('#id_cliente').select2({
+            ajax: {
+                url: "{% url 'cliente_pesquisar' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+        $('#id_produto').select2({
+            ajax: {
+                url: "{% url 'produto_por_empresa' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+    });
+</script>

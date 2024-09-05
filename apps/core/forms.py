@@ -4,6 +4,7 @@ from .models import Estoque, Produto
 from django import forms
 from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores, Marca, TipoProduto, Tamanho
 from users.models import Cliente
+from django_select2.forms import Select2Widget
 
 class EstoqueForm(forms.ModelForm):
     class Meta:
@@ -107,6 +108,12 @@ class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
         fields = ['nome','cor','tamanho','marca','tipo_produto','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', 'is_promocao' ]
+        widgets = {
+            'fornecedor': Select2Widget(attrs={'data-minimum-input-length': 1}),
+            'tamanho': Select2Widget(attrs={'data-minimum-input-length': 1}),
+            'tipo_produto': Select2Widget(attrs={'data-minimum-input-length': 1}),
+            'marca': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -157,6 +164,10 @@ class PedidoForm(forms.ModelForm):
     class Meta:
         model = Pedido
         fields = ['cliente_nome', 'cliente_email', 'cliente_telefone', 'produto', 'cliente', 'quantidade', 'descricao', 'status']
+        widgets = {
+            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
+            'produto': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -179,6 +190,9 @@ class VendaForm(forms.ModelForm):
     class Meta:
         model = Venda
         fields = ['cliente', 'forma_pagamento', 'descricao']
+        widgets = {
+            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
     
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -195,6 +209,9 @@ class ItemVendaForm(forms.ModelForm):
     class Meta:
         model = ItemVenda
         fields = ['produto', 'quantidade']
+        widgets = {
+            'produto': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -217,6 +234,10 @@ class ValePresenteForm(forms.ModelForm):
     class Meta:
         model = ValePresente
         fields = ['cliente_nome', 'cliente' ,'cliente_email', 'cliente_telefone', 'cliente_ganhador_nome', 'cliente_ganhador', 'cliente_ganhador_telefone','cliente_email_cliente_ganhador' ,'cliente_ganhador', 'preco', 'descricao', 'data_periodo_final']
+        widgets = {
+            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
+            'cliente_ganhador': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

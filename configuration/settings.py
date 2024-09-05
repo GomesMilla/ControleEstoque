@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'bootstrapform',
+    'django_select2',
 ]
 
 INSTALLED_APPS += [

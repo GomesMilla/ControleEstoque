@@ -1,12 +1,52 @@
 {% extends "base/index.html" %}
 {% load static bootstrap %}
-{% block conteudo %}       
-  
+{% block conteudo %}
 
-    <div class="container mt-5">
-        <h2>AGENDA</h2>
-        <div id='calendar'></div> 
-    </div>      
-
-
+    {% if objuser.empresa.agenda %}
+        <div class="container mt-5">
+            <h2>AGENDA</h2>
+            <div class="row d-flex align-items-start">
+                <div class="col-auto d-flex flex-column me-3">
+                    <a href="{% url 'cadastrar_evento' %}" class="btn btn-outline-success btn-lg mb-2">Cadastrar Evento</a>
+                    <a href="{% url 'evento_anual' %}" class="btn btn-outline-warning btn-lg mb-2">Eventos do ano</a>
+                    <a href="{% url 'evento_mes' %}" class="btn btn-outline-info btn-lg mb-2">Eventos do mês</a>
+                </div>
+                <div class="col">
+                    <div id="calendar"></div>
+                </div>
+            </div>        
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    events: '{% url "eventos_json" %}',
+                    locale: 'pt-br',
+                    eventDidMount: function(info) {
+                        // Adicionar a descrição ao título do evento no calendário
+                        var tooltip = info.event.extendedProps.description || '';
+                        if (tooltip) {
+                            info.el.innerHTML = `
+                                <div>
+                                    <strong>${info.event.title}</strong><br>
+                                    <small>${tooltip}</small>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+                calendar.render();
+            });    
+        </script>
+    {% else %}
+        <div class="container mt-5">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Atenção!</h4>
+                <p>Infelizmente, o seu plano atual não inclui permissão para utilizar a funcionalidade de agenda.</p>
+                <hr>
+                <p class="mb-0">Caso tenha interesse, sugiro que entre em contato com a responsável pelo sistema para discutir possíveis opções.</p>
+            </div>
+        </div>
+    {% endif %}
 {% endblock conteudo %}

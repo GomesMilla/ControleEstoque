@@ -1,0 +1,33 @@
+{% extends "base/index.html" %}
+{% load static bootstrap form_tags %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Cadastrar Evento</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.media}}
+            {{ form|bootstrap }}
+            <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
+                <button type="submit" class="btn btn-success rounded-pill">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        $('document').ready(function() {
+            $('#id_data_inicio').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                locale: 'pt-br'
+            });  
+            $('#id_data_fim').datepicker({
+                format: 'dd/mm/yyyy',
+                autoclose: true,
+                todayHighlight: true,
+                locale: 'pt-br'
+            });
+        });
+    </script>
+
+{% endblock conteudo %}

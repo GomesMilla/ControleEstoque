@@ -3,7 +3,7 @@
 {% block conteudo %} 
 
 <div class="container mt-5">
-    <h2>Notificações</h2>
+    <h2>Pendências</h2>
     <ol class="list-group list-group-numbered">
       {% if aniversariantes %}
         <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -27,6 +27,11 @@
           </div>          
           <span class="badge bg-primary rounded-pill">{{qtd_vales_presentes_vencendo}}</span>
         </li>
+      {% endif %}
+      {% if not vales_presentes_vencendo and not aniversariantes %}
+        <div class="alert alert-info" role="alert">
+          Sem pendências para hoje.
+        </div>
       {% endif %}
       </ol>
 </div>

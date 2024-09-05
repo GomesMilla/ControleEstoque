@@ -81,7 +81,8 @@ class Empresa(BaseModel):
     logo = models.ImageField("Logo", upload_to="logo/")  
     color = ColorField(format="hexa")
     color_fonte = ColorField(format="hexa", blank=True, null=True)
-    logo_navegador = models.ImageField("Logo", upload_to="logonavegador/", blank=True, null=True)  
+    logo_navegador = models.ImageField("Logo", upload_to="logonavegador/", blank=True, null=True)
+    agenda = models.BooleanField("Liberar funcionalidade de agenda", default=False)  
 
     def __str__(self):
         return self.nome
