@@ -13,9 +13,90 @@
         </div>
     </form>
 </div>
+
 <script>
     var elemento = document.getElementById("id_imagemperfil");
     elemento.classList.add("form-control");
 </script>
-
 {% endblock conteudo %}
+
+<script>    
+    $(document).ready(function() {
+        $('#id_fornecedor').select2({
+            ajax: {
+                url: "{% url 'fornecedores_pesquisar' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+        $('#id_marca').select2({
+            ajax: {
+                url: "{% url 'marca_pesquisar' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+        $('#id_tamanho').select2({
+            ajax: {
+                url: "{% url 'tamanho_pesquisar' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+        $('#id_tipo_produto').select2({
+            ajax: {
+                url: "{% url 'tipos_pesquisar' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+    });
+</script>

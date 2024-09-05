@@ -1,5 +1,5 @@
 {% extends "base/index.html" %}
-{% load static bootstrap %}
+{% load static bootstrap form_tags %}
 {% block conteudo %} 
 
     <div class="container mt-5">
@@ -27,3 +27,46 @@
     </script>
 
 {% endblock conteudo %}
+
+<script>    
+    $(document).ready(function() {
+        $('#id_cliente').select2({
+            ajax: {
+                url: "{% url 'cliente_por_empresa' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+        $('#id_cliente_ganhador').select2({
+            ajax: {
+                url: "{% url 'cliente_por_empresa' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 1,
+        });
+    });
+</script>

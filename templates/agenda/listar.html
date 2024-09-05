@@ -1,0 +1,65 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Eventos</h2>
+        <div class="row">
+            <form method="get" class="form-inline mb-3 d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar evento" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-success">Pesquisar</button>
+            </form>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Data Ínicio</th>
+                    <th>Data Fim</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evento in eventos %}
+                <tr>
+                    <td>{{ evento.id }}</td>
+                    <td>{{ evento.titulo }}</td>                                     
+                    <td>{{ evento.data_inicio }}</td>
+                    <td>{{ evento.data_fim }}</td>
+                    <td class="">
+                        <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-primary">Editar</a>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{evento.pk}}">
+                            Detalhes
+                        </button>
+                        <div class="modal fade" id="staticBackdrop{{evento.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5 text-light" id="staticBackdropLabel">Informações sobre o evento: '{{evento.titulo}}'</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item"><b>Criador:</b> {{evento.user.nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Título:</b> {{evento.titulo|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Data Ínicio:</b> {{evento.data_inicio|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Data Fim:</b> {{evento.data_fim|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Resumo:</b> {{evento.resumo|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Descrição:</b> {{evento.descricao|safe|default:"-"}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock conteudo %}
