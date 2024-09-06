@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from .models import Empresa, User, Cliente
-from .forms import EmpresaForm, UserForm, UserFormAdmin, ClienteForm
+from .forms import EmpresaForm, UserForm, UserFormAdmin, ClienteForm, UserEditForm
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
@@ -144,7 +144,7 @@ class UserCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
-    form_class = UserForm
+    form_class = UserEditForm
     template_name = 'users/users/editar_usuario.html'
 
     def get_success_url(self):
@@ -218,6 +218,27 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         empresa_pk = self.kwargs.get('pk')
         empresa = get_object_or_404(Empresa, pk=empresa_pk)
+        return self.request.user.is_superuser or (self.request.user.empresa == empresa and not self.request.user.if_funcionario)
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = User
+    template_name = 'users/users/detalhe.html'
+    context_object_name = 'objuser'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        objeuser = self.get_object()
+        context['vendas'] = Venda.objects.filter(empresa=objeuser.empresa, vendedor=objeuser)
+        return context
+
+    def test_func(self):
+        objeuser = self.get_object()
+        empresa = objeuser.empresa
         return self.request.user.is_superuser or (self.request.user.empresa == empresa and not self.request.user.if_funcionario)
 
     def handle_no_permission(self):

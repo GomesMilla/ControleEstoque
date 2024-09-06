@@ -7,7 +7,7 @@ from django.db import IntegrityError
 from colorfield.fields import ColorField
 from django.core.validators import RegexValidator
 from django.utils import timezone
-
+from ckeditor_uploader.fields import RichTextUploadingField
 class UserManager(BaseUserManager):
     def get_or_create(self, defaults=None, **kwargs):
         try:
@@ -77,7 +77,7 @@ class Empresa(BaseModel):
     cnpj = models.CharField('CNPJ',max_length=18, blank=True, null=True)
     razao_social = models.CharField('Razão Social', max_length=255, blank=True, null=True)
     email = models.EmailField(verbose_name="Endereço de E-mail", max_length=255, unique=True, null=True, blank=True)
-    descricao = models.TextField(blank=True)
+    descricao = RichTextUploadingField("Observação:", blank=True, null=True)
     logo = models.ImageField("Logo", upload_to="logo/")  
     color = ColorField(format="hexa")
     color_fonte = ColorField(format="hexa", blank=True, null=True)
@@ -100,6 +100,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     nome = models.CharField(max_length=255, blank=True, null=True)
     cpf = models.CharField('CPF', max_length=18, unique=True)
     email = models.EmailField(verbose_name="Endereço de E-mail", max_length=255, unique=True, null=True, blank=True)
+    telefone_celular = models.CharField(max_length=15, null=True, blank=True)
+    descricao = RichTextUploadingField("Observações:", null=True, blank=True)
     imagemperfil = models.ImageField("Foto de Perfil", upload_to="ImagemPerfil/")
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True, related_name='usuarios')    
     theme = models.CharField(max_length=5, default="dark", choices=THEME_CHOICES)
@@ -152,7 +154,7 @@ class Cliente(BaseModel):
     nome = models.CharField(max_length=255)
     data_aniversario = models.DateField()
     telefone_celular = models.CharField(max_length=15)
-    observacoes = models.TextField("Observação:", blank=True, null=True)
+    observacoes = RichTextUploadingField("Observação:", blank=True, null=True)
     cpf = models.CharField('CPF', max_length=18, blank=True, null=True)
     genero = models.CharField(max_length=10, choices=[('M', 'Masculino'), ('F', 'Feminino'), ('O', 'Outro')], blank=True, null=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True, related_name='clientes_empresa')

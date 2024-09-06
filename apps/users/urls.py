@@ -17,6 +17,7 @@ urlpatterns = [
     path('lista_usuarios/<int:pk>/', UserListView.as_view(), name='lista_usuarios'),
     path('editar_usuario/<int:pk>/', UserUpdateView.as_view(), name='editar_usuario'),
     path('inativar_usuario/<int:pk>/', UserDeactivateView.as_view(), name='inativar_usuario'),
+    path('detalhe_colaborador/<int:pk>/', UserDetailView.as_view(), name='detalhe_colaborador'),
 
     # clientes
     path('cadastrar_cliente/', ClienteCreateView.as_view(), name='cadastrar_cliente'),

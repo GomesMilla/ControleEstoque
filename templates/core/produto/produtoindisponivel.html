@@ -42,38 +42,37 @@
                         <td>Disponível</td>
                     {% endif %}
                     <td>
-                        <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-primary">Editar</a>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{produto.pk}}">
                             Ver Detalhes
                         </button>
                         <div class="modal fade" id="staticBackdrop{{produto.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre o produto: '{{produto.nome}}'</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <ul class="list-group mt-4">
-                                        <li class="list-group-item"><b>Nome do Produto:</b> {{produto.nome|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Código do Produto:</b> {{produto.codigo|default:"-"}}</li>
-                                        <li class="list-group-item"><b>ID do Produto:</b> {{produto.pk|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Cor:</b> {{produto.cor|default:"-"}}</li>
-                                        <li class="list-group-item"><b>TAM:</b> {{produto.tamanho|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Fornecedor:</b> {{produto.fornecedor|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Marca:</b> {{produto.marca|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Tipo Produto:</b> {{produto.tipo_produto|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Preço do Produto Isoladamente:</b> {{produto.preco|default:"-"}}</li>
-                                        <li class="list-group-item"><b>Quantidade de Produto Disponível:</b> {{produto.quantidade}}</li>
-                                        <li class="list-group-item"><b>Status do Produto:</b> Disponível</li>
-                                        <li class="list-group-item"><b>Descrição:</b> {{produto.descricao|safe|default:"-"}}</li>
-                                    </ul>
-                                </div>
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre o produto: '{{produto.nome}}'</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item"><b>Nome do Produto:</b> {{produto.nome|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Código do Produto:</b> {{produto.codigo|default:"-"}}</li>
+                                            <li class="list-group-item"><b>ID do Produto:</b> {{produto.pk|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Cor:</b> {{produto.cor|default:"-"}}</li>
+                                            <li class="list-group-item"><b>TAM:</b> {{produto.tamanho|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Fornecedor:</b> {{produto.fornecedor|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Marca:</b> {{produto.marca|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Tipo Produto:</b> {{produto.tipo_produto|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Preço do Produto Isoladamente:</b> {{produto.preco|default:"-"}}</li>
+                                            <li class="list-group-item"><b>Quantidade de Produto Disponível:</b> {{produto.quantidade}}</li>
+                                            <li class="list-group-item"><b>Status do Produto:</b> Disponível</li>
+                                            <li class="list-group-item"><b>Descrição:</b> {{produto.descricao|safe|default:"-"}}</li>
+                                        </ul>
+                                    </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
                                 </div>
-                                </div>
                             </div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
