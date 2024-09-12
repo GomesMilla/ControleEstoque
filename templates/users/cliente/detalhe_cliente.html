@@ -9,7 +9,7 @@
             <li class="list-group-item"><b>Data de Aniversário:</b> {{objcliente.data_aniversario}}</li>
             <li class="list-group-item"><b>Telefone Celular:</b> {{objcliente.telefone_celular}}</li>
             <li class="list-group-item"><b>CPF:</b> {{objcliente.cpf}}</li>
-            <li class="list-group-item"><b>Observações Extras:</b> {{objcliente.observacoes}}</li>
+            <li class="list-group-item"><b>Observações Extras:</b> {{objcliente.observacoes|safe}}</li>
         </ul>
         <h2 class="mt-4">Compras realizadas.</h2>
         <table class="table table-hover mt-3">

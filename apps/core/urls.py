@@ -28,6 +28,7 @@ urlpatterns = [
     path('lista_produtos/<int:pk>/', ProdutoListView.as_view(), name='lista_produtos_empresa'),
     path('lista_produtos_indisponivel/<int:pk>/', ProdutoListIndisponivelView.as_view(), name='lista_produtos_indisponivel'),
     path('editar_produto/<int:pk>/', ProdutoUpdateView.as_view(), name='editar_produto'),
+    path('pedidos/<str:status>/', PedidoListFiltroView.as_view(), name='filtrar_pedidos'),
 
     # meta
     path('cadastrar_meta/', PeriodoMetaCreateView.as_view(), name='cadastrar_meta'),

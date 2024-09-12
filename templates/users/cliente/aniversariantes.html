@@ -4,30 +4,35 @@
 
     <div class="container mt-5">
         <h2>Clientes Aniversáriantes</h2>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Data de Aniversário</th>
-                    <th>Telefone Celular</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cliente in aniversariantes %}
-                <tr>
-                    <td>{{ cliente.id }}</td>
-                    <td>{{ cliente.nome }}</td>
-                    <td>{{ cliente.data_aniversario }}</td>
-                    <td>{{ cliente.telefone_celular }}</td>
-                    <td>
-                        <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-primary">Editar</a>                         
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if aniversariantes %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Data de Aniversário</th>
+                        <th>Telefone Celular</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in aniversariantes %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>{{ cliente.nome }}</td>
+                        <td>{{ cliente.data_aniversario }}</td>
+                        <td>{{ cliente.telefone_celular }}</td>
+                        <td>
+                            <a href="{% url 'editar_cliente' cliente.pk %}" class="btn btn-primary">Editar</a>                         
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                Não há clientes aniversariantes hoje.
+            </div>
+        {% endif %}
     </div>
-
 {% endblock conteudo %}

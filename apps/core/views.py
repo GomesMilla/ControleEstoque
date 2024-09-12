@@ -431,7 +431,7 @@ class PedidoListView(LoginRequiredMixin, ListView):
         if self.request.user.is_superuser:
             queryset = Pedido.objects.all()
         else:
-            queryset = Pedido.objects.filter(empresa=self.request.user.empresa)
+            queryset = Pedido.objects.filter(empresa=self.request.user.empresa, status='pendente')
         
         if query:
             queryset = queryset.filter(
@@ -440,6 +440,35 @@ class PedidoListView(LoginRequiredMixin, ListView):
                 Q(status__icontains=query)
             )
         
+        return queryset
+class PedidoListFiltroView(LoginRequiredMixin, ListView):
+    model = Pedido
+    template_name = 'core/pedido/lista_pedidos.html'
+    context_object_name = 'pedidos'
+
+    def get_queryset(self):
+        status = self.kwargs.get('status')  # Obtém o status da URL
+        query = self.request.GET.get('q')
+
+        # Se o usuário for superuser, mostra todos os pedidos
+        if self.request.user.is_superuser:
+            queryset = Pedido.objects.all()
+        else:
+            queryset = Pedido.objects.filter(empresa=self.request.user.empresa)
+
+        # Aplica o filtro de status
+        if status:
+            queryset = queryset.filter(status=status)
+
+        # Aplica o filtro de busca, se houver
+        if query:
+            queryset = queryset.filter(
+                Q(cliente_nome__icontains=query) |
+                Q(produto__nome__icontains=query) |
+                Q(status__icontains=query) &
+                Q(empresa=self.request.user)
+            )
+
         return queryset
 
 class PedidoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
