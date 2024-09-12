@@ -19,8 +19,8 @@
             <tr>
                 <td>{{ marca.id }}</td>
                 <td>{{ marca.nome|default:"-" }}</td>
-                <td>{{ marca.url|default:"-" }}</td>
                 <td>{{ marca.descricao|safe|default:"-" }}</td>
+                <td>{{ marca.url|default:"-" }}</td>                
                 <td>
                     {% comment %} {% if meta.fechado %}
                         <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>

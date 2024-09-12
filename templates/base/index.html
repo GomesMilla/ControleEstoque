@@ -294,7 +294,42 @@
                 {% endif %}
             </div>
         </div>
-        
+
+        {% if alertas and objuser and not objuser.is_superuser %}
+        <div class="container">
+            {% for alerta in alertas %}
+                <div class="card mb-4 border-danger">
+                    <div class="card-header">
+                        Aviso!
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">{{alerta.titulo}}</h5>
+                    <p class="card-text">{{alerta.resumo}}</p>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal{{alerta.id}}">
+                            Maiores Informações.
+                        </button>
+                        <div class="modal fade" id="exampleModal{{alerta.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{alerta.titulo}}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{alerta.descricao|safe}}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+            
         {% if objuser and not objuser.is_superuser %}
             <a type="button" class="btn btn-primary ms-5" href="{% url 'cadastrar_venda' %}"
             style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">

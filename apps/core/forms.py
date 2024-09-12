@@ -107,7 +107,7 @@ class MarcaForm(forms.ModelForm):
 class ProdutoForm(forms.ModelForm):
     class Meta:
         model = Produto
-        fields = ['nome','cor','tamanho','marca','tipo_produto','fornecedor','descricao', 'preco', 'quantidade', 'imagemperfil', 'estoque', 'empresa', 'is_promocao' ]
+        fields = ['nome','cor','tamanho','marca','tipo_produto','fornecedor','descricao', 'preco','preco_custo','quantidade', 'imagemperfil', 'estoque', 'empresa', 'is_promocao' ]
         widgets = {
             'fornecedor': Select2Widget(attrs={'data-minimum-input-length': 1}),
             'tamanho': Select2Widget(attrs={'data-minimum-input-length': 1}),
@@ -121,10 +121,11 @@ class ProdutoForm(forms.ModelForm):
         self.fields['nome'].label = "Nome:"
         self.fields['descricao'].label = "Descrição:"
         self.fields['descricao'].help_text = "DICA: Use esse campo para descrever maiores informações sobre o(s) produto(s) e também sua localização."
-        self.fields['preco'].label = "Preço:"
+        self.fields['preco'].label = "Preço de Venda:"
         self.fields['quantidade'].label = "Quantidade:"
         self.fields['imagemperfil'].label = "Foto do Produto:"
         self.fields['estoque'].label = "Estoque:"
+        self.fields['preco_custo'].label = "Preço de Custo:"
 
         if not user.is_superuser:
             self.fields['empresa'].widget = forms.HiddenInput()

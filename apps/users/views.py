@@ -15,6 +15,7 @@ from core.models import PeriodoMeta, Venda
 from django.db.models import Q
 from django.views import View
 from datetime import date
+from agenda.models import Alerta
 
 def base(request):
     context = {
@@ -23,9 +24,11 @@ def base(request):
     area_url = request.META.get('PATH_INFO')
     if request.user.is_authenticated and not "/admin/" in area_url:
         objeuser = request.user
+        alertas = Alerta.objects.filter(empresa=objeuser.empresa, is_active=True)
         context = {
             'now': timezone.now().time(),
             "objuser" : objeuser,
+            "alertas" : alertas,
         }
     
     return context

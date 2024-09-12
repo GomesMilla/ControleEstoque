@@ -69,6 +69,7 @@ class Produto(BaseModel):
     cor = models.CharField(max_length=50, null=True, blank=True)
     descricao = RichTextUploadingField("Descrição do produto:")
     preco = models.DecimalField(max_digits=10, decimal_places=2)
+    preco_custo = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     quantidade = models.PositiveIntegerField()
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='produtos')
     imagemperfil = models.ImageField("Foto de Produto", upload_to="fotoproduto/", null=True, blank=True)
@@ -95,8 +96,10 @@ class Produto(BaseModel):
             codigo = str(random.randint(10000, 99999))
         return codigo
 
-    def __str__(self):
-        return f"{self.nome} ({self.empresa.nome})"
+    @property
+    def lucro(self):
+        lucro_unitario = self.preco - self.preco_custo
+        return lucro_unitario * self.quantidade 
 
 class PeriodoMeta(models.Model):
     nome = models.CharField(max_length=255, null=True, blank=True)
