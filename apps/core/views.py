@@ -601,12 +601,13 @@ class ValePresenteList(LoginRequiredMixin, ListView):
         if self.request.user.is_superuser:
             queryset = ValePresente.objects.all()
         else:
-            queryset = ValePresente.objects.filter(empresa=self.request.user.empresa)
+            queryset = ValePresente.objects.filter(empresa=self.request.user.empresa, status='pendente')
         
         if query:
             queryset = queryset.filter(
                 Q(cliente_nome__icontains=query) |
-                Q(cliente_ganhador_nome__icontains=query)
+                Q(cliente_ganhador_nome__icontains=query) &
+                Q(empresa=self.request.user.empresa)
             )
         
         return queryset

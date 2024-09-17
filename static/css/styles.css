@@ -16,3 +16,7 @@ line-height: 28px;
     font-size: 12px !important;
     color: #dc3545 !important;
 }
+a{
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+    text-decoration: none;
+}
