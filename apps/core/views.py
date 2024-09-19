@@ -467,7 +467,7 @@ class PedidoListFiltroView(LoginRequiredMixin, ListView):
                 Q(cliente_nome__icontains=query) |
                 Q(produto__nome__icontains=query) |
                 Q(status__icontains=query) &
-                Q(empresa=self.request.user)
+                Q(empresa=self.request.user.empresa)
             )
 
         return queryset
@@ -620,6 +620,45 @@ class ValePresenteList(LoginRequiredMixin, ListView):
             )
         
         return queryset
+
+class ValePresenteFiltroView(LoginRequiredMixin, ListView):
+    model = ValePresente
+    template_name = 'core/valepresente/listar.html'
+    context_object_name = 'vales'
+
+    def get_queryset(self):
+        status = self.kwargs.get('status')  # Obtém o status da URL
+        query = self.request.GET.get('q')
+
+        # Se o usuário for superuser, mostra todos os pedidos
+        if self.request.user.is_superuser:
+            queryset = ValePresente.objects.all()
+        else:
+            queryset = ValePresente.objects.filter(empresa=self.request.user.empresa)
+
+        # Aplica o filtro de status
+        if status:
+            queryset = queryset.filter(status=status)
+
+        # Aplica o filtro de busca, se houver
+        if query:
+            queryset = queryset.filter(
+                Q(cliente_nome__icontains=query) |
+                Q(cliente__nome__icontains=query) |
+                Q(cliente_ganhador_nome__icontains=query) |
+                Q(cliente_ganhador__nome__icontains=query) |
+                Q(status__icontains=query) &
+                Q(empresa=self.request.user.empresa)
+            )
+
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        # Garante que o contexto seja sempre passado, mesmo sem resultados no queryset
+        context = super().get_context_data(**kwargs)
+        context['status_atual'] = self.kwargs.get('status')  # Garante que o status atual seja enviado ao template
+        context['termo_pesquisa'] = self.request.GET.get('q', '')  # Termo de pesquisa, padrão vazio se não houver
+        return context
 
 class ValePresenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ValePresente

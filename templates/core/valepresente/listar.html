@@ -3,11 +3,11 @@
 {% block conteudo %}
 
     <style>
-        a{
+        a {
             color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
             text-decoration: none;
         }
-    </style> 
+    </style>
 
     <div class="container mt-5">
         <h2>Listagem de Vale Presente</h2>
@@ -17,16 +17,22 @@
                 <button type="submit" class="btn btn-success">Pesquisar</button>
             </form>
         </div>
-        {% if vales %}
-            <div class="row">
-                <div class="col-md-2">
-                    <ul class="list-group">
-                        <a href="{% url 'filtrar_pedidos' 'pendente' %}"><li class="list-group-item list-group-item-action">Pendente</li></a>
-                        <a href="{% url 'filtrar_pedidos' 'comprado' %}"><li class="list-group-item list-group-item-action">Comprado</li></a>
-                        <a href="{% url 'filtrar_pedidos' 'notificado' %}"><li class="list-group-item list-group-item-action">Notificado</li></a>
-                    </ul>
-                </div>
-                <div class="col-md-10">
+        <div class="row">
+            <!-- Coluna de status -->
+            <div class="col-md-2">
+                <ul class="list-group">
+                    <a href="{% url 'filtrar_valespresente' 'pendente' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'pendente' %} active{% endif %}">Pendente</li></a>
+                    <a href="{% url 'filtrar_valespresente' 'comprado' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'comprado' %} active{% endif %}">Comprado</li></a>
+                    <a href="{% url 'filtrar_valespresente' 'notificado' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'notificado' %} active{% endif %}">Notificado</li></a>
+                    <a href="{% url 'filtrar_valespresente' 'expirado' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'expirado' %} active{% endif %}">Expirado</li></a>
+                    <a href="{% url 'filtrar_valespresente' 'cancelado' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'cancelado' %} active{% endif %}">Cancelado</li></a>
+                </ul>
+            </div>
+
+            <!-- Coluna de conteúdo principal (tabela ou mensagem de alerta) -->
+            <div class="col-md-10">
+                {% if vales %}
+                    <!-- Tabela de vales presentes -->
                     <table class="table table-hover table-bordered text-center">
                         <thead>
                             <tr>
@@ -42,19 +48,11 @@
                             {% for vale in vales %}
                             <tr>
                                 <td>{{ vale.id }}</td>
-                                {% if vale.cliente_nome %}
-                                    <td>{{ vale.cliente_nome }}</td>
-                                {% else %}
-                                    <td>{{ vale.cliente|default:"" }}</td>
-                                {% endif %}                                     
-                                {% if vale.cliente_ganhador_nome %}
-                                    <td>{{ vale.cliente_ganhador_nome }}</td>
-                                {% else %}
-                                    <td>{{ vale.cliente_ganhador }}</td>
-                                {% endif %}
+                                <td>{{ vale.cliente_nome|default:"-" }}</td>
+                                <td>{{ vale.cliente_ganhador_nome|default:"-" }}</td>
                                 <td>{{ vale.preco }}</td>
                                 <td>{{ vale.get_status_display }}</td>
-                                <td class="">
+                                <td>
                                     <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
                                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{vale.pk}}">
                                         Detalhes
@@ -67,34 +65,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    {% if vale.status == 'pendente' %}
-                                                        <div class="alert alert-danger" role="alert">
-                                                            Vale em aberto!
-                                                        </div>
-                                                    {% endif %}
-                                                    <h6 class="text-danger-emphasis fst-italic">Informações sobre o cliente comprador:</h6>
-                                                    <ul class="list-group mt-4">
-                                                        <li class="list-group-item"><b>Nome do Cliente Comprador:</b> {{vale.cliente_nome|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Cliente Comprador:</b> {{vale.cliente|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_telefone|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email|default:"-"}}</li>
-                                                    </ul>
-                                                    <h6 class="text-danger-emphasis fst-italic mt-3">Informações sobre o cliente ganhador:</h6>
-                                                    <ul class="list-group mt-4">
-                                                        <li class="list-group-item"><b>Nome do Cliente Ganhador:</b> {{vale.cliente_ganhador_nome|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Cliente Ganhador:</b> {{vale.cliente_ganhador|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_ganhador_telefone|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email_cliente_ganhador|default:"-"}}</li>
-                                                    </ul>
-                                                    <h6 class="text-danger-emphasis fst-italic mt-3">Informações gerais:</h6>
-                                                    <ul class="list-group mt-4">
-                                                        <li class="list-group-item"><b>Vendedor:</b> {{vale.vendedor|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Data da compra:</b> {{vale.data_pedido|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Data de Expiração do Vale:</b> {{vale.data_periodo_final|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Preço:</b> {{vale.preco|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Status:</b> {{vale.status|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Observações:</b> {{vale.descricao|safe|default:"-"}}</li>
-                                                    </ul>
+                                                    <!-- Informações adicionais sobre o vale -->
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
@@ -106,14 +77,15 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                    </table> 
-                </div>
+                    </table>
+                {% else %}
+                    <!-- Mensagem de alerta se não houver vales presentes -->
+                    <div class="alert alert-danger" role="alert">
+                        Não há vale presente cadastrado {% if status_atual %} para o status <span class="text-uppercase fw-bold">{{ status_atual }}</span> {% endif %}.
+                    </div>
+                {% endif %}
             </div>
-        {% else %}
-            <div class="alert alert-danger" role="alert">
-                Não há vale presente cadastrado.
-            </div>        
-        {% endif %}
+        </div>
     </div>
 
 {% endblock conteudo %}

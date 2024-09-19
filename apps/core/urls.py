@@ -28,7 +28,7 @@ urlpatterns = [
     path('lista_produtos/<int:pk>/', ProdutoListView.as_view(), name='lista_produtos_empresa'),
     path('lista_produtos_indisponivel/<int:pk>/', ProdutoListIndisponivelView.as_view(), name='lista_produtos_indisponivel'),
     path('editar_produto/<int:pk>/', ProdutoUpdateView.as_view(), name='editar_produto'),
-    path('pedidos/<str:status>/', PedidoListFiltroView.as_view(), name='filtrar_pedidos'),
+
 
     # meta
     path('cadastrar_meta/', PeriodoMetaCreateView.as_view(), name='cadastrar_meta'),
@@ -40,6 +40,7 @@ urlpatterns = [
     path('cadastrar_pedido/', PedidoCreateView.as_view(), name='cadastrar_pedido'),
     path('lista_pedidos/', PedidoListView.as_view(), name='lista_pedidos'),
     path('atualizar_pedido/<int:pk>/', PedidoUpdateView.as_view(), name='atualizar_pedido'),
+    path('pedidos/<str:status>/', PedidoListFiltroView.as_view(), name='filtrar_pedidos'),
 
     # venda
     path('cadastrar_venda/', VendaCreateView.as_view(), name='cadastrar_venda'),
@@ -48,6 +49,7 @@ urlpatterns = [
     path('cadastrar_vale_presente/', ValePresenteCreateView.as_view(), name='cadastrar_vale_presente'),
     path('listar_vale_presente/', ValePresenteList.as_view(), name='listar_vale_presente'),
     path('editar_pedido/<int:pk>/', ValePresenteUpdateView.as_view(), name='editar_pedido'),
+    path('valepresente/<str:status>/', ValePresenteFiltroView.as_view(), name='filtrar_valespresente'),
 
     #Notificações
     path('pendencias/', GenericDetailView.as_view(), name='pendencias'),
