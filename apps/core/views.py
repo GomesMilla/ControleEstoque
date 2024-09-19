@@ -267,7 +267,7 @@ class ProdutoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             produtos = Produto.objects.filter(empresa=self.request.user.empresa, vendido=False)
 
         if query:
-            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query))
+            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query) & Q(empresa=self.request.user.empresa))
 
         return produtos
 
@@ -298,7 +298,7 @@ class ProdutoListIndisponivelView(LoginRequiredMixin, UserPassesTestMixin, ListV
             produtos = Produto.objects.filter(empresa=self.request.user.empresa, vendido=True)
 
         if query:
-            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query))
+            produtos = produtos.filter(Q(nome__icontains=query) | Q(descricao__icontains=query) | Q(codigo__icontains=query) & Q(empresa=self.request.user.empresa))
 
         return produtos
 
@@ -437,7 +437,8 @@ class PedidoListView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(
                 Q(cliente_nome__icontains=query) |
                 Q(produto__nome__icontains=query) |
-                Q(status__icontains=query)
+                Q(status__icontains=query) &
+                Q(empresa=self.request.user.empresa)
             )
         
         return queryset
@@ -470,6 +471,14 @@ class PedidoListFiltroView(LoginRequiredMixin, ListView):
             )
 
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        # Garante que o contexto seja sempre passado, mesmo sem resultados no queryset
+        context = super().get_context_data(**kwargs)
+        context['status_atual'] = self.kwargs.get('status')  # Garante que o status atual seja enviado ao template
+        context['termo_pesquisa'] = self.request.GET.get('q', '')  # Termo de pesquisa, padrão vazio se não houver
+        return context
+
 
 class PedidoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Pedido

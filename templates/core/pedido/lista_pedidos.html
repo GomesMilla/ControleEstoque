@@ -14,17 +14,30 @@
         {% if pedidos %}
             <div class="row">
                 <form method="get" class="form-inline mb-3 d-flex">
-                    <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar pedido" value="{{ request.GET.q }}">
+                    <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar pedido" value="{{ termo_pesquisa }}">
                     <button type="submit" class="btn btn-success">Pesquisar</button>
                 </form>
             </div>
+            {{status_atual}}
             <div class="row">
                 <div class="col-md-2">
                     <ul class="list-group">
-                        <a href="{% url 'filtrar_pedidos' 'pendente' %}"><li class="list-group-item list-group-item-action">Pendente</li></a>
-                        <a href="{% url 'filtrar_pedidos' 'comprado' %}"><li class="list-group-item list-group-item-action">Comprado</li></a>
-                        <a href="{% url 'filtrar_pedidos' 'notificado' %}"><li class="list-group-item list-group-item-action">Notificado</li></a>
-                    </ul>
+                        <a href="{% url 'filtrar_pedidos' 'pendente' %}">
+                            <li class="list-group-item list-group-item-action {% if status_atual == 'pendente' %} active {% endif %}">
+                                Pendente
+                            </li>
+                        </a>
+                        <a href="{% url 'filtrar_pedidos' 'comprado' %}">
+                            <li class="list-group-item list-group-item-action {% if status_atual == 'comprado' %} active {% endif %}">
+                                Comprado
+                            </li>
+                        </a>
+                        <a href="{% url 'filtrar_pedidos' 'notificado' %}">
+                            <li class="list-group-item list-group-item-action {% if status_atual == 'notificado' %} active {% endif %}">
+                                Notificado
+                            </li>
+                        </a>
+                    </ul>                    
                 </div>
                 <div class="col-md-10">
                     <table class="table table-hover table-bordered text-center">
@@ -107,7 +120,7 @@
                 </div>
                 <div class="col-md-10">
                     <div class="alert alert-danger" role="alert">
-                        Não há pedidos cadastrado.
+                        Não há pedidos cadastrados para o status <span class="text-uppercase fw-bold">{{ status_atual }}</span>.
                     </div> 
                 </div>                
             </div>  
