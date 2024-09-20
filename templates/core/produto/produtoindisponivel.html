@@ -62,7 +62,10 @@
                                             <li class="list-group-item"><b>Fornecedor:</b> {{produto.fornecedor|default:"-"}}</li>
                                             <li class="list-group-item"><b>Marca:</b> {{produto.marca|default:"-"}}</li>
                                             <li class="list-group-item"><b>Tipo Produto:</b> {{produto.tipo_produto|default:"-"}}</li>
-                                            <li class="list-group-item"><b>Preço do Produto Isoladamente:</b> {{produto.preco|default:"-"}}</li>
+                                            {% if not objuser.if_funcionario %}
+                                                <li class="list-group-item"><b>Preço do Produto(Compra):</b> {{produto.preco_custo|default:"-"}}</li>
+                                            {% endif %}
+                                            <li class="list-group-item"><b>Preço do Produto Isoladamente(Venda):</b> {{produto.preco|default:"-"}}</li>
                                             <li class="list-group-item"><b>Quantidade de Produto Disponível:</b> {{produto.quantidade}}</li>
                                             <li class="list-group-item"><b>Status do Produto:</b> Disponível</li>
                                             <li class="list-group-item"><b>Descrição:</b> {{produto.descricao|safe|default:"-"}}</li>

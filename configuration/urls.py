@@ -18,7 +18,7 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="base/inicio.html"), name='inicio'),
     path("infosistema", TemplateView.as_view(template_name="base/infosistema.html"), name='infosistema'),
     path('login/', auth_views.LoginView.as_view(template_name='users/users/login.html'), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view(template_name='users/users/logout.html'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('ckeditor/upload/', login_required(ckeditor_views.upload), name='ckeditor_upload'),
     path('ckeditor/browse/', never_cache(login_required(ckeditor_views.browse)), name='ckeditor_browse'),
 

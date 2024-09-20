@@ -52,7 +52,7 @@ class TamanhoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -70,7 +70,7 @@ class TamanhoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return Tamanho.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -94,7 +94,7 @@ class TipoProdutoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         return super().form_valid(form)
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -112,7 +112,7 @@ class TipoProdutoListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return TipoProduto.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -136,7 +136,7 @@ class MarcaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -154,7 +154,7 @@ class MarcaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return Marca.objects.filter(empresa=self.request.user.empresa).order_by('-pk')[:10]
 
     def test_func(self):
-        return self.request.user.is_superuser or not self.request.user.if_funcionario
+        return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:

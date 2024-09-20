@@ -143,9 +143,46 @@
                                         <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}">Produtos Indisponível</a></li>
                                     </ul>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Relatórios</a>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Tamanho de Produto
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_tamanho' %}">Lista de Tamanho</a></li>
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_tamanho' %}">Cadastrar Tamanho de Produto</a></li>
+                                    </ul>
                                 </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Tipo de Produto
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'tipo_produto_criar' %}">Cadastrar Tipo de Produto</a></li>
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_tipos_de_produtos' %}">Listar Tipo de Produto</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Marca
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_marca' %}">Cadastrar Marca</a></li>
+                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_marcas' %}">Listar Marcas</a></li>
+                                    </ul>
+                                </li>
+                                <a href="{% url 'pendencias' %}" class="position-relative text-decoration-none mt-2 ms-2">
+                                    <i class="fas fa-bell fa-lg"></i>
+                                    <span class="notification-badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                                        <span class="visually-hidden">New alerts</span>
+                                    </span>
+                                </a> 
+                                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                                    {% csrf_token %}
+                                </form>
+                                
+                                <a href="#" class="mt-2" onclick="document.getElementById('logout-form').submit();">
+                                    <span class="material-icons" style="font-size: 24px;">logout</span>
+                                </a>                                                              
                             {% endif %}
                             {% if not objuser.if_funcionario %}
                                 <li class="nav-item">
@@ -204,9 +241,13 @@
                                 <button class="btn ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
                                     <i class="material-icons">settings</i>
                                 </button>
-                                <a href="#" class="position-relative text-decoration-none mt-2 ms-2">
-                                    <i class="material-icons">logout</i>
-                                </a>                     
+                                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                                    {% csrf_token %}
+                                </form>                                
+                                <a href="#" class="mt-2" onclick="document.getElementById('logout-form').submit();">
+                                    <span class="material-icons" style="font-size: 24px;">logout</span>
+                                </a>
+                                
                             {% endif %}
                         </ul>
                     {% endif %}
