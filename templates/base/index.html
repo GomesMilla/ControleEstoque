@@ -316,6 +316,13 @@
                     <ul class="list-group">
                         <a class="list-group-item list-group-item-action mt-1" href="{% url 'lista_usuarios' objuser.empresa.pk %}">Listar Colaborador</a>
                     </ul>
+                    <h6 class="mt-3">Conta Corrente</h6>
+                    <ul class="list-group">
+                        <a class="list-group-item list-group-item-action" href="{% url 'nova_conta' %}">Cadastrar Conta Corrente</a>
+                    </ul>
+                    <ul class="list-group">
+                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'listar_contas' %}">Listar Conta Corrente</a>
+                    </ul>
                     <h6 class="mt-3">Relatórios</h6>
                     <ul class="list-group">
                         <a class="list-group-item list-group-item-action mt-1" href="{% url 'agenda' %}">Relatórios(FAZER)</a>
@@ -372,10 +379,20 @@
         {% endif %}
             
         {% if objuser and not objuser.is_superuser %}
-            <a type="button" class="btn btn-primary ms-5" href="{% url 'cadastrar_venda' %}"
-            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                Cadastrar Venda
-            </a>      
+            <div class="row">
+                <div class="col-auto">
+                    <a type="button" class="btn btn-primary ms-5" href="{% url 'cadastrar_venda' %}"
+                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Cadastrar Venda
+                    </a> 
+                </div>
+                <div class="col-auto">
+                    <a type="button" class="btn btn-danger" href="{% url 'nova_venda_fiado' %}"
+                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                        Cadastrar Venda a Prazo
+                    </a> 
+                </div>
+            </div>
         {% endif %}
 
         <main>        

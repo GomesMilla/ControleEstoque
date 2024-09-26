@@ -3,7 +3,7 @@ from users.models import User, Empresa, BaseModel, Cliente
 import random
 from django.utils import timezone
 from ckeditor_uploader.fields import RichTextUploadingField
-
+from dateutil.relativedelta import relativedelta
 class Estoque(BaseModel):
     nome = models.CharField(max_length=255)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='estoques')
@@ -137,11 +137,8 @@ class PeriodoMeta(models.Model):
 
 FORMA_PAGAMENTO_CHOICES = [
     ('debito', 'Cartão de Débito'),
-    ('credito', 'Cartão de Crédito'),
     ('pix', 'Pix'),
-    ('credito_parcelado', 'Crédito Parcelado'),
     ('dinheiro', 'Dinheiro'),
-    ('marcou', 'Marcou'),
 ]
 class Venda(BaseModel):
     data_venda = models.DateTimeField(default=timezone.now)
@@ -215,3 +212,69 @@ class ValePresente(BaseModel):
 
     def __str__(self):
         return f"Vale presente de {self.cliente_nome} - {self.descricao}"
+class ContaCorrente(BaseModel):
+    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE, related_name='conta_corrente')
+    descricao = RichTextUploadingField("Descrição da venda:")
+    saldo_devedor = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    limite_credito = models.DecimalField(max_digits=10, decimal_places=2, default=500.00)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='conta_corrente_empresa')
+
+    def atualizar_saldo(self, valor):
+        """Atualiza o saldo devedor com a nova compra fiada."""
+        self.saldo_devedor += valor
+        self.save()
+
+    def reduzir_saldo(self, valor):
+        """Reduz o saldo devedor ao registrar o pagamento de uma parcela."""
+        self.saldo_devedor -= valor
+        self.save()
+
+    def __str__(self):
+        return f"Conta de {self.cliente.nome}"
+
+class VendaFiado(BaseModel):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    conta_corrente = models.ForeignKey(ContaCorrente, on_delete=models.CASCADE)
+    data_venda = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    num_parcelas = models.PositiveIntegerField()
+    dia_vencimento = models.PositiveIntegerField()
+    vendedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendedor_venda_fiado')
+    descricao = RichTextUploadingField("Descrição da venda:")
+    periodometa = models.ForeignKey(PeriodoMeta, on_delete=models.CASCADE, related_name='periodo_meta_venda_fiado')
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='venda_fiado_empresa', default=1)
+    
+    def __str__(self):
+        return f"Venda fiado de {self.cliente.nome} - {self.data_venda}"
+
+    def gerar_parcelas(self):
+        """Gera as parcelas da venda fiado."""
+        valor_parcela = round(self.total / self.num_parcelas, 2)
+        for i in range(self.num_parcelas):
+            vencimento = self.data_venda + relativedelta(months=i, day=self.dia_vencimento)
+            Parcela.objects.create(
+                venda=self,
+                valor=valor_parcela,
+                data_vencimento=vencimento,
+                pendente=True,
+                empresa=self.empresa  # Vinculando à empresa
+            )
+class Parcela(BaseModel):
+    venda = models.ForeignKey(VendaFiado, on_delete=models.CASCADE, related_name='parcelas')
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    data_vencimento = models.DateField()
+    pendente = models.BooleanField(max_length=20, default=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='parcela_fiado_empresa', default=1)
+
+    def __str__(self):
+        return f"Parcela de {self.valor} com vencimento em {self.data_vencimento}"
+
+class ItemVendaFiado(models.Model):
+    venda = models.ForeignKey(VendaFiado, on_delete=models.CASCADE, related_name='itens_venda')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='venda_afido_empresa_item', default=1)
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.produto.nome}"

@@ -2,10 +2,12 @@ from django import forms
 from .models import Estoque, Produto
 
 from django import forms
-from .models import Estoque, Empresa, PeriodoMeta, Pedido, Venda, ItemVenda, ValePresente, Fornecedores, Marca, TipoProduto, Tamanho
+from .models import *
 from users.models import Cliente
+from django import forms
+from .models import VendaFiado
 from django_select2.forms import Select2Widget
-
+from django.forms import modelformset_factory, BaseModelFormSet
 class EstoqueForm(forms.ModelForm):
     class Meta:
         model = Estoque
@@ -276,3 +278,86 @@ class ValePresenteUpdateForm(forms.ModelForm):
         self.fields['preco'].label = "Preço:"
         self.fields['descricao'].label = "Descrição do pedido e seu produto:"
         self.fields['descricao'].help_text = "DICA: Use esse campo para melhor descrever as informações sobre o seu vale. Para ajuda-lá na hora de gerenciar."
+
+class ContaCorrenteForm(forms.ModelForm):
+    class Meta:
+        model = ContaCorrente
+        fields = ['cliente', 'descricao', 'limite_credito']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        conta_corrente = super().save(commit=False)
+        conta_corrente.empresa = self.user.empresa
+        if commit:
+            conta_corrente.save()
+        return conta_corrente
+
+
+class VendaFiadoForm(forms.ModelForm):
+    class Meta:
+        model = VendaFiado
+        fields = ['cliente', 'conta_corrente', 'num_parcelas', 'dia_vencimento']
+        widgets = {
+            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        obj = User.objects.get(cpf=self.user)
+        print("VendaFiado", obj)
+        super().__init__(*args, **kwargs)
+
+        # Garante que o user e empresa estão disponíveis e a queryset é filtrada corretamente
+        if self.user:
+            print(f"Empresa no Form: {obj.empresa}")  # Verificação adicional
+            self.fields['conta_corrente'].queryset = ContaCorrente.objects.filter(empresa=obj.empresa)
+        else:
+            raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
+
+
+class ItemVendaFiadoForm(forms.ModelForm):
+    class Meta:
+        model = ItemVendaFiado
+        fields = ['produto', 'quantidade']
+        widgets = {
+            'produto': Select2Widget(attrs={'data-minimum-input-length': 1}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        obj = User.objects.get(cpf=self.user)
+        print("ItemVendaFiadoForm", obj)
+        super().__init__(*args, **kwargs)
+
+        if self.user:
+            self.fields['produto'].queryset = Produto.objects.filter(empresa=obj.empresa)
+        else:
+            raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
+
+class BaseItemVendaFiadoFormset(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        print("User in Formset:", self.user)  # Verifica se o user está sendo passado
+        super().__init__(*args, **kwargs)
+
+        # Passa o user para cada formulário no formset
+        for form in self.forms:
+            form.user = self.user  # Garante que o user seja passado para cada form
+            if self.user and hasattr(self.user, 'empresa'):
+                form.fields['produto'].queryset = Produto.objects.filter(empresa=self.user.empresa)
+            else:
+                raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
+
+ItemVendaFiadoFormset = modelformset_factory(
+    ItemVendaFiado,  # Modelo que será utilizado no formset
+    formset=BaseItemVendaFiadoFormset,  # O formset base que criamos acima
+    fields=['produto', 'quantidade'],  # Campos que aparecerão no formset
+    extra=1,  # Quantidade de formulários extras exibidos
+    widgets={
+        'produto': Select2Widget(attrs={'data-minimum-input-length': 1}),  # Utilizando o Select2Widget para facilitar a pesquisa de produtos
+    }
+)
+

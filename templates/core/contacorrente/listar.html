@@ -1,0 +1,35 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Contas Correntes</h2>
+    <table class="table table-hover text-center mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Saldo Devedor</th>
+                <th>Limite de Crédito</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for conta in contas %}
+            <tr>
+                <td>{{ conta.id }}</td>
+                <td>{{ conta.cliente.nome|default:"-" }}</td>
+                <td>{{ conta.saldo_devedor|default:"-" }}</td>
+                <td>{{ conta.limite_credito|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'editar_conta' conta.pk %}" class="btn btn-primary">Editar</a>
+                    <a href="{% url 'detalhes_fornecedor' conta.pk %}" class="btn btn-warning">Detalhes</a>
+                    <a href="{% url 'inativar_conta' conta.pk %}" class="btn btn-danger">Inativar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock conteudo %}

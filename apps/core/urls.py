@@ -54,6 +54,15 @@ urlpatterns = [
     #Notificações
     path('pendencias/', GenericDetailView.as_view(), name='pendencias'),
 
+    # Conta Corrente
+    path('conta_corrente/nova/', ContaCorrenteCreateView.as_view(), name='nova_conta'),
+    path('conta_corrente/editar/<int:pk>/', ContaCorrenteUpdateView.as_view(), name='editar_conta'),
+    path('conta_corrente/inativar/<int:pk>/', ContaCorrenteInativarView.as_view(), name='inativar_conta'),
+    path('conta_corrente/', ContaCorrenteListView.as_view(), name='listar_contas'),
+
+    # Venda a Prazo
+    path('venda-fiado/nova/', VendaFiadoCreateView.as_view(), name='nova_venda_fiado'),
+
 
 
 

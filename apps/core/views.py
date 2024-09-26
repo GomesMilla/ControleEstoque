@@ -9,8 +9,13 @@ from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Q
 from django.views.generic.edit import UpdateView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView
 from datetime import date
-
+from django.urls import reverse_lazy
+from django.views.generic.edit import View
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.db import transaction
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
     form_class = EstoqueForm
@@ -674,6 +679,7 @@ class ValePresenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
         if self.request.user.is_authenticated:
             return redirect('home')
         return super().handle_no_permission()
+
 class GenericDetailView(ListView):
     model = ValePresente 
     template_name = 'core/notificacao/notificacao.html'
@@ -704,3 +710,125 @@ class GenericDetailView(ListView):
         context["qtd_aniversariantes"] = aniversariantes.count()
         context["qtd_vales_presentes_vencendo"] = vales_presentes_vencendo.count()
         return context
+
+class ContaCorrenteListView(LoginRequiredMixin,ListView):
+    model = ContaCorrente
+    template_name = 'core/contacorrente/listar.html'
+    context_object_name = 'contas'
+
+    def get_queryset(self):
+        return ContaCorrente.objects.filter(empresa=self.request.user.empresa, is_active=True)
+
+class ContaCorrenteCreateView(CreateView):
+    model = ContaCorrente
+    form_class = ContaCorrenteForm
+    template_name = 'core/contacorrente/criar.html'
+    success_url = reverse_lazy('listar_contas')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+class ContaCorrenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ContaCorrente
+    form_class = ContaCorrenteForm
+    template_name = 'core/contacorrente/editar.html'
+    success_url = reverse_lazy('listar_contas')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def test_func(self):
+        conta = self.get_object()
+        return self.request.user.is_superuser or self.request.user == conta.vendedor or self.request.user.empresa == conta.vendedor.empresa
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class ContaCorrenteInativarView(View):
+    model = ContaCorrente
+    template_name = 'core/contacorrente/inativar.html'
+    success_url = reverse_lazy('listar_contas')
+
+    def get(self, request, *args, **kwargs):
+        conta = self.get_object()
+        return render(request, self.template_name, {'conta': conta})
+
+    def post(self, request, *args, **kwargs):
+        conta = self.get_object()
+        conta.is_active = False  # Marcar como inativa
+        conta.save()
+        return redirect(self.success_url)
+
+    def get_object(self):
+        return ContaCorrente.objects.get(pk=self.kwargs['pk'], empresa=self.request.user.empresa)
+
+class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
+    model = VendaFiado
+    form_class = VendaFiadoForm
+    template_name = 'core/vendafiado/criar.html'
+    success_url = reverse_lazy('listar_contas')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['itens_form'] = ItemVendaFiadoFormset(self.request.POST, queryset=ItemVendaFiado.objects.none(), user=self.request.user)
+        else:
+            data['itens_form'] = ItemVendaFiadoFormset(queryset=ItemVendaFiado.objects.none(), user=self.request.user)
+        return data
+
+    @transaction.atomic
+    def form_valid(self, form):
+        context = self.get_context_data()
+        itens_form = context['itens_form']
+        form.instance.empresa = self.request.user.empresa
+        form.instance.periodometa = get_object_or_404(PeriodoMeta, fechado=False, empresa=self.request.user.empresa)
+        form.instance.vendedor = self.request.user
+
+        if itens_form.is_valid():
+            total_venda = 0
+            for item_form in itens_form.cleaned_data:
+                produto = item_form['produto']
+                quantidade = item_form['quantidade']
+
+                if produto.quantidade < quantidade:
+                    itens_form.add_error('quantidade', f"Estoque insuficiente para o produto {produto.nome}")
+                    return self.form_invalid(form)
+
+                total_venda += produto.preco * quantidade
+                produto.quantidade -= quantidade
+                if produto.quantidade <= 0:
+                    produto.quantidade = 0
+                    produto.vendido = True
+                produto.save()
+
+            form.instance.total = total_venda
+            self.object = form.save()
+
+            for item_form in itens_form.cleaned_data:
+                ItemVendaFiado.objects.create(
+                    venda=self.object,
+                    produto=item_form['produto'],
+                    quantidade=item_form['quantidade'],
+                    preco_unitario=item_form['produto'].preco,
+                    empresa=self.request.user.empresa  # Vinculando à empresa
+                )
+
+            conta_corrente = form.instance.conta_corrente
+            conta_corrente.saldo_devedor += total_venda
+            conta_corrente.save()
+
+            self.object.gerar_parcelas()
+            return super().form_valid(form)
+
+        return self.form_invalid(form)

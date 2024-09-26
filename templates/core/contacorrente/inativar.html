@@ -1,0 +1,16 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <form method="post">
+            {% csrf_token %}
+            <p>Tem certeza de que deseja inativar esta conta fiado?</p>
+            <button type="submit" class="btn btn-danger">Inativar</button>
+            <a href="{% url 'listar_contas' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+{% endblock conteudo %}
+
+
