@@ -52,7 +52,7 @@ class FornecedoresForm(forms.ModelForm):
         self.fields['endereco'].label = "Endereço:"
         self.fields['cep'].label = "CEP:"
         self.fields['cidade'].label = "Cidade:"
-        self.fields['cidade'].label = "Estado:"
+        self.fields['estado'].label = "Estado:"
         self.fields['localizacao'].label = "Localização:"
         self.fields['inscricao_estadual'].label = "Inscrição Estadual:"
         self.fields['inscricao_municipal'].label = "Inscrição Municipal:"

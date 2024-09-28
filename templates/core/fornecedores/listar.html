@@ -4,34 +4,42 @@
 
 <div class="container mt-5">
     <h2>Fornecedores</h2>
-    <table class="table table-hover text-center mt-3">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Razão Social</th>
-                <th>CNPJ</th>
-                <th>Telefone</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for fornecedor in fornecedores %}
-            <tr>
-                <td>{{ fornecedor.id }}</td>
-                <td>{{ fornecedor.nome|default:"-" }}</td>
-                <td>{{ fornecedor.razao_social|default:"-" }}</td>
-                <td>{{ fornecedor.cnpj|default:"-" }}</td>
-                <td>{{ fornecedor.telefone|default:"-" }}</td>
-                <td>
-                    <a href="#" class="btn btn-primary">Editar</a>
-                    <a href="{% url 'detalhes_fornecedor' fornecedor.pk %}" class="btn btn-warning">Detalhes</a>
-                    {% comment %} <a href="#" class="btn btn-danger">Vendas</a> {% endcomment %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if fornecedores %}
+        <table class="table table-hover text-center mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Razão Social</th>
+                    <th>CNPJ</th>
+                    <th>Telefone</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fornecedor in fornecedores %}
+                <tr>
+                    <td>{{ fornecedor.id }}</td>
+                    <td>{{ fornecedor.nome|default:"-" }}</td>
+                    <td>{{ fornecedor.razao_social|default:"-" }}</td>
+                    <td>{{ fornecedor.cnpj|default:"-" }}</td>
+                    <td>{{ fornecedor.telefone|default:"-" }}</td>
+                    <td>
+                        <a class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
+                            Editar
+                        </a>
+                        <a href="{% url 'detalhes_fornecedor' fornecedor.pk %}" class="btn btn-warning">Detalhes</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Sem fornecedores cadastrados.
+        </div>
+    {% endif %}
+
 </div>
 
 {% endblock conteudo %}

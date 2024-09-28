@@ -32,7 +32,7 @@
     $(document).ready(function() {
         $('#id_cliente').select2({
             ajax: {
-                url: "{% url 'cliente_por_empresa' %}",
+                url: "{% url 'cliente_pesquisar' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {

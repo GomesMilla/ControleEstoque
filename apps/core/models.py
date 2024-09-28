@@ -98,9 +98,28 @@ class Produto(BaseModel):
         return codigo
 
     @property
-    def lucro(self):
+    def lucro_total(self):
         lucro_unitario = self.preco - self.preco_custo
-        return lucro_unitario * self.quantidade 
+        return lucro_unitario * self.quantidade
+    
+    @property
+    def lucro_unico(self):
+        lucro_unitario = self.preco - self.preco_custo
+        return lucro_unitario
+
+    @property
+    def porcentagem_lucro_unitario(self):
+        """Calcula a porcentagem de lucro por produto (unitário)."""
+        if self.preco_custo > 0:
+            return ((self.lucro_unico / self.preco_custo) * 100)
+        return 0  # Evita divisão por zero
+
+    @property
+    def porcentagem_lucro_total(self):
+        """Calcula a porcentagem de lucro total considerando a quantidade."""
+        if self.preco_custo > 0:
+            return ((self.lucro_total / (self.preco_custo * self.quantidade)) * 100)
+        return 0  # Evita divisão por zero
 
 class PeriodoMeta(models.Model):
     nome = models.CharField(max_length=255, null=True, blank=True)

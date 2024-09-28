@@ -17,7 +17,7 @@
             <li class="list-group-item"><b>Site:</b> {{objforncedor.site|default:"-"}}</li>
         </ul>
         <h5 class="text-danger-emphasis fst-italic mt-3">Informações de endereço</h5>
-        <ul class="list-group list-group-horizontal">
+        <ul class="list-group">
             <li class="list-group-item"><b>Endereço:</b> {{objforncedor.endereco|default:"-"}}</li>
             <li class="list-group-item"><b>CEP:</b> {{objforncedor.cep|default:"-"}}</li>
             <li class="list-group-item"><b>Cidade:</b> {{objforncedor.cidade|default:"-"}}</li>
@@ -32,70 +32,100 @@
             <li class="list-group-item"><b>Descrição:</b> {{objforncedor.descricao|safe|default:"-"}}</li>
         </ul>
         <h2 class="mt-4 ">Produtos</h2>
-        {% comment %} <table class="table table-hover mt-3">
-            <thead>
-                <tr>
-                    <th class="text-center">Produto</th>
-                    <th class="text-center">Quantidade</th>
-                    <th class="text-center">Valor</th>
-                    <th class="text-center">Data da Venda</th>
-                    <th class="text-center">Vendedor</th>
-                    <th class="text-center">Pagamento</th>
-                    <th class="text-center">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for venda in compras_cliente %}
-                    {% for item in venda.itens_venda.all %}
-                        <tr>
-                            <td class="text-center">{{ item.produto.nome }}</td>
-                            <td class="text-center">{{ item.quantidade }}</td>
-                            <td class="text-center">{{ item.produto.preco|floatformat:2 }}</td>
-                            <td class="text-center">{{ venda.data_venda|date:"d/m/Y à\s H:i" }}</td>
-                            <td class="text-center">{{ venda.vendedor.nome }}</td>
-                            <td class="text-center">{{ venda.get_forma_pagamento_display }}</td>
-                            <td> 
-                                <div class="row">
-                                    <div class="col-auto d-inline-block text-nowrap">
-                                        {% comment %} <a href="#" class="btn btn-primary me-2">Detalhes</a> 
-                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{item.pk}}">
-                                            Ver Detalhes
-                                        </button>
-                                    </div>
+        {% if produtos %}
+            <table class="table table-hover mt-3">
+                <thead>
+                    <tr class="text-center">
+                        <th class="text-center">ID</th>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Tipo Produto</th>
+                        <th class="text-center">TAM</th>
+                        <th class="text-center">Cor</th>
+                        <th class="text-center">Preço</th>
+                        <th class="text-center">Quantidade</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr>
+                        <td class="text-center">{{ produto.id|default:"-" }}</td>
+                        <td class="text-center">{{ produto.codigo|default:"-" }}</td>
+                        <td class="text-center">{{ produto.nome|default:"-" }}</td>
+                        <td class="text-center">{{ produto.tipo_produto|default:"-" }}</td>
+                        <td class="text-center">{{ produto.tamanho|default:"-" }}</td>
+                        <td class="text-center">{{ produto.cor|default:"-" }}</td>
+                        <td class="text-center">{{ produto.preco|default:"-" }}</td>
+                        <td class="text-center">{{ produto.quantidade }}</td>
+                        {% if produto.vendido %}
+                            <td class="text-center">Vendido</td>
+                        {% else %}
+                            <td class="text-center">Disponível</td>
+                        {% endif %}
+                        <td>
+                            <div class="row">
+                                <div class="col-auto d-inline-block text-nowrap">
+                                    <a href="{% url 'editar_produto' produto.pk %}" class="btn btn-primary me-2">Editar</a>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{produto.pk}}">
+                                        Ver Detalhes
+                                    </button>
                                 </div>
-                                <div class="modal fade" id="staticBackdrop{{item.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-xl">
-                                    <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre a venda: '{{item.produto.nome}} - {{ venda.cliente.nome }}'</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <ul class="list-group mt-4">
-                                            <li class="list-group-item"><b>Nome do Produto:</b> {{item.produto.nome}}</li>
-                                            <li class="list-group-item"><b>Código do Produto:</b> {{item.produto.codigo}}</li>
-                                            <li class="list-group-item"><b>ID do Produto:</b> {{item.produto.pk}}</li>
-                                            <li class="list-group-item"><b>Preço do Produto:</b> {{ item.produto.preco|floatformat:2 }}</li>
-                                            <li class="list-group-item"><b>Quantidade:</b> {{ item.quantidade }}</li>
-                                            <li class="list-group-item"><b>Data da Venda:</b> {{ venda.data_venda }}</li>
-                                            <li class="list-group-item"><b>Vendedor:</b> {{ venda.vendedor.nome }}</li>
-                                            <li class="list-group-item"><b>Cliente:</b> {{ venda.cliente.nome }}</li>
-                                            <li class="list-group-item"><b>Pagamento:</b> {{ venda.get_forma_pagamento_display }}</li>
-                                            <li class="list-group-item"><b>Descrição:</b> {{venda.descricao|safe}}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
-                                    </div>
-                                    </div>
+                            </div>
+                            <div class="modal fade" id="staticBackdrop{{produto.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre o produto: '{{produto.nome}}'</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {% if produto.quantidade < 2 %}
+                                        <div class="alert alert-danger" role="alert">
+                                            Produto em baixa no estoque.
+                                        </div>
+                                    {% endif %}
+                                    <ul class="list-group mt-4">
+                                        <li class="list-group-item"><b>Nome do Produto:</b> {{produto.nome|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Código do Produto:</b> {{produto.codigo|default:"-"}}</li>
+                                        <li class="list-group-item"><b>ID do Produto:</b> {{produto.pk|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Cor:</b> {{produto.cor|default:"-"}}</li>
+                                        <li class="list-group-item"><b>TAM:</b> {{produto.tamanho|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Fornecedor:</b> {{produto.fornecedor|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Marca:</b> {{produto.marca|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Tipo Produto:</b> {{produto.tipo_produto|default:"-"}}</li>
+                                        <li class="list-group-item"><b>Preço do Produto Isoladamente(Venda):</b> {{produto.preco|default:"-"}}</li>                                    
+                                        <li class="list-group-item"><b>Quantidade de Produto Disponível:</b> {{produto.quantidade}}</li>
+                                        <li class="list-group-item"><b>Status do Produto:</b> Disponível</li>
+                                        <li class="list-group-item"><b>Descrição:</b> {{produto.descricao|safe|default:"-"}}</li>
+                                        {% if not objuser.if_funcionario %}
+                                            <h3 class="text-danger-emphasis fst-italic mt-4 ms-2">Lucro sobre o produto</h3>
+                                            <ul class="list-group mt-2">
+                                                <li class="list-group-item"><b>Preço do Produto Isoladamente(Venda):</b> {{produto.preco|default:"-"}}</li>
+                                                <li class="list-group-item"><b>Preço do Produto(Compra):</b> {{produto.preco_custo|default:"-"}}</li>                                            
+                                                <li class="list-group-item"><b>Lucro(Único):</b> {{produto.lucro_unico}} = ({{produto.porcentagem_lucro_unitario}}%)</li>
+                                                <li class="list-group-item"><b>Lucro(Total):</b> {{produto.lucro_total}} = ({{produto.porcentagem_lucro_total}}%)</li>
+                                            </ul>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
                                 </div>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                            </div>
+                        </td>
+                    </tr>
                     {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table> {% endcomment %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Sem produto desse fornecedor cadastrado.
+            </div>
+        {% endif %}
     </div>
 
 {% endblock conteudo %}

@@ -332,7 +332,9 @@
                     </ul>                    
                     <h6 class="mt-3">Relatórios</h6>
                     <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'agenda' %}">Relatórios(FAZER)</a>
+                        <a class="list-group-item list-group-item-action mt-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
+                            Relatórios
+                        </a>
                     </ul>
                     <h6 class="mt-3">Agenda</h6>
                     {% if objuser.empresa.agenda %}
@@ -444,6 +446,10 @@
                 <div class="footer-copyright text-center py-3">© 2024 GOMES TECHNOLOGY</div>
             </footer>       
         </footer>
+        <script>
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        </script>
     </body>
 </html>
 

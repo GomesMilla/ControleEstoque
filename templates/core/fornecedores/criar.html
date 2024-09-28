@@ -13,5 +13,11 @@
             </div>
         </form>
     </div>
+    <script>
+        $('document').ready(function() {
+            $('#id_cep').mask('00000-000');
+            $('#id_telefone').mask('(00) 0000-0000'); 
+        });
+    </script>
 
 {% endblock conteudo %}

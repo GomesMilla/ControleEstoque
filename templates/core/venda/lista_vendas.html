@@ -3,8 +3,8 @@
 {% block conteudo %} 
 
 <div class="container mt-5">
-    <h2>Lista de Vendas para a Meta: '{{ periodometa.nome }}'</h2>
-    <ul class="list-group list-group-horizontal d-flex justify-content-center">
+    <h2>Lista de Vendas para a Meta: <span class="text-danger-emphasis fst-italic">'{{ periodometa.nome }}'</span></h2>
+    <ul class="list-group mt-2">
         <li class="list-group-item"><b>Data de Ínicio:</b> {{periodometa.data_inicio}}</li>
         <li class="list-group-item"><b>Data Fim:</b> {{periodometa.data_fim|default:"Em aberto"}}</li>
         <li class="list-group-item"><b>Foi lucro:</b> 
@@ -14,12 +14,10 @@
                 Não
             {% endif %}
         </li>
-    </ul>
-    <ul class="list-group list-group-horizontal mt-2 d-flex justify-content-center">
         <li class="list-group-item"><b>Descrição:</b> {{periodometa.descricao|safe|default:"-"}}</li>
     </ul>
     
-    <div class="row text-center justify-content-center mt-3">
+    <div class="row text-center justify-content-center mt-5">
         <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
             <div class="card-header">Valor da Meta:</div>
             <div class="card-body">
@@ -39,72 +37,80 @@
             </div>
         </div>
     </div>
-    <table class="table table-hover mt-3">
-        <thead>
-            <tr>
-                <th class="text-center">Produto</th>
-                <th class="text-center">Quantidade</th>
-                <th class="text-center">Valor</th>
-                <th class="text-center">Data da Venda</th>
-                <th class="text-center">Vendedor</th>
-                <th class="text-center">Cliente</th>
-                <th class="text-center">Pagamento</th>
-                <th class="text-center">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for venda in vendas %}
-                {% for item in venda.itens_venda.all %}
-                    <tr>
-                        <td class="text-center">{{ item.produto.nome }}</td>
-                        <td class="text-center">{{ item.quantidade }}</td>
-                        <td class="text-center">{{ item.produto.preco|floatformat:2 }}</td>
-                        <td class="text-center">{{ venda.data_venda|date:"d/m/Y à\s H:i" }}</td>
-                        <td class="text-center">{{ venda.vendedor.nome }}</td>
-                        <td class="text-center">{{ venda.cliente.nome }}</td>
-                        <td class="text-center">{{ venda.get_forma_pagamento_display }}</td>
-                        <td> 
-                            <div class="row">
-                                <div class="col-auto d-inline-block text-nowrap">
-                                    {% comment %} <a href="#" class="btn btn-primary me-2">Detalhes</a> {% endcomment %}
-                                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{item.pk}}">
-                                        Ver Detalhes
-                                    </button>
+    <h3 class="mt-4">Lista de Vendas</h3>
+    {% if vendas %}
+        <table class="table table-hover mt-3">
+            <thead>
+                <tr>
+                    <th class="text-center">Produto</th>
+                    <th class="text-center">Quantidade</th>
+                    <th class="text-center">Valor</th>
+                    <th class="text-center">Data da Venda</th>
+                    <th class="text-center">Vendedor</th>
+                    <th class="text-center">Cliente</th>
+                    <th class="text-center">Pagamento</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venda in vendas %}
+                    {% for item in venda.itens_venda.all %}
+                        <tr>
+                            <td class="text-center">{{ item.produto.nome }}</td>
+                            <td class="text-center">{{ item.quantidade }}</td>
+                            <td class="text-center">{{ item.produto.preco|floatformat:2 }}</td>
+                            <td class="text-center">{{ venda.data_venda|date:"d/m/Y à\s H:i" }}</td>
+                            <td class="text-center">{{ venda.vendedor.nome }}</td>
+                            <td class="text-center">{{ venda.cliente.nome }}</td>
+                            <td class="text-center">{{ venda.get_forma_pagamento_display }}</td>
+                            <td> 
+                                <div class="row">
+                                    <div class="col-auto d-inline-block text-nowrap">
+                                        {% comment %} <a href="#" class="btn btn-primary me-2">Detalhes</a> {% endcomment %}
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{item.pk}}">
+                                            Ver Detalhes
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="modal fade" id="staticBackdrop{{item.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre a venda: '{{item.produto.nome}} - {{ venda.cliente.nome }}'</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal fade" id="staticBackdrop{{item.pk}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Informações sobre a venda: '{{item.produto.nome}} - {{ venda.cliente.nome }}'</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul class="list-group mt-4">
+                                            <li class="list-group-item">Nome do Produto: {{item.produto.nome}}</li>
+                                            <li class="list-group-item">Código do Produto: {{item.produto.codigo}}</li>
+                                            <li class="list-group-item">ID do Produto: {{item.produto.pk}}</li>
+                                            <li class="list-group-item">Preço do Produto: {{ item.produto.preco|floatformat:2 }}</li>
+                                            <li class="list-group-item">Quantidade: {{ item.quantidade }}</li>
+                                            <li class="list-group-item">Data da Venda: {{ venda.data_venda }}</li>
+                                            <li class="list-group-item">Vendedor: {{ venda.vendedor.nome }}</li>
+                                            <li class="list-group-item">Cliente: {{ venda.cliente.nome }}</li>
+                                            <li class="list-group-item">Pagamento: {{ venda.get_forma_pagamento_display }}</li>
+                                            <li class="list-group-item">Descrição: {{venda.descricao|safe}}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <ul class="list-group mt-4">
-                                        <li class="list-group-item">Nome do Produto: {{item.produto.nome}}</li>
-                                        <li class="list-group-item">Código do Produto: {{item.produto.codigo}}</li>
-                                        <li class="list-group-item">ID do Produto: {{item.produto.pk}}</li>
-                                        <li class="list-group-item">Preço do Produto: {{ item.produto.preco|floatformat:2 }}</li>
-                                        <li class="list-group-item">Quantidade: {{ item.quantidade }}</li>
-                                        <li class="list-group-item">Data da Venda: {{ venda.data_venda }}</li>
-                                        <li class="list-group-item">Vendedor: {{ venda.vendedor.nome }}</li>
-                                        <li class="list-group-item">Cliente: {{ venda.cliente.nome }}</li>
-                                        <li class="list-group-item">Pagamento: {{ venda.get_forma_pagamento_display }}</li>
-                                        <li class="list-group-item">Descrição: {{venda.descricao|safe}}</li>
-                                    </ul>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Sem venda cadastrada.
+        </div>
+    {% endif %}
+
 </div>
 
 {% endblock conteudo %}

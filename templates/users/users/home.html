@@ -16,13 +16,21 @@
                 <div class="card text-bg-success mb-3 mx-3" style="max-width: 18rem;">
                     <div class="card-header">Valor Alcançado:</div>
                     <div class="card-body">
-                        <h5 class="card-title">R$ {{ valor_alcancado|default:"SEM META" }}</h5>
+                        {% if meta_atual %}
+                            <h5 class="card-title">R$ {{ valor_alcancado }}</h5>
+                        {% else %}
+                            <h5 class="card-title">SEM META</h5>
+                        {% endif %}                        
                     </div>
                 </div>
                 <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
                     <div class="card-header">Falta:</div>
                     <div class="card-body">
-                        <h5 class="card-title">R$ {{ falta_para_meta|default:"SEM META" }}</h5>
+                        {% if meta_atual %}
+                            <h5 class="card-title">R$ {{ falta_para_meta }}</h5>
+                        {% else %}
+                            <h5 class="card-title">SEM META</h5>
+                        {% endif %}         
                     </div>
                 </div>
             </div>

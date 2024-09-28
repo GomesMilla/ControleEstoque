@@ -16,24 +16,22 @@
             </thead>
             <tbody>
                 {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id }}</td>
-                    <td>{{ usuario.nome }}</td>
-                    <td>{{ usuario.cpf }}</td>
-                    <td>{{ usuario.email }}</td>
-                    <td>
-                        <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-primary">Editar</a>
-                        <a href="{% url 'detalhe_colaborador' usuario.pk %}" class="btn btn-warning">Detalhes</a>
-                        <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-secondary">Alterar Senha</a>
-                        <a href="{% url 'inativar_usuario' usuario.pk %}" class="btn btn-danger">Inativar</a>
-                        {% comment %} {% if not objuser.if_funcionario %}
-                            <form action="{% url 'inativar_usuario' usuario.id %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Inativar</button>
-                            </form>
-                        {% endif %} {% endcomment %}
-                    </td>
-                </tr>
+                    <tr>
+                        <td>{{ usuario.id }}</td>
+                        <td>{{ usuario.nome }}</td>
+                        <td>{{ usuario.cpf }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>
+                            <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-primary">Editar</a>
+                            <a href="{% url 'detalhe_colaborador' usuario.pk %}" class="btn btn-warning">Detalhes</a>
+                            <a class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
+                                Alterar Senha
+                            </a>
+                            <a class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
+                                Inativar
+                            </a>
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
