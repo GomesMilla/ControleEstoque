@@ -35,6 +35,7 @@ urlpatterns = [
     path('fechar_meta/<int:pk>/', FecharMetaView.as_view(), name='fechar_meta'),
     path('lista_metas/', PeriodoMetaListView.as_view(), name='lista_metas'),
     path('vendas/meta/<int:periodometa_id>/', VendaListView.as_view(), name='lista_vendas_meta'),
+    path('meta/relatorio/<int:pk>/', RelatorioMetaView.as_view(), name='relatorio_meta'),
 
     #pedido
     path('cadastrar_pedido/', PedidoCreateView.as_view(), name='cadastrar_pedido'),

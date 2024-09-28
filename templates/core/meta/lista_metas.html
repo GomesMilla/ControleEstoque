@@ -44,11 +44,11 @@
                 <td>
                     {% if meta.fechado %}
                         <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
-                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-warning">Relatório</a>
+                        <a href="{% url 'relatorio_meta' meta.pk %}" class="btn btn-warning">Relatório</a>
                     {% else %}
                         <a href="{% url 'fechar_meta' meta.pk %}" class="btn btn-danger">Fechar Meta</a>
                         <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
-                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-warning">Relatório</a>
+                        <a href="{% url 'relatorio_meta' meta.pk %}" class="btn btn-warning">Relatório</a>
                     {% endif %}
                     
                 </td>

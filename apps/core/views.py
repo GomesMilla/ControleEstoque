@@ -408,6 +408,19 @@ class PeriodoMetaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
             return redirect('home')
         return super().handle_no_permission()
 
+class RelatorioMetaView(LoginRequiredMixin, DetailView):
+    model = PeriodoMeta
+    template_name = 'core/meta/relatorio.html'
+    context_object_name = 'meta'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        meta = self.get_object()
+
+        # Adiciona os dados do relatório no contexto
+        context['relatorio'] = meta.relatorio_meta()
+        return context
+
 class PedidoCreateView(LoginRequiredMixin, CreateView):
     model = Pedido
     form_class = PedidoForm

@@ -4,6 +4,7 @@ import random
 from django.utils import timezone
 from ckeditor_uploader.fields import RichTextUploadingField
 from dateutil.relativedelta import relativedelta
+from django.db.models import Sum, F
 class Estoque(BaseModel):
     nome = models.CharField(max_length=255)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='estoques')
@@ -134,6 +135,53 @@ class PeriodoMeta(models.Model):
 
     def lucro(self):
         return self.progresso()
+    
+    def recebimentos_parcelas(self):
+        parcelas_pagas = Parcela.objects.filter(
+            venda__empresa=self.empresa,
+            data_atualizacao__gte=self.data_inicio,
+            data_atualizacao__lt=self.data_fim if self.data_fim else timezone.now(),
+            pendente=False  # Apenas parcelas pagas
+        )
+
+        total_recebido_parcelas = parcelas_pagas.aggregate(total=Sum('valor'))['total'] or 0
+        return total_recebido_parcelas
+    
+    def relatorio_meta(self):
+        vendas_lucro = self.lucro()
+        parcelas_lucro = self.recebimentos_parcelas()
+
+        return {
+            'lucro_vendas': vendas_lucro,
+            'lucro_parcelas': parcelas_lucro,
+            'lucro_total': vendas_lucro + parcelas_lucro,
+            'numero_vendas': self.numero_vendas(),
+            'numero_parcelas_pagas': self.numero_parcelas_pagas(),
+            'porcentagem_alcancada': self.porcentagem_alcancada(),
+            'falta_para_meta': self.falta_para_meta(),
+        }
+    
+    def numero_vendas(self):
+        return Venda.objects.filter(
+            empresa=self.empresa,
+            data_venda__gte=self.data_inicio,
+            data_venda__lt=self.data_fim if self.data_fim else timezone.now()
+        ).count()
+
+    def numero_parcelas_pagas(self):
+        return Parcela.objects.filter(
+            venda__empresa=self.empresa,
+            data_atualizacao__gte=self.data_inicio,
+            data_atualizacao__lt=self.data_fim if self.data_fim else timezone.now(),
+            pendente=False
+        ).count()
+
+    def porcentagem_alcancada(self):
+        if self.valor_meta > 0:
+            return (self.progresso() / self.valor_meta) * 100
+        return 0
+
+
 
 FORMA_PAGAMENTO_CHOICES = [
     ('debito', 'Cartão de Débito'),

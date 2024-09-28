@@ -1,0 +1,43 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h1>Relatório da Meta: <spa class="text-danger-emphasis fst-italic mt-3">{{ meta.nome }}</spa></h1>
+    <ul class="list-group d-flex justify-content-center">
+        <li class="list-group-item"><b>Data de Ínicio:</b> {{meta.data_inicio}}</li>
+        <li class="list-group-item"><b>Data Fim:</b> {{meta.data_fim|default:"Em aberto"}}</li>
+        <li class="list-group-item"><b>Foi lucro:</b> 
+            {% if meta.progresso > meta.valor_meta %}
+                Sim
+            {% else %}
+                Não
+            {% endif %}
+        </li>
+        <li class="list-group-item"><b>Descrição:</b> {{meta.descricao|safe|default:"-"}}</li>
+    </ul>
+    <h1 class="text-danger-emphasis fst-italic mt-5">Relatório Financeiro</h1>
+    <ul class="list-group list-group-flush mt-4">
+        <li class="list-group-item"><strong>Valor da Meta:</strong> R$ {{ meta.valor_meta }}</li>
+        <li class="list-group-item"><strong>Lucro das Vendas Realizadas:</strong> R$ {{ relatorio.lucro_vendas }}</li>
+        <li class="list-group-item"><strong>Progresso:</strong> R$ {{ relatorio.lucro_vendas }} ({{ relatorio.porcentagem_alcancada }}%)</li>
+        <li class="list-group-item"><strong>Falta para atingir a meta:</strong> R$ {{ relatorio.falta_para_meta }}</li>
+        <li class="list-group-item"><strong>Lucro dos Recebimentos Parcelados:</strong> R$ {{ relatorio.lucro_parcelas }}</li>
+        <li class="list-group-item"><strong>Total (Lucro Vendas + Parcelas Recebidas):</strong> R$ {{ relatorio.lucro_total }}</li>
+
+    </ul>
+
+    <h4 class="text-danger-emphasis fst-italic mt-4">Relatório de Vendas</h4>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Lucro das Vendas Realizadas:</strong> R$ {{ relatorio.lucro_vendas }}</li>
+        <li class="list-group-item"><strong>Número de Vendas:</strong> {{ relatorio.numero_vendas }}</li>
+    </ul>
+
+    <h4 class="text-danger-emphasis fst-italic mt-4">Relatório de Parcelamentos</h4>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Lucro dos Recebimentos Parcelados:</strong> R$ {{ relatorio.lucro_parcelas }}</li>
+        <li class="list-group-item"><strong>Número de Parcelas Pagas:</strong> {{ relatorio.numero_parcelas_pagas }}</li>
+    </ul>
+<div>
+
+{% endblock conteudo %}
