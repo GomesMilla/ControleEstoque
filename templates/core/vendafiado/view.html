@@ -1,0 +1,69 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Informações sobre a compra</h2>
+        <h5 class="text-danger-emphasis fst-italic mt-3">Informações sobre a venda</h5>
+        <ul class="list-group">
+            <li class="list-group-item"><b>Cliente:</b> {{venda.cliente.nome|default:"-"}}</li>
+            <li class="list-group-item"><b>Vendedor:</b> {{venda.vendedor.nome|default:"-"}}</li>
+            <li class="list-group-item"><b>Data da Venda:</b> {{venda.data_venda|default:"-"}}</li>
+            <li class="list-group-item"><b>Total da Venda:</b>R$ {{venda.total|default:"-"}}</li>
+            <li class="list-group-item"><b>Número de Parcela:</b> {{venda.num_parcelas|default:"-"}}</li>
+            <li class="list-group-item"><b>Descrição:</b> {{venda.descricao|default:"-"}}</li>
+        </ul>
+        <h5 class="text-danger-emphasis fst-italic mt-3">Informações sobre o cliente</h5>
+        <ul class="list-group">
+            <li class="list-group-item"><b>Cliente:</b> {{venda.cliente.nome|default:"-"}}</li>
+            <li class="list-group-item"><b>Vendedor:</b> {{venda.cliente.telefone_celular|default:"-"}}</li>
+            <li class="list-group-item"><b>Para saber maiores informações sobre o cliente:</b>  <a href="{% url 'detalhe_cliente' venda.cliente.pk %}">Clique aqui.</a></li>
+            <li class="list-group-item"><b>Para saber maiores informações sobre a conta do cliente:</b> <a href="{% url 'detalhar_conta_corrente' venda.conta_corrente.pk %}">Clique aqui.</a></li>
+        </ul>
+        <h5 class="text-danger-emphasis fst-italic mt-4">Itens da Venda</h5>
+        <div>
+            <ul>
+                {% for item in venda.itens_venda.all %}
+                <li>{{ item.produto.nome }} - Quantidade: {{ item.quantidade }} - Preço unitário: R$ {{ item.preco_unitario }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h5 class="text-danger-emphasis fst-italic mt-4">Parcelas</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Número da Parcela</th>
+                        <th>Valor</th>
+                        <th>Data de Vencimento</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for parcela in parcelas %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>R$ {{ parcela.valor }}</td>
+                        <td>{{ parcela.data_vencimento|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if parcela.pendente %}
+                                <span style="color: red;">Pendente</span>
+                            {% else %}
+                                <span style="color: green;">Pago</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if parcela.pendente %}
+                                <a href="{% url 'pagar_parcela' parcela.pk %}" class="btn btn-primary">Pagar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock conteudo %}

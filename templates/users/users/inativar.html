@@ -1,0 +1,19 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <form method="post">
+            {% csrf_token %}
+            <div class="alert alert-danger text-white" role="alert">
+                <h4 class="alert-danger">Atenção!</h4>
+                <p>Tem certeza que deseja desativar o colaborador: {{objuser.nome}}</p>
+                <p class="mb-0">Se você confirmar, o usuário não poderá mais acessar o sistema. No entanto, seus dados permanecerão armazenados.</p>
+                <hr>                
+                <button type="submit" class="btn btn-success">Inativar</button>
+                <a href="{% url 'home' %}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock conteudo %}

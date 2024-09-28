@@ -299,7 +299,7 @@ class ContaCorrenteForm(forms.ModelForm):
 class VendaFiadoForm(forms.ModelForm):
     class Meta:
         model = VendaFiado
-        fields = ['cliente', 'conta_corrente', 'num_parcelas', 'dia_vencimento']
+        fields = ['cliente', 'conta_corrente', 'num_parcelas', 'dia_vencimento', 'descricao']
         widgets = {
             'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
         }
@@ -309,6 +309,10 @@ class VendaFiadoForm(forms.ModelForm):
         obj = User.objects.get(cpf=self.user)
         print("VendaFiado", obj)
         super().__init__(*args, **kwargs)
+        self.fields['cliente'].label = "Cliente:"
+        self.fields['conta_corrente'].label = "Conta:"
+        self.fields['num_parcelas'].label = "Número de parcelas em que deseja pagar:"
+        self.fields['descricao'].help_text = "DICA: Use esse campo para descrever maiores informações sobre a venda para melhor controle e gestão."
 
         # Garante que o user e empresa estão disponíveis e a queryset é filtrada corretamente
         if self.user:
@@ -352,10 +356,10 @@ class BaseItemVendaFiadoFormset(BaseModelFormSet):
                 raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
 
 ItemVendaFiadoFormset = modelformset_factory(
-    ItemVendaFiado,  # Modelo que será utilizado no formset
-    formset=BaseItemVendaFiadoFormset,  # O formset base que criamos acima
-    fields=['produto', 'quantidade'],  # Campos que aparecerão no formset
-    extra=1,  # Quantidade de formulários extras exibidos
+    ItemVendaFiado,
+    formset=BaseItemVendaFiadoFormset, 
+    fields=['produto', 'quantidade'], 
+    extra=1, 
     widgets={
         'produto': Select2Widget(attrs={'data-minimum-input-length': 1}),  # Utilizando o Select2Widget para facilitar a pesquisa de produtos
     }

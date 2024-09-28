@@ -11,7 +11,6 @@
                 <th>Nome</th>
                 <th>Descrição</th>
                 <th>URL</th>
-                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -21,15 +20,6 @@
                 <td>{{ marca.nome|default:"-" }}</td>
                 <td>{{ marca.descricao|safe|default:"-" }}</td>
                 <td>{{ marca.url|default:"-" }}</td>                
-                <td>
-                    {% comment %} {% if meta.fechado %}
-                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
-                    {% else %}
-                        <a href="{% url 'fechar_meta' meta.pk %}" class="btn btn-danger">Fechar Meta</a>
-                        <a href="{% url 'lista_vendas_meta' meta.pk %}" class="btn btn-success">Vendas</a>
-                    {% endif %} {% endcomment %}
-                    
-                </td>
             </tr>
             {% endfor %}
         </tbody>

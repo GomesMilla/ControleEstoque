@@ -1,0 +1,65 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <h2>Lista de Vendas a Prazo</h2>    
+    <div class="row text-center justify-content-center mt-3">
+        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">Qtd vendas em aberto:</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ vendas_meta_abertas }}</h5>
+            </div>
+        </div>                
+        <div class="card text-bg-success mb-3 mx-3" style="max-width: 18rem;">
+            <div class="card-header">Valor Alcançado:</div>
+            <div class="card-body">
+                <h5 class="card-title">R$ {{ total_fiado_meta }}</h5>
+            </div>
+        </div>
+        <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
+            <div class="card-header">A receber:</div>
+            <div class="card-body">
+                <h5 class="card-title">R$ {{ total_a_receber }}</h5>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover mt-3">
+        <thead>
+            <tr>
+                <th class="text-center">ID da Venda</th>
+                <th class="text-center">Cliente</th>
+                <th class="text-center">Data da Venda</th>
+                <th class="text-center">Total (R$)</th>
+                <th class="text-center">Número de Parcelas</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Itens Vendidos</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venda in vendas %}
+            <tr>
+                <td class="text-center">{{ venda.id }}</td>
+                <td class="text-center">{{ venda.cliente.nome }}</td>
+                <td class="text-center">{{ venda.data_venda|date:"d/m/Y" }}</td>
+                <td class="text-center">{{ venda.total }}</td>
+                <td class="text-center">{{ venda.num_parcelas }}</td>
+                <td class="text-center">{{ venda.status }}</td>
+                <td class="text-center">
+                    <ul>
+                        {% for item in venda.itens_venda.all %}
+                        <li>{{ item.produto.nome }} ({{ item.quantidade }} x R$ {{ item.preco_unitario }})</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <a href="{% url 'detalhar_venda_fiado' venda.pk %}" class="btn btn-warning">Detalhes</a>      
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock conteudo %}

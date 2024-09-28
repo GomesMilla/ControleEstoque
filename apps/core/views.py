@@ -16,6 +16,8 @@ from django.views.generic.edit import View
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.db import transaction
+from django.db.models import Sum, F
+from django.contrib import messages
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
     form_class = EstoqueForm
@@ -719,7 +721,7 @@ class ContaCorrenteListView(LoginRequiredMixin,ListView):
     def get_queryset(self):
         return ContaCorrente.objects.filter(empresa=self.request.user.empresa, is_active=True)
 
-class ContaCorrenteCreateView(CreateView):
+class ContaCorrenteCreateView(LoginRequiredMixin,CreateView):
     model = ContaCorrente
     form_class = ContaCorrenteForm
     template_name = 'core/contacorrente/criar.html'
@@ -743,14 +745,14 @@ class ContaCorrenteUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
     
     def test_func(self):
         conta = self.get_object()
-        return self.request.user.is_superuser or self.request.user == conta.vendedor or self.request.user.empresa == conta.vendedor.empresa
+        return self.request.user.is_superuser or self.request.user.empresa == conta.empresa
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             return redirect('home')
         return super().handle_no_permission()
 
-class ContaCorrenteInativarView(View):
+class ContaCorrenteInativarView(LoginRequiredMixin,View):
     model = ContaCorrente
     template_name = 'core/contacorrente/inativar.html'
     success_url = reverse_lazy('listar_contas')
@@ -767,6 +769,26 @@ class ContaCorrenteInativarView(View):
 
     def get_object(self):
         return ContaCorrente.objects.get(pk=self.kwargs['pk'], empresa=self.request.user.empresa)
+
+class ContaCorrenteDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = ContaCorrente
+    template_name = 'core/contacorrente/detalhe.html'
+    context_object_name = 'conta'
+
+    def test_func(self):
+        # Verifica se o usuário pertence à mesma empresa da conta
+        conta = self.get_object()
+        return self.request.user.empresa == conta.empresa
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        conta = self.get_object()
+
+        # Pegar todas as vendas fiado associadas à conta corrente
+        vendas_fiado = conta.vendafiado_set.all()
+
+        context['vendas_fiado'] = vendas_fiado
+        return context
 
 class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
     model = VendaFiado
@@ -832,3 +854,92 @@ class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
             return super().form_valid(form)
 
         return self.form_invalid(form)
+
+class VendaFiadoListView(LoginRequiredMixin, ListView):
+    model = VendaFiado
+    template_name = 'core/vendafiado/listar.html'
+    context_object_name = 'vendas'
+
+    def get_queryset(self):
+        # Obtém as vendas filtradas pela empresa do usuário logado
+        return VendaFiado.objects.filter(empresa=self.request.user.empresa).prefetch_related('itens_venda', 'parcelas')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Obter o período meta atual (ajuste conforme sua lógica de meta)
+        meta_atual = PeriodoMeta.objects.filter(empresa=self.request.user.empresa, fechado=False).first()
+
+        if meta_atual:
+            # Número de vendas em aberto da meta atual
+            vendas_meta_abertas = VendaFiado.objects.filter(empresa=self.request.user.empresa, periodometa=meta_atual).exclude(parcelas__pendente=False).count()
+            
+            # Valor das contas fiado na meta atual
+            total_fiado_meta = Parcela.objects.filter(venda__empresa=self.request.user.empresa, venda__periodometa=meta_atual, pendente=True).aggregate(total_fiado=Sum(F('valor')))['total_fiado'] or 0
+            
+            context['vendas_meta_abertas'] = vendas_meta_abertas
+            context['total_fiado_meta'] = total_fiado_meta
+        else:
+            context['vendas_meta_abertas'] = 0
+            context['total_fiado_meta'] = 0
+
+        # Total a receber (de todas as metas)
+        total_a_receber = Parcela.objects.filter(venda__empresa=self.request.user.empresa, pendente=True).aggregate(total_receber=Sum(F('valor')))['total_receber'] or 0
+        context['total_a_receber'] = total_a_receber
+
+        # Calcula se cada venda está paga ou não
+        vendas = context['vendas']
+        for venda in vendas:
+            if venda.parcelas.filter(pendente=True).exists():
+                venda.status = "Pendente"
+            else:
+                venda.status = "Pago"
+
+        return context
+
+class VendaFiadoDetailView(LoginRequiredMixin, DetailView):
+    model = VendaFiado
+    template_name = 'core/vendafiado/view.html'
+    context_object_name = 'venda'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        venda = self.get_object()
+
+        # Obtém as parcelas relacionadas à venda
+        context['parcelas'] = venda.parcelas.all()
+
+        return context
+
+class PagarParcelaView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Parcela
+    fields = []  # Não exibe nenhum campo, já que o pagamento é automático
+    template_name = 'core/vendafiado/pagar.html'
+    success_url = reverse_lazy('listar_vendas_fiado')
+
+    def test_func(self):
+        # Garantir que o usuário faz parte da empresa da parcela
+        parcela = self.get_object()
+        return self.request.user.empresa == parcela.empresa
+
+    def form_valid(self, form):
+        parcela = form.save(commit=False)
+        parcela.pendente = False  # Marca a parcela como paga
+        parcela.vendedor = self.request.user  # Define o usuário logado como o vendedor
+        parcela.data_atualizacao = timezone.now()  # Define a data do pagamento
+        parcela.save()
+
+        # Atualiza o saldo devedor na conta corrente associada à venda
+        conta_corrente = parcela.venda.conta_corrente
+        conta_corrente.saldo_devedor -= parcela.valor
+        conta_corrente.save()
+
+        # Exibe uma mensagem de sucesso
+        messages.success(self.request, 'Pagamento da parcela realizado com sucesso.')
+
+        # Redireciona para os detalhes da venda
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redireciona para os detalhes da venda após o pagamento
+        return reverse_lazy('detalhar_venda_fiado', kwargs={'pk': self.object.venda.pk})

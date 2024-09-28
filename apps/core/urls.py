@@ -44,6 +44,7 @@ urlpatterns = [
 
     # venda
     path('cadastrar_venda/', VendaCreateView.as_view(), name='cadastrar_venda'),
+    
 
     # Vale Presente
     path('cadastrar_vale_presente/', ValePresenteCreateView.as_view(), name='cadastrar_vale_presente'),
@@ -59,12 +60,13 @@ urlpatterns = [
     path('conta_corrente/editar/<int:pk>/', ContaCorrenteUpdateView.as_view(), name='editar_conta'),
     path('conta_corrente/inativar/<int:pk>/', ContaCorrenteInativarView.as_view(), name='inativar_conta'),
     path('conta_corrente/', ContaCorrenteListView.as_view(), name='listar_contas'),
+    path('conta/<int:pk>/', ContaCorrenteDetailView.as_view(), name='detalhar_conta_corrente'),
 
     # Venda a Prazo
     path('venda-fiado/nova/', VendaFiadoCreateView.as_view(), name='nova_venda_fiado'),
-
-
-
+    path('vendas-fiado/', VendaFiadoListView.as_view(), name='listar_vendas_fiado'),
+    path('vendas-fiado/<int:pk>/', VendaFiadoDetailView.as_view(), name='detalhar_venda_fiado'),
+    path('vendas-fiado/parcela/pagar/<int:pk>/', PagarParcelaView.as_view(), name='pagar_parcela'),
 
     #AJAX
     path('fornecedores_pesquisar/', fornecedor_por_empresa, name='fornecedores_pesquisar'),

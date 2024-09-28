@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.views import View
 from datetime import date
 from agenda.models import Alerta
+from django.shortcuts import render
 
 def base(request):
     context = {
@@ -164,25 +165,45 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return redirect('home')
         return super().handle_no_permission()
 
-class UserDeactivateView(LoginRequiredMixin, UserPassesTestMixin, View):
+# class UserDeactivateView(LoginRequiredMixin, UserPassesTestMixin, View):
 
-    def test_func(self):
-        user = get_object_or_404(User, pk=self.kwargs['pk'])
-        return not self.request.user.if_funcionario and self.request.user.empresa == user.empresa
+#     def test_func(self):
+#         user = get_object_or_404(User, pk=self.kwargs['pk'])
+#         return not self.request.user.if_funcionario and self.request.user.empresa == user.empresa
 
-    def handle_no_permission(self):
-        if self.request.user.is_authenticated:
-            return redirect('home')
-        return super().handle_no_permission()
+#     def handle_no_permission(self):
+#         if self.request.user.is_authenticated:
+#             return redirect('home')
+#         return super().handle_no_permission()
+
+#     def post(self, request, *args, **kwargs):
+#         user = get_object_or_404(User, pk=self.kwargs['pk'])
+#         if self.test_func():
+#             if user != request.user:  # Verifica para evitar desativar o próprio usuário
+#                 user.is_active = False
+#                 user.excluido = False  # Assegura que não seja excluído, apenas inativado
+#                 user.save()
+#         return redirect('lista_usuarios', pk=self.request.user.empresa.pk)
+
+class UserDeactivateView(LoginRequiredMixin,View):
+    model = User
+    template_name = 'users/users/inativar.html'
+    success_url = reverse_lazy('home')
+
+    def get(self, request, *args, **kwargs):
+        objuser = self.get_object()
+        return render(request, self.template_name, {'objuser': objuser})
 
     def post(self, request, *args, **kwargs):
-        user = get_object_or_404(User, pk=self.kwargs['pk'])
-        if self.test_func():
-            if user != request.user:  # Verifica para evitar desativar o próprio usuário
-                user.is_active = False
-                user.excluido = False  # Assegura que não seja excluído, apenas inativado
-                user.save()
-        return redirect('lista_usuarios', pk=self.request.user.empresa.pk)
+        objuser = self.get_object()
+        if objuser.is_active:
+            print(f"Inativando o usuário: {objuser}")
+        objuser.is_active = False
+        objuser.save()
+        return redirect(self.success_url)
+
+    def get_object(self):
+        return User.objects.get(pk=self.kwargs['pk'], empresa=self.request.user.empresa)
 
 class UserCreateViewAdmin(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = User

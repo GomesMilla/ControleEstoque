@@ -265,6 +265,8 @@ class Parcela(BaseModel):
     data_vencimento = models.DateField()
     pendente = models.BooleanField(max_length=20, default=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='parcela_fiado_empresa', default=1)
+    vendedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendedor_venda_recebeu_valor', null=True, blank=True)
+    data_atualizacao = models.DateTimeField(auto_now=False, null=True, blank=True)
 
     def __str__(self):
         return f"Parcela de {self.valor} com vencimento em {self.data_vencimento}"

@@ -1,0 +1,19 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="container mt-5">
+        <h2>Recebimento de Parcela</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="alert alert-dark border-dark mb-3" role="alert">
+                <p>Você deseja realmente marcar essa parcela como paga?</p>
+                <p><strong>Valor:</strong> R$ {{ parcela.valor }}</p>
+                <p><strong>Data de Vencimento:</strong> {{ parcela.data_vencimento|date:"d/m/Y" }}</p>
+                <hr>
+                <button type="submit" class="btn btn-success">Confirmar Pagamento</button>
+                <a href="{% url 'detalhar_venda_fiado' parcela.venda.pk %}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </form>
+    </div>
+{% endblock conteudo %}

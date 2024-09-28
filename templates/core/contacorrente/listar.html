@@ -23,7 +23,7 @@
                 <td>{{ conta.limite_credito|default:"-" }}</td>
                 <td>
                     <a href="{% url 'editar_conta' conta.pk %}" class="btn btn-primary">Editar</a>
-                    <a href="{% url 'detalhes_fornecedor' conta.pk %}" class="btn btn-warning">Detalhes</a>
+                    <a href="{% url 'detalhar_conta_corrente' conta.pk %}" class="btn btn-warning">Detalhes</a>
                     <a href="{% url 'inativar_conta' conta.pk %}" class="btn btn-danger">Inativar</a>
                 </td>
             </tr>

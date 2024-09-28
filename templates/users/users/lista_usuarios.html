@@ -25,7 +25,7 @@
                         <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-primary">Editar</a>
                         <a href="{% url 'detalhe_colaborador' usuario.pk %}" class="btn btn-warning">Detalhes</a>
                         <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-secondary">Alterar Senha</a>
-                        <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-danger">Inativar</a>
+                        <a href="{% url 'inativar_usuario' usuario.pk %}" class="btn btn-danger">Inativar</a>
                         {% comment %} {% if not objuser.if_funcionario %}
                             <form action="{% url 'inativar_usuario' usuario.id %}" method="post" style="display:inline;">
                                 {% csrf_token %}

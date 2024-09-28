@@ -61,17 +61,6 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def desativar(self):
-        self.ativo = False
-        self.data_desativacao = timezone.now()
-        self.save()
-
-    def ativar(self):
-        self.ativo = True
-        self.data_desativacao = None
-        self.save()
-
-
 class Empresa(BaseModel):
     nome = models.CharField(max_length=255)
     cnpj = models.CharField('CNPJ',max_length=18, blank=True, null=True)
@@ -118,19 +107,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["email"]
 
     def save(self, *args, **kwargs):
-            if not self.pk:
-                usuarios_qs = User.objects.todos_usuarios().filter(Q(excluido=True) | Q(is_active=False), cpf=self.cpf)
-                if usuarios_qs:
-                    usuarios_qs.update(is_active=True, excluido=False)
-                    return usuarios_qs.first()
-            return super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        inativar = kwargs.get("inativar", False)
-        if not inativar:
-            self.excluido = True
-        self.is_active = False
-        self.save()
+        if not self.pk:
+            usuarios_qs = User.objects.todos_usuarios().filter(Q(excluido=True) | Q(is_active=False), cpf=self.cpf)
+            if usuarios_qs.exists():
+                usuario_existente = usuarios_qs.first()
+                usuario_existente.is_active = True
+                usuario_existente.excluido = False
+                usuario_existente.save()
+                return usuario_existente
+        return super().save(*args, **kwargs)
 
     def get_short_name(self):
         return self.cpf

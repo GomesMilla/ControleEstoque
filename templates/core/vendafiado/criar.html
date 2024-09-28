@@ -8,15 +8,33 @@
             {% csrf_token %}
             {{form.media}}
             {{ form|bootstrap }}
-            <h3>Itens da Venda</h3>
-            {{ itens_form.management_form }}
-            {% for formset in itens_form %}
-                {{ formset.as_p }}
-            {% endfor %}
+            <h3 class="mt-2">Itens da Venda</h3>
+            <div id="formset-container">
+                {{ itens_form.management_form }}
+                {% for form in itens_form %}
+                    <div class="formset-form">
+                        {{ form|bootstrap }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-product" class="btn btn-primary mt-1">Adicionar mais produtos</button>
             <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
-                <button type="submit" class="btn btn-success rounded-pill">Cadastrar</button>
+                <button type="submit" class="btn btn-success rounded-pill">Finalizar Venda</button>
             </div>
         </form>
     </div>
-
+    <script>
+        document.getElementById('add-product').onclick = function() {
+            console.log("Olá")
+            var formCount = document.querySelectorAll('.formset-form').length;  // Conta quantos formulários já existem
+            var formsetClone = document.querySelector('.formset-form').cloneNode(true);  // Clona o último formulário
+            formsetClone.querySelectorAll('input, select').forEach(function(input) {
+                input.name = input.name.replace(/\d+/, formCount);  // Atualiza o índice do formulário
+                input.id = input.id.replace(/\d+/, formCount);  // Atualiza o id dos inputs
+                input.value = '';  // Limpa os valores dos campos
+            });
+            document.querySelector('#formset-container').appendChild(formsetClone);  // Adiciona o formulário clonado ao container
+            document.getElementById('id_itens_form-TOTAL_FORMS').value = formCount + 1;  // Atualiza o número total de formulários
+        };
+    </script>
 {% endblock conteudo %}
