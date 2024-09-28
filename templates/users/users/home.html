@@ -5,24 +5,24 @@
     <div class="container mt-5">
         <p>Bem-vindo(a), {{ objuser.nome }}!</p>
         {% if not objuser.if_funcionario %}
-            <p>Este é o seu painel de controle principal, onde você pode gerenciar sua loja - {{objuser.empresa}}! Atualmente, estamos com uma meta <b class="text-danger-emphasis fst-italic">'{{meta_atual.nome}}'</b>  em aberto: Meta de <b class="text-danger-emphasis fst-italic">{{ valor_meta }}</b>  com <b class="text-danger-emphasis fst-italic">{{ valor_alcancado }}</b> já alcançado.</p>
+            <p>Este é o seu painel de controle principal, onde você pode gerenciar sua loja - {{objuser.empresa}}! Atualmente, estamos com uma meta em aberto: <b class="text-danger-emphasis fst-italic">{% if meta_atual %}'{{meta_atual.nome}}'{% else %}SEM META CADASTRADA, CLIQUE <a href="{% url 'cadastrar_meta'%}">AQUI</a> PARA CADASTRAR{% endif %}</b>. Meta de <b class="text-danger-emphasis fst-italic">{% if meta_atual %}'{{valor_meta}}'{% else %}SEM META CADASTRADA, CLIQUE <a href="{% url 'cadastrar_meta'%}">AQUI</a> PARA CADASTRAR{% endif %}</b> com <b class="text-danger-emphasis fst-italic">{% if meta_atual %}'{{valor_alcancado}}'{% else %}SEM META CADASTRADA, CLIQUE <a href="{% url 'cadastrar_meta'%}">AQUI</a> PARA CADASTRAR{% endif %}</b> já alcançado.</p>
             <div class="row text-center justify-content-center">
                 <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
                     <div class="card-header">Meta Atual:</div>
                     <div class="card-body">
-                        <h5 class="card-title">R$ {{ valor_meta }}</h5>
+                        <h5 class="card-title">R$ {{ valor_meta|default:"SEM META" }}</h5>
                     </div>
                 </div>                
                 <div class="card text-bg-success mb-3 mx-3" style="max-width: 18rem;">
                     <div class="card-header">Valor Alcançado:</div>
                     <div class="card-body">
-                        <h5 class="card-title">R$ {{ valor_alcancado }}</h5>
+                        <h5 class="card-title">R$ {{ valor_alcancado|default:"SEM META" }}</h5>
                     </div>
                 </div>
                 <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
                     <div class="card-header">Falta:</div>
                     <div class="card-body">
-                        <h5 class="card-title">R$ {{ falta_para_meta }}</h5>
+                        <h5 class="card-title">R$ {{ falta_para_meta|default:"SEM META" }}</h5>
                     </div>
                 </div>
             </div>
