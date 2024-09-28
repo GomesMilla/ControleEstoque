@@ -9,7 +9,7 @@
             <li class="list-group-item"><b>CPF:</b> {{objuser.cpf|default:"-"}}</li>
             <li class="list-group-item"><b>E-mail:</b> {{objuser.email|default:"-"}}</li>
             <li class="list-group-item"><b>Telefone:</b> {{objuser.telefone_celular|default:"-"}}</li>
-            <li class="list-group-item"><b>Descrição:</b> {{objuser.descricao|default:"-"}}</li>
+            <li class="list-group-item"><b>Descrição:</b> {{objuser.descricao|safe|default:"-"}}</li>
             <li class="list-group-item"><b>Data de Cadastro:</b> {{objuser.data_criacao|default:"-"}}</li>     
             <li class="list-group-item"><b>Status:</b> 
                 {% if objuser.if_funcionario %}

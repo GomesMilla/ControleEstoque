@@ -5,11 +5,11 @@
     <div class="container mt-5">
         <h2>{{ empresa.nome }}</h2>
         <ul class="list-group mt-4">
-            <li class="list-group-item">Nome: {{empresa.nome}}</li>
-            <li class="list-group-item">Razão Social: {{empresa.razao_social}}</li>
-            <li class="list-group-item">CNPJ: {{empresa.cnpj}}</li>
-            <li class="list-group-item">E-mail: {{empresa.email}}</li>
-            <li class="list-group-item">Descrição: {{empresa.descricao}}</li>
+            <li class="list-group-item"><b>Nome: </b>{{empresa.nome}}</li>
+            <li class="list-group-item"><b>Razão Social: </b>{{empresa.razao_social}}</li>
+            <li class="list-group-item"><b>CNPJ: </b>{{empresa.cnpj}}</li>
+            <li class="list-group-item"><b>E-mail: </b>{{empresa.email}}</li>
+            <li class="list-group-item"><b>Descrição: </b>{{empresa.descricao|safe}}</li>
         </ul>
         <h2 class="mt-4">Colaboradores</h2>
         <table class="table table-hover">
@@ -20,6 +20,7 @@
                     <th>CPF</th>
                     <th>Email</th>
                     <th>Função</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +36,10 @@
                         {% else %}
                             Dona da Empresa
                         {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_usuario' funcionario.pk %}" class="btn btn-primary">Editar</a>
+                        <a href="{% url 'detalhe_colaborador' funcionario.pk %}" class="btn btn-warning">Detalhes</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -21,7 +21,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['nome', 'cpf', 'email', 'imagemperfil', 'password', 'if_funcionario']
+        fields = ['nome', 'cpf', 'email', 'telefone_celular', 'descricao', 'imagemperfil', 'password', 'if_funcionario']
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
@@ -44,7 +44,7 @@ class UserForm(forms.ModelForm):
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['nome', 'cpf', 'email', 'imagemperfil', 'if_funcionario']
+        fields = ['nome', 'cpf', 'email','telefone_celular', 'descricao','imagemperfil', 'if_funcionario']
 
     def __init__(self, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
@@ -67,7 +67,7 @@ class UserFormAdmin(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['nome', 'cpf', 'email', 'empresa','imagemperfil', 'password', 'if_funcionario']
+        fields = ['nome', 'cpf', 'email', 'telefone_celular', 'descricao', 'empresa', 'imagemperfil', 'password', 'if_funcionario']
     
     def __init__(self, *args, **kwargs):
         super(UserFormAdmin, self).__init__(*args, **kwargs)
