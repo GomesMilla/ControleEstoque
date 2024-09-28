@@ -68,6 +68,16 @@ class UserFormAdmin(forms.ModelForm):
     class Meta:
         model = User
         fields = ['nome', 'cpf', 'email', 'empresa','imagemperfil', 'password', 'if_funcionario']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserFormAdmin, self).__init__(*args, **kwargs)
+        self.fields['nome'].label = "Nome Completo:"
+        self.fields['cpf'].label = "CPF:"
+        self.fields['cpf'].help_text = "O CPF será utilizado como forma de acesso ao sistema. Certifique-se de que não existe outro usuário com o mesmo CPF, pois ele é único para cada usuário."
+        self.fields['email'].label = "E-mail:"
+        self.fields['email'].help_text = "O E-mail será utilizado como forma de contato do sistema. Certifique-se de que não existe outro usuário com o mesmo e-mail, pois ele é único para cada usuário."
+        self.fields['if_funcionario'].label = "Funcionário."
+        self.fields['if_funcionario'].help_text = "Ao habilitar esta opção, fica explícito que o usuário é apenas funcionário. Caso contrário, ele será tratado como sócio e dono da empresa, podendo ver informações como metas e valores."
 
     def save(self, commit=True):
         user = super().save(commit=False)
