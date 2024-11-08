@@ -800,8 +800,23 @@ class ContaCorrenteDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailVie
         # Pegar todas as vendas fiado associadas à conta corrente
         vendas_fiado = conta.vendafiado_set.all()
 
+        # Pegar os produtos comprados em cada venda fiado
+        produtos_comprados = []
+        for venda in vendas_fiado:
+            itens_venda = venda.itens_venda.all()  # Pegando os produtos da venda
+            for item in itens_venda:
+                produtos_comprados.append({
+                    'produto': item.produto.nome,
+                    'quantidade': item.quantidade,
+                    'preco_unitario': item.preco_unitario,
+                    'total': item.quantidade * item.preco_unitario,
+                    'venda_id': venda.id
+                })
+
         context['vendas_fiado'] = vendas_fiado
+        context['produtos_comprados'] = produtos_comprados
         return context
+
 
 class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
     model = VendaFiado
@@ -810,16 +825,24 @@ class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('listar_contas')
 
     def get_form_kwargs(self):
+        """Passa o usuário autenticado para o formulário."""
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
+        """Passa o formset e o usuário autenticado para o contexto."""
         data = super().get_context_data(**kwargs)
+
+        if not hasattr(self.request.user, 'empresa'):
+            raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
+
+        # Criando o formset para os itens de venda, passando o 'user' para o formset
         if self.request.POST:
             data['itens_form'] = ItemVendaFiadoFormset(self.request.POST, queryset=ItemVendaFiado.objects.none(), user=self.request.user)
         else:
             data['itens_form'] = ItemVendaFiadoFormset(queryset=ItemVendaFiado.objects.none(), user=self.request.user)
+
         return data
 
     @transaction.atomic
@@ -832,41 +855,51 @@ class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
 
         if itens_form.is_valid():
             total_venda = 0
-            for item_form in itens_form.cleaned_data:
-                produto = item_form['produto']
-                quantidade = item_form['quantidade']
 
-                if produto.quantidade < quantidade:
-                    itens_form.add_error('quantidade', f"Estoque insuficiente para o produto {produto.nome}")
-                    return self.form_invalid(form)
+            for item_form in itens_form.forms:
+                if item_form.cleaned_data:
+                    produto = item_form.cleaned_data['produto']
+                    quantidade = item_form.cleaned_data['quantidade']
 
-                total_venda += produto.preco * quantidade
-                produto.quantidade -= quantidade
-                if produto.quantidade <= 0:
-                    produto.quantidade = 0
-                    produto.vendido = True
-                produto.save()
+                    # Verificando se há estoque suficiente
+                    if produto.quantidade < quantidade:
+                        itens_form.add_error('quantidade', f"Estoque insuficiente para o produto {produto.nome}")
+                        return self.form_invalid(form)
+
+                    total_venda += produto.preco * quantidade
+                    produto.quantidade -= quantidade
+                    produto.save()
 
             form.instance.total = total_venda
             self.object = form.save()
 
-            for item_form in itens_form.cleaned_data:
-                ItemVendaFiado.objects.create(
-                    venda=self.object,
-                    produto=item_form['produto'],
-                    quantidade=item_form['quantidade'],
-                    preco_unitario=item_form['produto'].preco,
-                    empresa=self.request.user.empresa  # Vinculando à empresa
-                )
+            # Salvando os itens da venda
+            for item_form in itens_form.forms:
+                if item_form.cleaned_data:
+                    ItemVendaFiado.objects.create(
+                        venda=self.object,
+                        produto=item_form.cleaned_data['produto'],
+                        quantidade=item_form.cleaned_data['quantidade'],
+                        preco_unitario=item_form.cleaned_data['produto'].preco,
+                        empresa=self.request.user.empresa
+                    )
 
+            # Atualizando o saldo devedor da ContaCorrente
             conta_corrente = form.instance.conta_corrente
             conta_corrente.saldo_devedor += total_venda
             conta_corrente.save()
 
+            # Gerar parcelas da venda fiado
             self.object.gerar_parcelas()
             return super().form_valid(form)
 
         return self.form_invalid(form)
+
+
+
+
+
+
 
 class VendaFiadoListView(LoginRequiredMixin, ListView):
     model = VendaFiado

@@ -33,7 +33,7 @@
             <div class="col-md-10">
                 {% if vales %}
                     <!-- Tabela de vales presentes -->
-                    <table class="table table-hover table-bordered text-center">
+                    <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -65,7 +65,28 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <!-- Informações adicionais sobre o vale -->
+                                                    <h6 class="text-danger-emphasis fst-italic">Informações sobre o cliente comprador:</h6>
+                                                    <ul class="list-group mt-3">
+                                                        <li class="list-group-item"><b>Nome:</b> {{vale.cliente_nome|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_telefone|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                    </ul>
+                                                    <h6 class="text-danger-emphasis fst-italic mt-3">Informações sobre o cliente ganhador:</h6>
+                                                    <ul class="list-group mt-3">
+                                                        <li class="list-group-item"><b>Nome:</b> {{vale.cliente_ganhador_nome|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email_cliente_ganhador|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_ganhador_telefone|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente_ganhador.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                    </ul>
+                                                    <h6 class="text-danger-emphasis fst-italic mt-3">Informações sobre a venda:</h6>
+                                                    <ul class="list-group mt-3">
+                                                        <li class="list-group-item"><b>Vendedor:</b> {{vale.vendedor.nome|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Valor do Vale:</b> {{vale.preco|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Data da Compra:</b> {{vale.data_pedido|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Data Final:</b> {{vale.data_periodo_final|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Descrição:</b> {{vale.descricao|safe|default:"-"}}</li>
+                                                    </ul>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>

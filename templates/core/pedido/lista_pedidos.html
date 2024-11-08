@@ -40,7 +40,7 @@
                     </ul>                    
                 </div>
                 <div class="col-md-10">
-                    <table class="table table-hover table-bordered text-center">
+                    <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -89,7 +89,7 @@
                                                     <h6 class="text-danger-emphasis fst-italic mt-4">Informações gerais:</h6>
                                                     <ul class="list-group mt-3">
                                                         <li class="list-group-item"><b>Produto:</b> {{pedido.produto.nome|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Vendedor:</b> {{pedido.vendedor|default:"-"}}</li>
+                                                        <li class="list-group-item"><b>Vendedor:</b> {{pedido.vendedor.nome|default:"-"}}</li>
                                                         <li class="list-group-item"><b>Quantidade:</b> {{pedido.quantidade|default:"-"}}</li>
                                                         <li class="list-group-item"><b>Data da Solicitação:</b> {{pedido.data_pedido|default:"-"}}</li>
                                                         <li class="list-group-item"><b>Status:</b> {{pedido.get_status_display}}</li>

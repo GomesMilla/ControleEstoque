@@ -40,7 +40,7 @@
         });
         $('#id_produto').select2({
             ajax: {
-                url: "{% url 'produto_por_empresa' %}",
+                url: "{% url 'produto_pesquisar' %}",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {

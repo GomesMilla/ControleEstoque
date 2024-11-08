@@ -13,5 +13,28 @@
             </div>
         </form>
     </div>
+    <script>    
+        $(document).ready(function() {
+            $('#id_cliente').select2({
+                ajax: {
+                    url: "{% url 'cliente_pesquisar' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+            });
+        });
+    </script>
 
 {% endblock conteudo %}

@@ -17,49 +17,69 @@
         <ul class="list-group">
             <li class="list-group-item"><b>Saldo Devedor:</b> R$ {{conta.saldo_devedor|default:"-"}}</li>
             <li class="list-group-item"><b>Limite de Crédito:</b> {{conta.limite_credito|default:"-"}}</li>
-            <li class="list-group-item"><b>Descrição:</b> {{conta.observacoes|safe|default:"-"}}</li>
+            <li class="list-group-item"><b>Descrição:</b> {{conta.descricao|safe|default:"-"}}</li>
         </ul>
         <h3 class="mt-3">Vendas a Prazo</h3>
         {% if vendas_fiado %}
-        <table class="table table-hover mt-3 text-center">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID da Venda</th>
-                    <th>Data da Venda</th>
-                    <th>Total (R$)</th>
-                    <th>Número de Parcelas</th>
-                    <th>Parcelas</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário</th>
+                    <th>Total Produto</th>
+                    <th>Número da Parcela</th>
+                    <th>Valor Parcela</th>
+                    <th>Data de Vencimento</th>
+                    <th>Status</th>
+                    <th>Ação</th>
                 </tr>
             </thead>
             <tbody>
                 {% for venda in vendas_fiado %}
-                <tr>
-                    <td>{{ venda.id }}</td>
-                    <td>{{ venda.data_venda|date:"d/m/Y" }}</td>
-                    <td>{{ venda.total }}</td>
-                    <td>{{ venda.num_parcelas }}</td>
-                    <td>
-                        <ul>
-                            {% for parcela in venda.parcelas.all %}
-                            <li>
-                                Parcela {{ forloop.counter }} - Valor: R$ {{ parcela.valor }} - 
-                                Vencimento: {{ parcela.data_vencimento|date:"d/m/Y" }} - 
-                                Status: 
-                                {% if parcela.pendente %}
-                                    <span style="color: red;">Pendente</span><a href="{% url 'pagar_parcela' parcela.pk %}" class="ms-2">Pagar</a>
-                                {% else %}
-                                    <span style="color: green;">Pago</span>
-                                {% endif %}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
+                    {% for produto in produtos_comprados %}
+                        {% if produto.venda_id == venda.id %}
+                        <tr class="mt-5">
+                            <!-- Dados do Produto -->
+                            <td>{{ produto.produto }}</td>
+                            <td>{{ produto.quantidade }}</td>
+                            <td>R$ {{ produto.preco_unitario }}</td>
+                            <td>R$ {{ produto.total }}</td>
+        
+                            <!-- Caso não haja parcela correspondente, as células de parcelas ficam vazias -->
+                            <td colspan="5" class="text-center">Sem parcelas</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    <!-- Exibe as parcelas da venda -->
+                    {% for parcela in venda.parcelas.all %}
+                    <tr>
+                        <!-- Células de produto ficam vazias para as linhas de parcela -->
+                        <td colspan="4"></td>
+                        <td>{{ forloop.counter }}</td>
+                        <td>R$ {{ parcela.valor }}</td>
+                        <td>{{ parcela.data_vencimento|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if parcela.pendente %}
+                                <span style="color: red;">Pendente</span>
+                            {% else %}
+                                <span style="color: green;">Pago</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if parcela.pendente %}
+                                <a href="{% url 'pagar_parcela' parcela.pk %}" class="btn btn-primary">Pagar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% endfor %}
             </tbody>
-        </table>
+        </table>        
     {% else %}
-        <p>Não há vendas fiado associadas a esta conta.</p>
+        <div class="alert alert-info" role="alert">
+            Não há compras fiado associadas a esta conta.
+        </div>
     {% endif %}
 
 <div>

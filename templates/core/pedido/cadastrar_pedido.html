@@ -13,53 +13,53 @@
             </div>
         </form>
     </div>
-    <script>
+    {% comment %} <script>
         $('document').ready(function() {
             $('#id_cliente_telefone').mask('(00) 0000-0000');   
+        });
+    </script> {% endcomment %}
+    <script>    
+        $(document).ready(function() {
+            $('#id_cliente_telefone').mask('(00) 0000-0000');  
+            $('#id_cliente').select2({
+                ajax: {
+                    url: "{% url 'cliente_pesquisar' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+            });
+            $('#id_produto').select2({
+                ajax: {
+                    url: "{% url 'produto_pesquisar' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term,
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.results
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+            });
         });
     </script>
 
 {% endblock conteudo %}
-
-<script>    
-    $(document).ready(function() {
-        $('#id_cliente').select2({
-            ajax: {
-                url: "{% url 'cliente_pesquisar' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term,
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 1,
-        });
-        $('#id_produto').select2({
-            ajax: {
-                url: "{% url 'produto_por_empresa' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term,
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 1,
-        });
-    });
-</script>
