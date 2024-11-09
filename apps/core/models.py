@@ -67,6 +67,7 @@ class Marca(BaseModel):
 
 class Produto(BaseModel):
     nome = models.CharField(max_length=255)
+    resumo = models.TextField("Resumo", null=True, blank=True)
     cor = models.CharField(max_length=50, null=True, blank=True)
     descricao = RichTextUploadingField("Descrição do produto:")
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -85,6 +86,9 @@ class Produto(BaseModel):
 
     def __str__(self):
         return f"{self.nome} ({self.empresa.nome})"
+
+    def name(self):
+        return f"{self.nome}"
 
     def save(self, *args, **kwargs):
         if not self.codigo:

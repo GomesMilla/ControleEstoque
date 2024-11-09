@@ -28,6 +28,7 @@ urlpatterns = [
     path('lista_produtos/<int:pk>/', ProdutoListView.as_view(), name='lista_produtos_empresa'),
     path('lista_produtos_indisponivel/<int:pk>/', ProdutoListIndisponivelView.as_view(), name='lista_produtos_indisponivel'),
     path('editar_produto/<int:pk>/', ProdutoUpdateView.as_view(), name='editar_produto'),
+    path('loja/<int:empresa_id>/produtos/', ProdutoListView.as_view(), name='loja'),
 
 
     # meta

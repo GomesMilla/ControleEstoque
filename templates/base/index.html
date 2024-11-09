@@ -348,6 +348,18 @@
                             </a>
                         </ul>
                     {% endif %}
+                    <h6 class="mt-3">Loja Online</h6>
+                    {% if objuser.empresa.lista_produto %}
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action" href="{% url 'loja' objuser.empresa.pk %}">Loja Online</a>
+                        </ul>
+                    {% else %}
+                        <ul class="list-group">
+                            <a class="list-group-item list-group-item-action">Loja Online
+                                <span class="text-muted">(Não liberado)</span>
+                            </a>
+                        </ul>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

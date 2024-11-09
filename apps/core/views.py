@@ -347,6 +347,24 @@ class ProdutoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return redirect('home')
         return super().handle_no_permission()
 
+class ProdutoListView(ListView):
+    model = Produto
+    template_name = 'core/produto/loja.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empresa_id = self.kwargs['empresa_id']
+        empresa = get_object_or_404(Empresa, id=empresa_id)
+        context['produtos_em_promocao'] = Produto.objects.filter(empresa=empresa, is_promocao=True, vendido=False)
+        context['produtos'] = Produto.objects.filter(empresa=empresa, vendido=False)
+        context['tipos_produto'] = TipoProduto.objects.filter(empresa=empresa)
+        context['tamanhos'] = Tamanho.objects.filter(empresa=empresa)
+        context['empresa'] = empresa
+
+        return context
+
+
+
 class PeriodoMetaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = PeriodoMeta
     form_class = PeriodoMetaForm

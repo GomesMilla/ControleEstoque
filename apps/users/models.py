@@ -71,7 +71,10 @@ class Empresa(BaseModel):
     color = ColorField(format="hexa")
     color_fonte = ColorField(format="hexa", blank=True, null=True)
     logo_navegador = models.ImageField("Logo", upload_to="logonavegador/", blank=True, null=True)
-    agenda = models.BooleanField("Liberar funcionalidade de agenda", default=False)  
+    agenda = models.BooleanField("Liberar funcionalidade de agenda", default=False)
+    lista_produto = models.BooleanField("Liberar funcionalidade de lista de produto", default=False)
+    telefonedecontato = models.CharField('Número de telefone', max_length=18, blank=True, null=True)
+    resumo_loja = models.TextField('Resumo', blank=True, null=True) 
 
     def __str__(self):
         return self.nome

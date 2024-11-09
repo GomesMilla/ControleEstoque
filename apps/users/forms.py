@@ -4,7 +4,7 @@ from .models import Empresa, User, Cliente
 class EmpresaForm(forms.ModelForm):
     class Meta:
         model = Empresa
-        fields = ['nome', 'cnpj', 'razao_social', 'email', 'descricao', 'logo', 'color', 'color_fonte', 'logo_navegador']
+        fields = ['nome', 'cnpj', 'razao_social', 'email', 'resumo_loja', 'telefonedecontato', 'descricao', 'logo', 'color', 'color_fonte', 'logo_navegador']
     
     def __init__(self, *args, **kwargs):
         super(EmpresaForm, self).__init__(*args, **kwargs)
@@ -15,6 +15,10 @@ class EmpresaForm(forms.ModelForm):
         self.fields['color'].label = "Cor da barra de menu:"
         self.fields['color_fonte'].label = "Cor da letra da barra de menu:"
         self.fields['logo_navegador'].label = "Logo da aba do navegador."
+        self.fields['resumo_loja'].label = "Resumo sobre sua empresa."
+        self.fields['resumo_loja'].help_text = "Campo usado para a funcionalidade de loja online."
+        self.fields['telefonedecontato'].label = "Telefone de Contato"
+        self.fields['telefonedecontato'].help_text = "Informação para a funcionalidade de loja online."
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
