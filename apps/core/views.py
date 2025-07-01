@@ -543,7 +543,6 @@ class VendaCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         if self.request.method == 'POST':
-            # NÃO crie o formset aqui!
             data['item_formset'] = ItemVendaFormset(user=self.request.user)
         else:
             data['item_formset'] = ItemVendaFormset(queryset=ItemVenda.objects.none(), user=self.request.user)
@@ -589,7 +588,7 @@ class VendaListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def get_queryset(self):
         periodometa_id = self.kwargs.get('periodometa_id')
         periodometa = get_object_or_404(PeriodoMeta, id=periodometa_id, empresa=self.request.user.empresa)
-        return Venda.objects.filter(periodometa=periodometa, empresa=self.request.user.empresa)
+        return Venda.objects.filter(periodometa=periodometa, empresa=self.request.user.empresa).order_by('-pk')
 
     def test_func(self):
         return not self.request.user.if_funcionario

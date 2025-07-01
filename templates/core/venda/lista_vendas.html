@@ -55,26 +55,21 @@
                 <table class="table table-hover mt-3">
                     <thead>
                         <tr>
-                            <th class="text-center">Produto</th>
-                            <th class="text-center">Quantidade</th>
-                            <th class="text-center">Valor</th>
-                            <th class="text-center">Data da Venda</th>
-                            <th class="text-center">Vendedor</th>
                             <th class="text-center">Cliente</th>
+                            <th class="text-center">Vendedor</th>
+                            <th class="text-center">Valor</th>
+                            <th class="text-center">Data da Venda</th>                            
                             <th class="text-center">Pagamento</th>
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for venda in vendas %}
-                            {% for item in venda.itens_venda.all %}
                                 <tr>
-                                    <td class="text-center">{{ item.produto.nome }}</td>
-                                    <td class="text-center">{{ item.quantidade }}</td>
-                                    <td class="text-center">{{ item.produto.preco|floatformat:2 }}</td>
-                                    <td class="text-center">{{ venda.data_venda|date:"d/m/Y à\s H:i" }}</td>
-                                    <td class="text-center">{{ venda.vendedor.nome }}</td>
                                     <td class="text-center">{{ venda.cliente.nome }}</td>
+                                    <td class="text-center">{{ venda.vendedor.nome }}</td>
+                                    <td class="text-center">Colocar valor da Venda aqui</td>
+                                    <td class="text-center">{{ venda.data_venda|date:"d/m/Y à\s H:i" }}</td>                                    
                                     <td class="text-center">{{ venda.get_forma_pagamento_display }}</td>
                                     <td> 
                                         <div class="row">
@@ -93,18 +88,22 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <ul class="list-group mt-4">
-                                                    <li class="list-group-item">Nome do Produto: {{item.produto.nome}}</li>
-                                                    <li class="list-group-item">Código do Produto: {{item.produto.codigo}}</li>
-                                                    <li class="list-group-item">ID do Produto: {{item.produto.pk}}</li>
-                                                    <li class="list-group-item">Preço do Produto: {{ item.produto.preco|floatformat:2 }}</li>
-                                                    <li class="list-group-item">Quantidade: {{ item.quantidade }}</li>
-                                                    <li class="list-group-item">Data da Venda: {{ venda.data_venda }}</li>
-                                                    <li class="list-group-item">Vendedor: {{ venda.vendedor.nome }}</li>
-                                                    <li class="list-group-item">Cliente: {{ venda.cliente.nome }}</li>
-                                                    <li class="list-group-item">Pagamento: {{ venda.get_forma_pagamento_display }}</li>
-                                                    <li class="list-group-item">Descrição: {{venda.descricao|safe}}</li>
-                                                </ul>
+                                                <p><strong>Data da Venda:</strong> {{ venda.data_venda }}</p>
+                                                <p><strong>Vendedor:</strong> {{ venda.vendedor.nome }}</p>
+                                                <p><strong>Cliente:</strong>  {{ venda.cliente.nome }}</p>
+                                                <p><strong>Pagamento:</strong> {{ venda.get_forma_pagamento_display }}</p>
+                                                <p><strong>Descrição:</strong> {{venda.descricao|safe}}</p>
+                                                <p><strong>Valor:</strong> Colocar valor da venda aqui</p>
+                                                <h2 class="text-danger-emphasis fst-italic mt-4">Produtos Vendidos:</h2>
+                                                {% for item in venda.itens_venda.all %}
+                                                    <ul class="list-group mt-4">
+                                                        <li class="list-group-item">Nome do Produto: {{item.produto.nome}}</li>
+                                                        <li class="list-group-item">Código do Produto: {{item.produto.codigo}}</li>
+                                                        <li class="list-group-item">ID do Produto: {{item.produto.pk}}</li>
+                                                        <li class="list-group-item">Preço do Produto: {{ item.produto.preco|floatformat:2 }}</li>
+                                                        <li class="list-group-item">Quantidade: {{ item.quantidade }}</li>
+                                                    </ul>
+                                                {% endfor %}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
@@ -114,7 +113,6 @@
                                         </div>
                                     </td>
                                 </tr>
-                            {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>

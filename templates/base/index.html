@@ -237,7 +237,8 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Relatórios</a>
-                                </li>
+                                </li>                                
+                                <a class="navbar-brand ms-5" aria-current="page" href="{% url 'home' %}">{{objuser.nome}}</a>                               
                                 <a href="{% url 'pendencias' %}" class="position-relative text-decoration-none mt-2 ms-2">
                                     <i class="fas fa-bell fa-lg"></i>
                                     <span class="notification-badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">

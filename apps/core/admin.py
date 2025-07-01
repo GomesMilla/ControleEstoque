@@ -21,9 +21,18 @@ class PeriodoMetaAdmin(admin.ModelAdmin):
     search_fields = ['nome']
 
 class VendaAdmin(admin.ModelAdmin):
-    list_display = ('vendedor', 'cliente', 'empresa', 'forma_pagamento', 'data_venda')
+    list_display = ('pk','vendedor', 'cliente', 'empresa', 'forma_pagamento', 'data_venda')
     list_filter = ['empresa', 'forma_pagamento', 'periodometa']
     search_fields = ['cliente', 'vendedor']
+
+class ItemVendaAdmin(admin.ModelAdmin):
+    list_display = ('pk','venda', 'venda_pk', 'produto', 'quantidade', 'empresa')
+    list_filter = ['empresa', 'venda__periodometa']
+    search_fields = ['produto', 'venda__cliente', 'venda__vendedor']
+
+    def venda_pk(self, obj):
+        return obj.venda.pk
+    venda_pk.short_description = 'Venda PK'
 
 class TamanhoAdmin(admin.ModelAdmin):
     list_display = ('nome', 'descricao', 'empresa')
@@ -43,3 +52,4 @@ admin.site.register(Venda, VendaAdmin)
 admin.site.register(Tamanho, TamanhoAdmin)
 admin.site.register(TipoProduto, TipoProdutoAdmin)
 admin.site.register(ContaCorrente)
+admin.site.register(ItemVenda, ItemVendaAdmin)
