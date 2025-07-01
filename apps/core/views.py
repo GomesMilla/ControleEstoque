@@ -18,6 +18,8 @@ from django.shortcuts import render
 from django.db import transaction
 from django.db.models import Sum, F
 from django.contrib import messages
+from .forms import ItemVendaFormset
+
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
     form_class = EstoqueForm
@@ -347,21 +349,21 @@ class ProdutoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return redirect('home')
         return super().handle_no_permission()
 
-class ProdutoListView(ListView):
-    model = Produto
-    template_name = 'core/produto/loja.html'
+# class ProdutoListView(ListView):
+#     model = Produto
+#     template_name = 'core/produto/loja.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        empresa_id = self.kwargs['empresa_id']
-        empresa = get_object_or_404(Empresa, id=empresa_id)
-        context['produtos_em_promocao'] = Produto.objects.filter(empresa=empresa, is_promocao=True, vendido=False)
-        context['produtos'] = Produto.objects.filter(empresa=empresa, vendido=False)
-        context['tipos_produto'] = TipoProduto.objects.filter(empresa=empresa)
-        context['tamanhos'] = Tamanho.objects.filter(empresa=empresa)
-        context['empresa'] = empresa
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         empresa_id = self.kwargs['empresa_id']
+#         empresa = get_object_or_404(Empresa, id=empresa_id)
+#         context['produtos_em_promocao'] = Produto.objects.filter(empresa=empresa, is_promocao=True, vendido=False)
+#         context['produtos'] = Produto.objects.filter(empresa=empresa, vendido=False)
+#         context['tipos_produto'] = TipoProduto.objects.filter(empresa=empresa)
+#         context['tamanhos'] = Tamanho.objects.filter(empresa=empresa)
+#         context['empresa'] = empresa
 
-        return context
+#         return context
 
 
 
@@ -538,61 +540,43 @@ class VendaCreateView(LoginRequiredMixin, CreateView):
     template_name = 'core/venda/cadastrar_venda.html'
     form_class = VendaForm
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data['item_form'] = ItemVendaForm(self.request.POST, user=self.request.user)
+        if self.request.method == 'POST':
+            # NÃO crie o formset aqui!
+            data['item_formset'] = ItemVendaFormset(user=self.request.user)
         else:
-            data['item_form'] = ItemVendaForm(user=self.request.user)
+            data['item_formset'] = ItemVendaFormset(queryset=ItemVenda.objects.none(), user=self.request.user)
         return data
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        item_form = context['item_form']
         form.instance.vendedor = self.request.user
         form.instance.empresa = self.request.user.empresa
         form.instance.periodometa = get_object_or_404(PeriodoMeta, fechado=False, empresa=self.request.user.empresa)
-
-        if item_form.is_valid():
-            produto = item_form.cleaned_data['produto']
-            quantidade = item_form.cleaned_data['quantidade']
-
-            print(f"Produto: {produto.nome}, Quantidade no estoque: {produto.quantidade}, Quantidade solicitada: {quantidade}")
-
-            if produto.quantidade < quantidade:
-                item_form.add_error('quantidade', 'Quantidade insuficiente no estoque.')
+        self.object = form.save()
+        from django.db import transaction
+        with transaction.atomic():            
+            item_formset = ItemVendaFormset(self.request.POST, instance=self.object, user=self.request.user)
+            if item_formset.is_valid():
+                itens = item_formset.save(commit=False)
+                for item in itens:
+                    produto = item.produto
+                    quantidade = item.quantidade
+                    if produto.quantidade < quantidade:
+                        item_formset.add_error(None, f'Quantidade insuficiente no estoque para {produto.nome}.')
+                        transaction.set_rollback(True)
+                        return self.form_invalid(form)
+                    produto.quantidade -= quantidade
+                    if produto.quantidade <= 0:
+                        produto.quantidade = 0
+                        produto.vendido = True
+                    produto.save()
+                    item.empresa = self.request.user.empresa
+                    item.save()
+                item_formset.save_m2m()
+                return super().form_valid(form)
+            else:
                 return self.form_invalid(form)
-
-            from django.db import transaction
-            with transaction.atomic():
-                # Atualizar a quantidade do produto e o status antes de salvar
-                produto.quantidade -= quantidade
-                if produto.quantidade <= 0:
-                    produto.quantidade = 0
-                    produto.vendido = True
-                produto.save()
-
-                print(f"Produto após atualização: {produto.nome}, Quantidade restante no estoque: {produto.quantidade}, Vendido: {produto.vendido}")
-
-                # Salvar a venda
-                self.object = form.save()
-
-                # Criar o item da venda
-                item = item_form.save(commit=False)
-                item.venda = self.object
-                item.empresa = self.request.user.empresa
-                item.save()
-
-                print(f"Produto após item salvo: {produto.nome}, Quantidade restante no estoque: {produto.quantidade}, Vendido: {produto.vendido}")
-
-            return super().form_valid(form)
-        else:
-            return self.form_invalid(form)
 
     def get_success_url(self):
         return reverse_lazy('home')

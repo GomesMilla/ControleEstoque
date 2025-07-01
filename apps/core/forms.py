@@ -7,7 +7,8 @@ from users.models import Cliente
 from django import forms
 from .models import VendaFiado
 from django_select2.forms import Select2Widget
-from django.forms import modelformset_factory, BaseModelFormSet
+from django.forms import modelformset_factory, BaseModelFormSet, inlineformset_factory, BaseInlineFormSet
+
 class EstoqueForm(forms.ModelForm):
     class Meta:
         model = Estoque
@@ -375,6 +376,58 @@ ItemVendaFiadoFormset = modelformset_factory(
     extra=1,
     formset=BaseItemVendaFiadoFormset
 )
+
+class BaseItemVendaInlineFormset(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def _construct_form(self, i, **kwargs):
+        kwargs['user'] = self.user
+        return super()._construct_form(i, **kwargs)
+
+ItemVendaFormset = inlineformset_factory(
+    Venda,
+    ItemVenda,
+    form=ItemVendaForm,
+    extra=1,
+    can_delete=True,
+    formset=BaseItemVendaInlineFormset
+)
+
+def form_valid(self, form):
+    form.instance.vendedor = self.request.user
+    form.instance.empresa = self.request.user.empresa
+    form.instance.periodometa = get_object_or_404(PeriodoMeta, fechado=False, empresa=self.request.user.empresa)
+    from django.db import transaction
+    with transaction.atomic():
+        # 1. Salva a venda primeiro
+        self.object = form.save()
+        # 2. Cria o formset já vinculado à venda criada
+        item_formset = ItemVendaFormset(self.request.POST, instance=self.object, user=self.request.user)
+        # 3. Valida o formset
+        if item_formset.is_valid():
+            itens = item_formset.save(commit=False)
+            for item in itens:
+                produto = item.produto
+                quantidade = item.quantidade
+                if produto.quantidade < quantidade:
+                    item_formset.add_error(None, f'Quantidade insuficiente no estoque para {produto.nome}.')
+                    transaction.set_rollback(True)
+                    return self.form_invalid(form)
+                produto.quantidade -= quantidade
+                if produto.quantidade <= 0:
+                    produto.quantidade = 0
+                    produto.vendido = True
+                produto.save()
+                item.empresa = self.request.user.empresa
+                item.save()
+            item_formset.save_m2m()
+            return super().form_valid(form)
+        else:
+            # Se o formset for inválido, deleta a venda criada para não deixar lixo no banco
+            self.object.delete()
+            return self.form_invalid(form)
 
 
 

@@ -3,6 +3,7 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
+        <a href="{% url 'cadastrar_tamanho' %}" class="btn btn-success mb-5">Cadastrar Tamanho</a>
         <h2>Tamanhos</h2>
         {% if tamanhos %}
             <table class="table table-hover text-center mt-3">

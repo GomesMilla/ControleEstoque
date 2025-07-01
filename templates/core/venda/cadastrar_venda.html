@@ -2,60 +2,144 @@
 {% load static bootstrap form_tags %}
 {% block conteudo %}
 
+
     <div class="container mt-5">
         <h2>Cadastrar Venda</h2>
         <form method="post">
             {% csrf_token %}
             {{form.media}}
             {{ form|bootstrap }}
-            {{ item_form|bootstrap }}
+            <hr>
+            <h4>Produtos da Venda</h4>
+            {{ item_formset.management_form }}
+            <div id="itens-formset">
+                {% for form_item in item_formset %}
+                <div class="formset-row border rounded p-2 mb-2 position-relative">
+                    {{ form_item|bootstrap }}
+                    {{ form_item.DELETE }}  {# <-- ESSENCIAL! #}
+                    <button type="button" class="btn btn-danger btn-sm remove-formset-row position-absolute top-0 end-0 m-2">Remover</button>
+                </div>
+            {% endfor %}
+            </div>
+            <button type="button" class="btn btn-primary btn-sm mb-3" id="add-formset-row">Adicionar Produto</button>
             <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
                 <button type="submit" class="btn btn-success rounded-pill">Cadastrar Venda</button>
             </div>
         </form>
     </div>
+    <script>
+        console.log('jQuery carregado!');
+        function updateSelect2() {
+            $("select[id$='-produto']").select2({
+                ajax: {
+                    url: "{% url 'produto_pesquisar' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { term: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data.results };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                width: '100%'
+            });
+        }
+        $(document).ready(function() {
+            $('#id_cliente').select2({
+                ajax: {
+                    url: "{% url 'cliente_pesquisar' %}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { term: params.term };
+                    },
+                    processResults: function (data) {
+                        return { results: data.results };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 1,
+                width: '100%'
+            });
+            updateSelect2();
+            // Adicionar nova linha do formset
+            $('#add-formset-row').click(function() {
+                var totalFormsInput = $("input[name$='-TOTAL_FORMS']");
+                var formIdx = parseInt(totalFormsInput.val());
+                var $firstRow = $('.formset-row:first');
 
+                // Remove o select2 do campo antes de clonar
+                $firstRow.find('select').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
+
+                var $newRow = $firstRow.clone(false, false);
+
+                // Limpa os valores dos campos e atualiza os índices
+                $newRow.find('input, select').each(function() {
+                    var name = $(this).attr('name');
+                    if (name) {
+                        // Troca o índice do campo para o novo formIdx
+                        var newName = name.replace(/-(\d+)-/, '-' + formIdx + '-');
+                        $(this).attr('name', newName);
+                        $(this).attr('id', 'id_' + newName);
+                        if ($(this).is(':checkbox')) {
+                            $(this).prop('checked', false);
+                        } else {
+                            $(this).val('');
+                        }
+                    }
+                });
+
+                $newRow.appendTo('#itens-formset');
+                totalFormsInput.val(formIdx + 1);
+
+                // Reaplica o select2 em todos os selects de produto
+                updateSelect2();
+                console.log('Nova linha adicionada! Total:', formIdx + 1);
+            });
+            // Remover linha do formset
+            $(document).on('click', '.remove-formset-row', function() {
+                if ($('.formset-row').length > 1) {
+                    $(this).closest('.formset-row').remove();
+                    reindexFormsetRows();
+                    console.log('Linha removida! Total:', $('.formset-row').length);
+                }
+            });
+        });
+        function reindexFormsetRows() {
+            var forms = $('.formset-row');
+            forms.each(function(index) {
+                $(this).find('input, select, textarea, label').each(function() {
+                    // Atualiza o atributo name
+                    var name = $(this).attr('name');
+                    if (name) {
+                        var newName = name.replace(/-(\d+)-/, '-' + index + '-');
+                        $(this).attr('name', newName);
+                    }
+                    // Atualiza o atributo id
+                    var id = $(this).attr('id');
+                    if (id) {
+                        var newId = id.replace(/-(\d+)-/, '-' + index + '-');
+                        $(this).attr('id', newId);
+                    }
+                    // Atualiza o atributo for dos labels
+                    var labelFor = $(this).attr('for');
+                    if (labelFor) {
+                        var newFor = labelFor.replace(/-(\d+)-/, '-' + index + '-');
+                        $(this).attr('for', newFor);
+                    }
+                });
+            });
+            // Atualiza o TOTAL_FORMS
+            $("input[name$='-TOTAL_FORMS']").val(forms.length);
+        }
+    </script>
+    
 {% endblock conteudo %}
 
-<script>    
-    $(document).ready(function() {
-        $('#id_cliente').select2({
-            ajax: {
-                url: "{% url 'cliente_pesquisar' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term,
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 1,
-        });
-        $('#id_produto').select2({
-            ajax: {
-                url: "{% url 'produto_pesquisar' %}",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term,
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 1,
-        });
-    });
-</script>

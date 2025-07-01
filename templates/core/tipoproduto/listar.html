@@ -3,6 +3,7 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
+        <a href="{% url 'tipo_produto_criar' %}" class="btn btn-success mb-5">Cadastrar Tipo de Produto</a>
         <h2>Tipos de Produtos</h2>
         {% if tiposdeprodutos %}
             <table class="table table-hover text-center mt-3">

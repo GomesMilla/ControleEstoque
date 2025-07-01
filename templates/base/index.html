@@ -14,12 +14,12 @@
     <link href="{% static 'css/HoldOn.min.css'%}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js'%}"></script>
     <script src="{% static 'js/jquery.mask.js' %}"></script>
     <script src="{% static 'js/select2.min.js' %}"></script>
     <script src="{% static 'js/index.global.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.mask.min.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap-datepicker.min.js'%}"></script>
     
@@ -176,11 +176,8 @@
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
                                 </a> 
-                                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
-                                    {% csrf_token %}
-                                </form>
                                 
-                                <a href="#" class="mt-2" onclick="document.getElementById('logout-form').submit();">
+                                <a href="#" class="mt-2 ms-3" onclick="document.getElementById('logout-form').submit();">
                                     <span class="material-icons" style="font-size: 24px;">logout</span>
                                 </a>                                                              
                             {% endif %}
@@ -190,6 +187,15 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}">Cadastrar Venda</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Meta
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_meta'%}">Cadastrar Meta</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_metas'%}">Lista de Metas</a></li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
