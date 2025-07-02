@@ -3,7 +3,10 @@
 {% block conteudo %}  
 
     <div class="container mt-5">
-        <h2>Produtos Indisponível</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-box text-primary"></i> Produtos Indisponível</h2>
+            <p class="lead">Acompanhe os produtos indisponíveis para garantir que suas compras estejam sempre atualizadas.</p>
+        </div>
         <div class="row">
             <form method="get" class="form-inline mb-3 d-flex">
                 <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar produto" value="{{ request.GET.q }}">

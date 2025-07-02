@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
 <div class="container mt-5">
-    <h2>Cadastrar Produto</h2>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-box text-primary"></i> Cadastrar Produto</h2>
+        <p class="lead">Cadastre seus produtos e acompanhe o estoque e as vendas relacionadas a eles.</p>
+    </div>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{form.media}}

@@ -4,7 +4,10 @@
 
 
     <div class="container mt-5">
-        <h2>Cadastrar Venda</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-cart-plus text-primary"></i> Cadastrar Venda</h2>
+            <p class="lead">Cadastre suas vendas, acompanhe seu estoque e otimize a comunicação interna com nosso sistema.</p>
+        </div>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

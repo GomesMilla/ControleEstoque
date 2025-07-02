@@ -70,6 +70,9 @@ urlpatterns = [
     path('vendas-fiado/<int:pk>/', VendaFiadoDetailView.as_view(), name='detalhar_venda_fiado'),
     path('vendas-fiado/parcela/pagar/<int:pk>/', PagarParcelaView.as_view(), name='pagar_parcela'),
 
+    # Relatórios
+    path('relatorios/home/', RelatoriosView.as_view(), name='relatorios_home'),
+
     #AJAX
     path('fornecedores_pesquisar/', fornecedor_por_empresa, name='fornecedores_pesquisar'),
     path('marca_pesquisar/', marca_por_empresa, name='marca_pesquisar'),

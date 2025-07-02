@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
-        <h2>Cadastrar Vale Presente</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-gift text-primary"></i> Cadastrar Vale Presente</h2>
+            <p class="lead">Cadastre seus vale-presentes e acompanhe os vales dos seus clientes para uma gestão mais eficiente.</p>
+        </div>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{form.media}}

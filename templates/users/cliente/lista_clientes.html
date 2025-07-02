@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
-        <h2>Clientes</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-people text-primary"></i> Clientes</h2>
+            <p class="lead">Monitore seus clientes e acompanhe suas compras para oferecer produtos alinhados aos valores e preferências deles.</p>
+        </div>
         <div class="row">
             <form method="get" class="form-inline mb-3 d-flex">
                 <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar cliente" value="{{ request.GET.q }}">

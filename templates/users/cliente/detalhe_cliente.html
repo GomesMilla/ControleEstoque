@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
-        <h2>Informações sobre o cliente: {{ objcliente }}</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-person text-primary"></i> {{ objcliente }}</h2>
+            <p class="lead">Monitore seu cliente e acompanhe suas compras para oferecer produtos alinhados aos valores e preferências dele.</p>
+        </div>
         <ul class="list-group mt-4">
             <li class="list-group-item"><b>Nome:</b> {{objcliente.nome|default:"-"}}</li>
             <li class="list-group-item"><b>Data de Aniversário:</b> {{objcliente.data_aniversario|default:"-"}}</li>

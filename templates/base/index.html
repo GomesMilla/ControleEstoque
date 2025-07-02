@@ -51,6 +51,8 @@
             -{{objuser.empresa.nome}}       
         {% endif %}
     </title>
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
     <body>
         <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -78,292 +80,272 @@
             </style>
         {% endif %}
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3 {% if objuser and objuser.empresa.color %} cor-menu {% endif %}">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3 shadow-sm {% if objuser and objuser.empresa.color %} cor-menu {% endif %}">
             <div class="container-fluid">
-                <a class="navbar-brand ms-5"href="{% url 'inicio' %}">
+                <a class="navbar-brand ms-2 d-flex align-items-center" href="{% url 'inicio' %}">
                     {% if objuser and objuser.empresa.logo %}
-                        <img src="{{objuser.empresa.logo.url}}" alt="Logo" width="150" height="40" class="d-inline-block align-text-top">
+                        <img src="{{objuser.empresa.logo.url}}" alt="Logo" width="120" height="36" class="d-inline-block align-text-top me-2">
                     {% else %}
-                        <img src="{% static 'images/logobrancaq.png' %}" alt="Logo" width="150" height="40" class="d-inline-block align-text-top">
+                        <img src="{% static 'images/logobrancaq.png' %}" alt="Logo" width="120" height="36" class="d-inline-block align-text-top me-2">
                     {% endif %}
+                    <span class="fw-bold d-none d-md-inline" style="font-family: 'Roboto Slab', serif; font-size: 1.2rem;">Afrodite</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if objuser.is_superuser %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Painel de Controle
+                                    <i class="bi bi-gear"></i> Painel de Controle
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'cadastrar_empresa' %}">Cadastrar Empresa</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'lista_empresas' %}">Listagem de Empresa</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'cadastrar_usuario_admin' %}">Cadastrar Usuário</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'cadastrar_empresa' %}"><i class="bi bi-building-add"></i> Cadastrar Empresa</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'lista_empresas' %}"><i class="bi bi-list-ul"></i> Listagem de Empresa</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'cadastrar_usuario_admin' %}"><i class="bi bi-person-plus"></i> Cadastrar Usuário</a></li>
                                 </ul>
                             </li>
                         {% endif %}
-                    </ul>
-                    {% if objuser and not objuser.is_superuser %}
-                        <ul class="navbar-nav">
+                        {% if objuser and not objuser.is_superuser %}
                             {% if objuser.if_funcionario %}
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="bi bi-house-door"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}">Cadastrar Venda</a>
+                                    <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}"><i class="bi bi-cart-plus"></i> Cadastrar Venda</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Clientes
+                                        <i class="bi bi-people"></i> Clientes
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'aniversariantes' %}">Aniversáriantes</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_cliente' %}">Cadastrar</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'lista_clientes' %}">Clientes</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'aniversariantes' %}"><i class="bi bi-gift"></i> Aniversáriantes</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_cliente' %}"><i class="bi bi-person-plus"></i> Cadastrar</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_clientes' %}"><i class="bi bi-people"></i> Clientes</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Pedidos
+                                        <i class="bi bi-bag"></i> Pedidos
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_pedido' %}">Cadastrar</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'lista_pedidos' %}">Pedidos</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_pedido' %}"><i class="bi bi-plus-circle"></i> Cadastrar</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_pedidos' %}"><i class="bi bi-list-check"></i> Pedidos</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Produtos
+                                        <i class="bi bi-box"></i> Produtos
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_produto' %}">Cadastrar Produto</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}">Produtos Disponível</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}">Produtos Indisponível</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_produto' %}"><i class="bi bi-plus-circle"></i> Cadastrar Produto</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}"><i class="bi bi-box-seam"></i> Produtos Disponível</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}"><i class="bi bi-boxes"></i> Produtos Indisponível</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Tamanho de Produto
+                                        <i class="bi bi-arrows-expand"></i> Tamanho de Produto
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_tamanho' %}">Lista de Tamanho</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_tamanho' %}">Cadastrar Tamanho de Produto</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_tamanho' %}"><i class="bi bi-list-ul"></i> Lista de Tamanho</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_tamanho' %}"><i class="bi bi-plus-circle"></i> Cadastrar Tamanho de Produto</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Tipo de Produto
+                                        <i class="bi bi-tags"></i> Tipo de Produto
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'tipo_produto_criar' %}">Cadastrar Tipo de Produto</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_tipos_de_produtos' %}">Listar Tipo de Produto</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'tipo_produto_criar' %}"><i class="bi bi-plus-circle"></i> Cadastrar Tipo de Produto</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_tipos_de_produtos' %}"><i class="bi bi-list-ul"></i> Listar Tipo de Produto</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Marca
+                                        <i class="bi bi-award"></i> Marca
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_marca' %}">Cadastrar Marca</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'listar_marcas' %}">Listar Marcas</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_marca' %}"><i class="bi bi-plus-circle"></i> Cadastrar Marca</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_marcas' %}"><i class="bi bi-list-ul"></i> Listar Marcas</a></li>
                                     </ul>
                                 </li>
-                                <a href="{% url 'pendencias' %}" class="position-relative text-decoration-none mt-2 ms-2">
-                                    <i class="fas fa-bell fa-lg"></i>
-                                    <span class="notification-badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-                                        <span class="visually-hidden">New alerts</span>
-                                    </span>
-                                </a> 
-                                
-                                <a href="#" class="mt-2 ms-3" onclick="document.getElementById('logout-form').submit();">
-                                    <span class="material-icons" style="font-size: 24px;">logout</span>
-                                </a>                                                              
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-bar-chart-line"></i> Relatórios</a>
+                                </li>
                             {% endif %}
                             {% if not objuser.if_funcionario %}
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="bi bi-house-door"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}">Cadastrar Venda</a>
+                                    <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}"><i class="bi bi-cart-plus"></i> Cadastrar Venda</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Meta
+                                        <i class="bi bi-bullseye"></i> Meta
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_meta'%}">Cadastrar Meta</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_metas'%}">Lista de Metas</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_meta'%}"><i class="bi bi-plus-circle"></i> Cadastrar Meta</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_metas'%}"><i class="bi bi-list-ul"></i> Lista de Metas</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Produto
+                                        <i class="bi bi-box"></i> Produto
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_produto' %}">Cadastrar Produto</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}">Produtos Disponível</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}">Produtos Indisponível</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_produto' %}"><i class="bi bi-plus-circle"></i> Cadastrar Produto</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}"><i class="bi bi-box-seam"></i> Produtos Disponível</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_indisponivel' objuser.empresa.pk %}"><i class="bi bi-boxes"></i> Produtos Indisponível</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Pedido
+                                        <i class="bi bi-bag"></i> Pedido
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_pedido' %}">Cadastrar Pedidos</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_pedidos' %}">Pedidos</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_pedido' %}"><i class="bi bi-plus-circle"></i> Cadastrar Pedidos</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_pedidos' %}"><i class="bi bi-list-check"></i> Pedidos</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Vale Presente
+                                        <i class="bi bi-gift"></i> Vale Presente
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_vale_presente' %}">Cadastrar Vale Presente</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'listar_vale_presente' %}">Listar Vale Presente</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_vale_presente' %}"><i class="bi bi-plus-circle"></i> Cadastrar Vale Presente</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_vale_presente' %}"><i class="bi bi-list-ul"></i> Listar Vale Presente</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Cliente
+                                        <i class="bi bi-people"></i> Cliente
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'aniversariantes' %}">Aniversáriantes</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'cadastrar_cliente' %}">Cadastrar</a></li>
-                                        <li><a class="dropdown-item" aria-current="page" href="{% url 'lista_clientes' %}">Clientes</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'aniversariantes' %}"><i class="bi bi-gift"></i> Aniversáriantes</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_cliente' %}"><i class="bi bi-person-plus"></i> Cadastrar</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_clientes' %}"><i class="bi bi-people"></i> Clientes</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Relatórios</a>
-                                </li>                                
-                                <a class="navbar-brand ms-5" aria-current="page" href="{% url 'home' %}">{{objuser.nome}}</a>                               
-                                <a href="{% url 'pendencias' %}" class="position-relative text-decoration-none mt-2 ms-2">
+                                    <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-bar-chart-line"></i> Relatórios</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                        {% if objuser %}
+                            <li class="nav-item">
+                                <span class="navbar-text fw-semibold me-3"><i class="bi bi-person-circle"></i> {{objuser.nome}}</span>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'pendencias' %}" class="nav-link position-relative">
                                     <i class="fas fa-bell fa-lg"></i>
                                     <span class="notification-badge position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                                         <span class="visually-hidden">New alerts</span>
                                     </span>
-                                </a>                                
-                                <button class="btn ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-link nav-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
                                     <i class="material-icons">settings</i>
                                 </button>
-                                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
-                                    {% csrf_token %}
-                                </form>                                
-                                <a href="#" class="mt-2" onclick="document.getElementById('logout-form').submit();">
+                            </li>
+                            <li class="nav-item">
+                                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">{% csrf_token %}</form>
+                                <a href="#" class="nav-link" onclick="document.getElementById('logout-form').submit();">
                                     <span class="material-icons" style="font-size: 24px;">logout</span>
                                 </a>
-                                
-                            {% endif %}
-                        </ul>
-                    {% endif %}
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{% url 'login' %}" class="btn btn-light rounded-pill">Acessar</a>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
-                {% if not objuser %}
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <a href="{% url 'login' %}" class="btn btn-light rounded-pill">Acessar</a>
-                    </div>
-                {% endif %}
             </div>
         </nav>
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasRightLabel">Configurações</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>                
+            <div class="offcanvas-header bg-primary text-white">
+                <h5 class="offcanvas-title d-flex align-items-center" id="offcanvasRightLabel">
+                    <i class="bi bi-gear me-2"></i> Configurações
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
             <div class="offcanvas-body">
                 {% if objuser and not objuser.if_funcionario %}
-                    <h6>Empresa</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" href="{% url 'editar_empresa' objuser.empresa.pk %}">Editar Empresa</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-building"></i> Empresa</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'editar_empresa' objuser.empresa.pk %}"><i class="bi bi-pencil-square me-2 text-primary"></i> Editar Empresa</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'detalhes_empresa' objuser.empresa.pk %}"><i class="bi bi-eye me-2 text-info"></i> Visualizar Empresa</a>
                     </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'detalhes_empresa' objuser.empresa.pk %}">Visualizar Empresa</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-bullseye"></i> Meta</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'cadastrar_meta'%}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Meta</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'lista_metas'%}"><i class="bi bi-list-ul me-2 text-warning"></i> Listagem de Metas</a>
                     </ul>
-                    <h6 class="mt-3">Meta</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'cadastrar_meta'%}">Cadastrar Meta</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-box-seam"></i> Estoque</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'cadastrar_estoque' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Estoque</a>
                     </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'lista_metas'%}">Listagem de Metas</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-box"></i> Produto</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'cadastrar_tamanho' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Tamanho de Produto</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_tamanho' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Lista de Tamanho</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'tipo_produto_criar' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Tipo de Produto</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_tipos_de_produtos' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Listar Tipo de Produto</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'cadastrar_marca' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Marca</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_marcas' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Listar Marcas</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'cadastrar_fornecedor' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Fornecedor</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_fornecedores' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Listar Fornecedores</a>
                     </ul>
-                    <h6 class="mt-3">Estoque</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'cadastrar_estoque' %}">Cadastrar Estoque</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-person-badge"></i> Colaborador</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'cadastrar_usuario' %}"><i class="bi bi-person-plus me-2 text-success"></i> Cadastrar Colaborador</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'lista_usuarios' objuser.empresa.pk %}"><i class="bi bi-people me-2 text-info"></i> Listar Colaborador</a>
                     </ul>
-                    <h6 class="mt-3">Produto</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" aria-current="page" href="{% url 'cadastrar_tamanho' %}">Cadastrar Tamanho de Produto</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-cash-stack"></i> Conta Corrente</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'nova_conta' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Conta Corrente</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_contas' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Listar Conta Corrente</a>
                     </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'listar_tamanho' %}">Lista de Tamanho</a>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-clock-history"></i> Vendas a Prazo</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'listar_vendas_fiado' %}"><i class="bi bi-plus-circle me-2 text-success"></i> Cadastrar Vendas a Prazo</a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" href="{% url 'listar_vendas_fiado' %}"><i class="bi bi-list-ul me-2 text-warning"></i> Listar Vendas a Prazo</a>
                     </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'tipo_produto_criar' %}">Cadastrar Tipo de Produto</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'listar_tipos_de_produtos' %}">Listar Tipo de Produto</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'cadastrar_marca' %}">Cadastrar Marca</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" aria-current="page" href="{% url 'listar_marcas' %}">Listar Marcas</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'cadastrar_fornecedor' %}">Cadastrar Fornecedor</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'listar_fornecedores' %}">Listar Fornecedores</a>
-                    </ul>                        
-                    <h6 class="mt-3">Colaborador</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" href="{% url 'cadastrar_usuario' %}">Cadastrar Colaborador</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'lista_usuarios' objuser.empresa.pk %}">Listar Colaborador</a>
-                    </ul>
-                    <h6 class="mt-3">Conta Corrente</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" href="{% url 'nova_conta' %}">Cadastrar Conta Corrente</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'listar_contas' %}">Listar Conta Corrente</a>
-                    </ul>
-                    <h6 class="mt-3">Vendas a Prazo</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action" href="{% url 'listar_vendas_fiado' %}">Cadastrar Vendas a Prazo</a>
-                    </ul>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" href="{% url 'listar_vendas_fiado' %}">Listar Vendas a Prazo</a>
-                    </ul>                    
-                    <h6 class="mt-3">Relatórios</h6>
-                    <ul class="list-group">
-                        <a class="list-group-item list-group-item-action mt-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
-                            Relatórios
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-bar-chart-line"></i> Relatórios</h6>
+                    <ul class="list-group mb-2">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center mt-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Funcionalidade em construção">
+                            <i class="bi bi-graph-up-arrow me-2 text-secondary"></i> Relatórios
                         </a>
                     </ul>
-                    <h6 class="mt-3">Agenda</h6>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-calendar-event"></i> Agenda</h6>
                     {% if objuser.empresa.agenda %}
-                        <ul class="list-group">
-                            <a class="list-group-item list-group-item-action" href="{% url 'agenda' %}">Agenda</a>
+                        <ul class="list-group mb-2">
+                            <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'agenda' %}"><i class="bi bi-calendar-check me-2 text-success"></i> Agenda</a>
                         </ul>
                     {% else %}
-                        <ul class="list-group">
-                            <a class="list-group-item list-group-item-action">Agenda
-                                <span class="text-muted">(Não liberado)</span>
+                        <ul class="list-group mb-2">
+                            <a class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="bi bi-calendar-x me-2 text-muted"></i> Agenda
+                                <span class="text-muted ms-2">(Não liberado)</span>
                             </a>
                         </ul>
                     {% endif %}
-                    <h6 class="mt-3">Loja Online</h6>
+                    <h6 class="mt-3 text-secondary"><i class="bi bi-shop"></i> Loja Online</h6>
                     {% if objuser.empresa.lista_produto %}
-                        <ul class="list-group">
-                            <a class="list-group-item list-group-item-action" href="{% url 'loja' objuser.empresa.pk %}">Loja Online</a>
+                        <ul class="list-group mb-2">
+                            <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'loja' objuser.empresa.pk %}"><i class="bi bi-bag-check me-2 text-success"></i> Loja Online</a>
                         </ul>
                     {% else %}
-                        <ul class="list-group">
-                            <a class="list-group-item list-group-item-action">Loja Online
-                                <span class="text-muted">(Não liberado)</span>
+                        <ul class="list-group mb-2">
+                            <a class="list-group-item list-group-item-action d-flex align-items-center">
+                                <i class="bi bi-bag-x me-2 text-muted"></i> Loja Online
+                                <span class="text-muted ms-2">(Não liberado)</span>
                             </a>
                         </ul>
                     {% endif %}
@@ -406,22 +388,18 @@
         </div>
         {% endif %}
             
-        {% if objuser and not objuser.is_superuser %}
-            <div class="row">
-                <div class="col-auto">
-                    <a type="button" class="btn btn-primary ms-5" href="{% url 'cadastrar_venda' %}"
-                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                        Cadastrar Venda
-                    </a> 
-                </div>
-                <div class="col-auto">
-                    <a type="button" class="btn btn-danger" href="{% url 'nova_venda_fiado' %}"
-                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                        Cadastrar Venda a Prazo
-                    </a> 
-                </div>
+        <div class="row justify-content-md-start my-4 ms-3">
+            <div class="col-auto mb-2">
+                <a type="button" class="btn btn-lg btn-gradient-primary shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'cadastrar_venda' %}" style="font-size: 1.1rem;">
+                    <i class="bi bi-cart-plus me-2"></i> Cadastrar Venda
+                </a>
             </div>
-        {% endif %}
+            <div class="col-auto mb-2">
+                <a type="button" class="btn btn-lg btn-gradient-danger shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'nova_venda_fiado' %}" style="font-size: 1.1rem;">
+                    <i class="bi bi-cash-coin me-2"></i> Cadastrar Venda a Prazo
+                </a>
+            </div>
+        </div>
 
         <main>        
             {% block conteudo %} 
@@ -469,6 +447,26 @@
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         </script>
+        <style>
+            .btn-gradient-primary {
+                background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+                color: #fff;
+                border: none;
+            }
+            .btn-gradient-primary:hover {
+                background: linear-gradient(90deg, #0056b3 0%, #00aaff 100%);
+                color: #fff;
+            }
+            .btn-gradient-danger {
+                background: linear-gradient(90deg, #dc3545 0%, #ff7675 100%);
+                color: #fff;
+                border: none;
+            }
+            .btn-gradient-danger:hover {
+                background: linear-gradient(90deg, #b71c1c 0%, #ff5252 100%);
+                color: #fff;
+            }
+        </style>
     </body>
 </html>
 

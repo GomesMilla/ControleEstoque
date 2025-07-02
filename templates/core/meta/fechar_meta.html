@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
 <div class="container mt-5">
-    <h2>Fechar Meta</h2>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-plus-circle text-primary"></i> Fechar Meta</h2>
+        <p class="lead">Finalize sua meta atual para encerrar o período de vendas e iniciar um novo.</p>
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form|bootstrap }}

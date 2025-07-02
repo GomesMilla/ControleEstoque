@@ -19,6 +19,7 @@ from django.db import transaction
 from django.db.models import Sum, F
 from django.contrib import messages
 from .forms import ItemVendaFormset
+from django.views.generic.base import TemplateView
 
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
@@ -990,3 +991,6 @@ class PagarParcelaView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         # Redireciona para os detalhes da venda após o pagamento
         return reverse_lazy('detalhar_venda_fiado', kwargs={'pk': self.object.venda.pk})
+
+class RelatoriosView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/relatorios/home.html'
