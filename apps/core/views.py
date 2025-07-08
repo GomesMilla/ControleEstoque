@@ -16,10 +16,14 @@ from django.views.generic.edit import View
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.db import transaction
-from django.db.models import Sum, F
+from django.db.models import Sum, F, FloatField, ExpressionWrapper
 from django.contrib import messages
 from .forms import ItemVendaFormset
 from django.views.generic.base import TemplateView
+from django.utils import timezone
+from django.db.models import DecimalField
+from django.db.models import Count
+from django.contrib.auth import get_user_model
 
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
@@ -994,3 +998,202 @@ class PagarParcelaView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class RelatoriosView(LoginRequiredMixin, TemplateView):
     template_name = 'core/relatorios/home.html'
+
+class VendasPorPeriodoView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/relatorios/vendas_periodo.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.if_funcionario:
+            from django.http import HttpResponseForbidden
+            return HttpResponseForbidden('Acesso restrito!')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empresa = self.request.user.empresa
+        data_inicio = self.request.GET.get('data_inicio')
+        data_fim = self.request.GET.get('data_fim')
+        vendas = []
+        total_geral = 0
+        produtos_resumo = []
+        if data_inicio and data_fim:
+            vendas = Venda.objects.filter(
+                empresa=empresa,
+                data_venda__date__gte=data_inicio,
+                data_venda__date__lte=data_fim
+            ).select_related('cliente', 'vendedor')
+            # 1. Anote o valor total de cada item
+            itens = ItemVenda.objects.filter(venda__in=vendas).annotate(
+                valor_total=ExpressionWrapper(
+                    F('quantidade') * F('produto__preco'),
+                    output_field=DecimalField()
+                )
+            )
+            # 2. Some o campo anotado
+            total_vendido = itens.aggregate(total=Sum('valor_total'))['total'] or 0
+            # 3. Resumo por produto
+            produtos_resumo = (
+                ItemVenda.objects.filter(venda__in=vendas)
+                .annotate(
+                    valor_total_item=ExpressionWrapper(
+                        F('quantidade') * F('produto__preco'),
+                        output_field=DecimalField()
+                    )
+                )
+                .values('produto__nome')
+                .annotate(
+                    quantidade=Sum('quantidade'),
+                    valor_total=Sum('valor_total_item')
+                )
+                .order_by('-quantidade')
+            )
+        context.update({
+            'vendas': vendas,
+            'data_inicio': data_inicio,
+            'data_fim': data_fim,
+            'total_geral': total_geral,
+            'produtos_resumo': produtos_resumo,
+        })
+        return context
+
+class VendasPorUsuarioView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/relatorios/vendas_usuario.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.if_funcionario:
+            from django.http import HttpResponseForbidden
+            return HttpResponseForbidden('Acesso restrito!')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        empresa = self.request.user.empresa
+        data_inicio = self.request.GET.get('data_inicio')
+        data_fim = self.request.GET.get('data_fim')
+        usuario_id = self.request.GET.get('usuario')
+        
+        vendas = []
+        total_geral = 0
+        usuarios_disponiveis = []
+        vendas_por_usuario = []
+        produtos_por_usuario = []
+        desempenho_semanal = []
+        
+        # Buscar todos os usuários da empresa que fizeram vendas
+        usuarios_disponiveis = get_user_model().objects.filter(
+            empresa=empresa,
+            vendedor_vendas__isnull=False
+        ).distinct().order_by('nome', 'nome')
+        
+        if data_inicio and data_fim:
+            # Filtrar vendas por período
+            vendas_base = Venda.objects.filter(
+                empresa=empresa,
+                data_venda__date__gte=data_inicio,
+                data_venda__date__lte=data_fim
+            ).select_related('cliente', 'vendedor')
+            
+            # Se um usuário específico foi selecionado
+            if usuario_id:
+                vendas_base = vendas_base.filter(vendedor_id=usuario_id)
+            
+            vendas = vendas_base
+            
+            # Calcular total geral
+            itens = ItemVenda.objects.filter(venda__in=vendas).annotate(
+                valor_total_item=ExpressionWrapper(
+                    F('quantidade') * F('produto__preco'),
+                    output_field=DecimalField()
+                )
+            )
+            total_geral = itens.aggregate(total=Sum('valor_total_item'))['total'] or 0
+            
+            # Resumo por usuário
+            vendas_por_usuario = (
+                vendas
+                .values('vendedor__nome', 'vendedor__cpf')
+                .annotate(
+                    total_vendas=Count('id'),
+                    total_itens=Sum('itens_venda__quantidade')
+                )
+                .order_by('-total_vendas')
+            )
+            
+            # Calcular valor total por usuário separadamente
+            for usuario in vendas_por_usuario:
+                vendas_usuario = vendas.filter(
+                    vendedor__nome=usuario['vendedor__nome'],
+                    vendedor__cpf=usuario['vendedor__cpf']
+                )
+                itens_usuario = ItemVenda.objects.filter(venda__in=vendas_usuario).annotate(
+                    valor_total_item=ExpressionWrapper(
+                        F('quantidade') * F('produto__preco'),
+                        output_field=DecimalField()
+                    )
+                )
+                usuario['valor_total'] = itens_usuario.aggregate(total=Sum('valor_total_item'))['total'] or 0
+                # Calcular ticket médio por usuário
+                usuario['ticket_medio'] = usuario['valor_total'] / usuario['total_vendas'] if usuario['total_vendas'] > 0 else 0
+            
+            # Reordenar por valor total
+            vendas_por_usuario = sorted(vendas_por_usuario, key=lambda x: x['valor_total'], reverse=True)
+            
+            # Calcular ticket médio
+            ticket_medio = total_geral / vendas.count() if vendas.count() > 0 else 0
+            
+            # Produtos mais vendidos por usuário
+            produtos_por_usuario = (
+                ItemVenda.objects.filter(venda__in=vendas)
+                .annotate(
+                    valor_total_item=ExpressionWrapper(
+                        F('quantidade') * F('produto__preco'),
+                        output_field=DecimalField()
+                    )
+                )
+                .values('venda__vendedor__nome', 'produto__nome')
+                .annotate(
+                    quantidade_total=Sum('quantidade'),
+                    valor_total=Sum('valor_total_item')
+                )
+                .order_by('venda__vendedor__nome', '-quantidade_total')
+            )
+            
+            # Desempenho por período (últimos 7 dias)
+            from datetime import datetime, timedelta
+            hoje = datetime.now().date()
+            desempenho_semanal = []
+            
+            for i in range(7):
+                data = hoje - timedelta(days=i)
+                vendas_dia = vendas.filter(data_venda__date=data)
+                total_dia = 0
+                if vendas_dia.exists():
+                    itens_dia = ItemVenda.objects.filter(venda__in=vendas_dia).annotate(
+                        valor_total_item=ExpressionWrapper(
+                            F('quantidade') * F('produto__preco'),
+                            output_field=DecimalField()
+                        )
+                    )
+                    total_dia = itens_dia.aggregate(total=Sum('valor_total_item'))['total'] or 0
+                
+                desempenho_semanal.append({
+                    'data': data,
+                    'total': total_dia,
+                    'quantidade_vendas': vendas_dia.count()
+                })
+            
+            desempenho_semanal.reverse()  # Ordenar do mais antigo para o mais recente
+            
+        context.update({
+            'vendas': vendas,
+            'data_inicio': data_inicio,
+            'data_fim': data_fim,
+            'usuario_id': usuario_id,
+            'total_geral': total_geral,
+            'ticket_medio': ticket_medio if 'ticket_medio' in locals() else 0,
+            'usuarios_disponiveis': usuarios_disponiveis,
+            'vendas_por_usuario': vendas_por_usuario,
+            'produtos_por_usuario': produtos_por_usuario,
+            'desempenho_semanal': desempenho_semanal,
+        })
+        return context

@@ -72,6 +72,8 @@ urlpatterns = [
 
     # Relatórios
     path('relatorios/home/', RelatoriosView.as_view(), name='relatorios_home'),
+    path('relatorios/vendas_periodo/', VendasPorPeriodoView.as_view(), name='vendas_periodo'),
+    path('relatorios/vendas_usuario/', VendasPorUsuarioView.as_view(), name='vendas_usuario'),
 
     #AJAX
     path('fornecedores_pesquisar/', fornecedor_por_empresa, name='fornecedores_pesquisar'),
@@ -80,4 +82,5 @@ urlpatterns = [
     path('tipos_pesquisar/', tipo_por_empresa, name='tipos_pesquisar'),
     path('cliente_pesquisar/', cliente_por_empresa, name='cliente_pesquisar'),
     path('produto_pesquisar/', produto_por_empresa, name='produto_pesquisar'),
+
 ]

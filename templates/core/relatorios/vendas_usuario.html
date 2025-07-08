@@ -1,0 +1,401 @@
+{% extends "base/index.html" %}
+{% load static %}
+{% block conteudo %}
+
+<div class="container py-5">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            <div class="alert alert-primary shadow-sm d-flex align-items-center" role="alert">
+                <i class="bi bi-person fs-2 me-3"></i>
+                <div>
+                    <h3 class="mb-1">Relatório de Vendas por Usuários</h3>
+                    <p class="mb-0">Veja o desempenho das vendas por usuário, incluindo produtos, quantidades, valores e desempenho.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-funnel me-2"></i>Filtros
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="data_inicio" class="form-label">Data Início</label>
+                            <input type="date" class="form-control" id="data_inicio" name="data_inicio" 
+                                   value="{{ data_inicio|default:'' }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="data_fim" class="form-label">Data Fim</label>
+                            <input type="date" class="form-control" id="data_fim" name="data_fim" 
+                                   value="{{ data_fim|default:'' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="usuario" class="form-label">Usuário (Opcional)</label>
+                            <select class="form-select" id="usuario" name="usuario">
+                                <option value="">Todos os usuários</option>
+                                {% for usuario in usuarios_disponiveis %}
+                                    <option value="{{ usuario.id }}" {% if usuario_id == usuario.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ usuario.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-1"></i>Filtrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if data_inicio and data_fim %}
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title mb-1">Total Geral</h6>
+                                <h3 class="mb-0">R$ {{ total_geral|floatformat:2 }}</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-currency-dollar fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-gradient-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title mb-1">Total de Vendas</h6>
+                                <h3 class="mb-0">{{ vendas.count }}</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-cart-check fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-gradient-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title mb-1">Usuários Ativos</h6>
+                                <h3 class="mb-0">{{ vendas_por_usuario.count }}</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-people fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-gradient-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title mb-1">Ticket Médio</h6>
+                                <h3 class="mb-0">
+                                    R$ {{ ticket_medio|floatformat:2 }}
+                                </h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="bi bi-calculator fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-gradient-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar-week me-2"></i>Desempenho dos Últimos 7 Dias
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for dia in desempenho_semanal %}
+                                <div class="col-md-1 col-6 mb-3">
+                                    <div class="text-center">
+                                        <div class="card border-0 shadow-sm {% if dia.total > 0 %}bg-success text-white{% else %}bg-light{% endif %}">
+                                            <div class="card-body p-2">
+                                                <small class="d-block">{{ dia.data|date:"d/m" }}</small>
+                                                <strong class="d-block">R$ {{ dia.total|floatformat:0 }}</strong>
+                                                <small class="d-block">{{ dia.quantidade_vendas }} vendas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-trophy me-2"></i>Ranking de Vendas por Usuário
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Posição</th>
+                                        <th>Usuário</th>
+                                        <th>Total de Vendas</th>
+                                        <th>Itens Vendidos</th>
+                                        <th>Valor Total</th>
+                                        <th>Ticket Médio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for usuario in vendas_por_usuario %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-primary">{{ forloop.counter }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                        <i class="bi bi-person text-white"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ usuario.vendedor__nome }}</strong>
+                                                        <br>
+                                                        <small class="text-muted">{{ usuario.vendedor__cpf }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ usuario.total_vendas }}</span>
+                                            </td>
+                                            <td>{{ usuario.total_itens|default:0 }}</td>
+                                            <td>
+                                                <strong class="text-success">R$ {{ usuario.valor_total|floatformat:2 }}</strong>
+                                            </td>
+                                            <td>
+                                                R$ {{ usuario.ticket_medio|floatformat:2 }}
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">
+                                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                Nenhuma venda encontrada no período selecionado
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-gradient-info text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box me-2"></i>Produtos Mais Vendidos por Usuário
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for produto in produtos_por_usuario %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ produto.venda__vendedor__nome }}</strong>
+                                            </td>
+                                            <td>{{ produto.produto__nome }}</td>
+                                            <td>
+                                                <span class="badge bg-warning">{{ produto.quantidade_total }}</span>
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">R$ {{ produto.valor_total|floatformat:2 }}</strong>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted">
+                                                <i class="bi bi-box fs-1 d-block mb-2"></i>
+                                                Nenhum produto vendido no período selecionado
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-gradient-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>Vendas Detalhadas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Vendedor</th>
+                                        <th>Cliente</th>
+                                        <th>Itens</th>
+                                        <th>Valor Total</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for venda in vendas %}
+                                        <tr>
+                                            <td>{{ venda.data_venda|date:"d/m/Y H:i" }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                        <i class="bi bi-person text-white"></i>
+                                                    </div>
+                                                    {{ venda.vendedor.nome }}
+                                                </div>
+                                            </td>
+                                            <td>{{ venda.cliente.nome }}</td>
+                                            <td>
+                                                <span class="badge bg-info">{{ venda.itens_venda.count }}</span>
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">
+                                                    R$ 
+                                                    {% with total_venda=0 %}
+                                                        {% for item in venda.itens_venda.all %}
+                                                            {% with total_venda=total_venda|add:item.valor_total %}
+                                                                {% if forloop.last %}
+                                                                    {{ total_venda|floatformat:2 }}
+                                                                {% endif %}
+                                                            {% endwith %}
+                                                        {% endfor %}
+                                                    {% endwith %}
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">Finalizada</span>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">
+                                                <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
+                                                Nenhuma venda encontrada no período selecionado
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+            <!-- Mensagem quando não há filtros -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-calendar-range fs-1 text-muted d-block mb-3"></i>
+                            <h4 class="text-muted">Selecione um período para visualizar o relatório</h4>
+                            <p class="text-muted">Escolha as datas de início e fim para analisar o desempenho de vendas por usuário.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+</div>
+
+
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-secondary {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+</style>
+{% endblock %} 
