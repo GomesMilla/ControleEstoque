@@ -328,7 +328,7 @@ class ClienteListView(LoginRequiredMixin, ListView):
         return queryset
 
 class DetalheCliente(LoginRequiredMixin, DetailView):
-    model = Empresa
+    model = Cliente
     template_name = 'users/cliente/detalhe_cliente.html'
 
     def get_context_data(self, **kwargs):

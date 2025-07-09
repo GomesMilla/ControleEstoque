@@ -15,6 +15,8 @@ from .models import Evento
 from django.utils.timezone import now
 import datetime
 from django.views.generic.edit import UpdateView
+from django.utils import timezone
+from datetime import timedelta
 
 class InicioView(LoginRequiredMixin, TemplateView):
     template_name = "agenda/inicio.html"
@@ -134,15 +136,22 @@ class EventosAnualList(LoginRequiredMixin, ListView):
         
         return queryset
 
+
 def eventos_json(request):
     eventos = Evento.objects.filter(empresa=request.user.empresa)
     eventos_list = []
     
     for evento in eventos:
+        ano_atual = timezone.now().year 
+        eventos = Evento.objects.filter(
+                empresa=request.user.empresa,
+                data_inicio__year=ano_atual
+            )
+        end_date = evento.data_fim + timedelta(days=1) if evento.data_fim else None
         eventos_list.append({
             'title': evento.titulo,
             'start': evento.data_inicio.isoformat(),
-            'end': evento.data_fim.isoformat() if evento.data_fim else None,
+            'end': end_date.isoformat() if end_date else None,
             'description': evento.resumo,
         })
     
