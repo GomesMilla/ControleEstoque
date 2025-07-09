@@ -65,7 +65,7 @@
                                 <td>{{ pedido.cliente_telefone }}</td>
                                 <td>{{ pedido.get_status_display }}</td>
                                 <td>
-                                    {% if not pedido.status != 'pendente' %}
+                                    {% if pedido.status != 'comprado' %}
                                         <a href="{% url 'atualizar_pedido' pedido.pk %}" class="btn btn-primary">Editar</a>
                                     {% endif %}                        
                                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{pedido.pk}}">
