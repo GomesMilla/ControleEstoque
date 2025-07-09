@@ -487,6 +487,7 @@ class PedidoListView(LoginRequiredMixin, ListView):
             )
         
         return queryset
+        
 class PedidoListFiltroView(LoginRequiredMixin, ListView):
     model = Pedido
     template_name = 'core/pedido/lista_pedidos.html'
@@ -1197,3 +1198,15 @@ class VendasPorUsuarioView(LoginRequiredMixin, TemplateView):
             'desempenho_semanal': desempenho_semanal,
         })
         return context
+
+class PedidoAbertoListView(LoginRequiredMixin, ListView):
+    model = Pedido
+    template_name = 'core/pedido/lista_pedidos_abertos.html'
+    context_object_name = 'pedidos_abertos'
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            queryset = Pedido.objects.filter(status='pendente')
+        else:
+            queryset = Pedido.objects.filter(empresa=self.request.user.empresa, status='pendente')
+        return queryset

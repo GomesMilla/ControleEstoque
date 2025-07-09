@@ -1,0 +1,68 @@
+{% extends "base/index.html" %}
+{% load static %}
+{% block conteudo %}
+    <style>
+    @media print {
+        body * {
+            visibility: hidden !important;
+        }
+        .print-area, .print-area * {
+            visibility: visible !important;
+        }
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            background: white !important;
+            z-index: 9999;
+            padding: 0;
+            margin: 0;
+        }
+        .btn, .d-flex, .alert, .navbar, .sidebar, .offcanvas, .footer, .menu, .nav, .breadcrumb, .form-inline, .form-control, .form-group, .form-label, .form-select, .form-check, .form-switch, .form-text, .form-range, .form-floating, .form-file, .form-row, .form-row > * {
+            display: none !important;
+        }
+    }
+    </style>
+<div class="container py-5">
+    <div class="print-area">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-bag-check text-primary"></i> Pedidos em Aberto</h2>
+            <p class="lead d-print-none">Veja todos os pedidos em aberto e imprima para facilitar o atendimento.</p>
+        </div>
+        {% if pedidos_abertos %}
+            <div class="d-flex justify-content-end mb-3 d-print-none">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Imprimir
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle bg-white">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nome de quem pediu</th>
+                            <th>Produto</th>
+                            <th>Telefone</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pedido in pedidos_abertos %}
+                        <tr>
+                            <td>{{ pedido.cliente_nome|default:"-" }}</td>
+                            <td>{{ pedido.produto.nome|default:"Produto Não cadastrado no Estoque" }}</td>
+                            <td>{{ pedido.cliente_telefone|default:"-" }}</td>
+                            <td>{{ pedido.descricao|safe|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center d-print-none" role="alert">
+                Nenhum pedido em aberto encontrado.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock conteudo %} 

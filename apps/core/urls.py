@@ -41,6 +41,7 @@ urlpatterns = [
     #pedido
     path('cadastrar_pedido/', PedidoCreateView.as_view(), name='cadastrar_pedido'),
     path('lista_pedidos/', PedidoListView.as_view(), name='lista_pedidos'),
+    path('lista_pedidos_aberto/', PedidoAbertoListView.as_view(), name='lista_pedidos_aberto'),
     path('atualizar_pedido/<int:pk>/', PedidoUpdateView.as_view(), name='atualizar_pedido'),
     path('pedidos/<str:status>/', PedidoListFiltroView.as_view(), name='filtrar_pedidos'),
 
