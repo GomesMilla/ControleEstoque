@@ -2,176 +2,180 @@
 {% load static bootstrap %}
 {% block conteudo %} 
     <style>
-        .cor{
-            color: #844CFF !important;
+        body, .galaxy-bg {
+            background: radial-gradient(ellipse at 50% 30%, #23243a 60%, #181828 100%)!important;
+            min-height: 100vh;
+        }
+        .galaxy-bg {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 0;
+        }
+        .galaxy-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('{% static "images/stars.png" %}') repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+        .hero-title .highlight {
+            color: #ffb347;
+            text-shadow: 0 0 8px #ffb34799;
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #ffb347 0%, #ffcc80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 8px #ffb34799;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: #fff !important;
+        }
+        .hero-badge {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            margin-bottom: 2rem;
+        }
+        .cta-btn-lg {
+            font-size: 1.2rem;
+            padding: 0.9rem 2.5rem;
+            border-radius: 2rem;
+            box-shadow: 0 2px 16px #ffb34744;
+            background: linear-gradient(90deg, #ffb347 60%, #ffcc80 100%);
+            color: #23243a;
+            font-weight: 700;
+            border: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .cta-btn-lg:hover {
+            background: linear-gradient(90deg, #ffcc80 60%, #ffb347 100%);
+            color: #181828;
+        }
+        .feature-card {
+            background: #23243a;
+            border: none;
+            border-radius: 1.2rem;
+            box-shadow: 0 2px 16px #0002;
+            color: #fff;
+            padding: 2rem 1.2rem 1.2rem 1.2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 4px 24px #ffb34733;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.7rem;
+            color: #ffb347;
+            text-shadow: 0 0 8px #ffb34755;
+        }
+        .feature-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffb347;
+            margin-bottom: 0.2rem;
         }
     </style>
-    <div class="container">
-        <div class="mt-3">
-            <h2>Funcionalidades do sistema.</h2>
+    <div class="galaxy-bg py-5">
+        <div class="container position-relative" style="z-index:1;">
+            <div class="text-center mb-5">
+                <h1 class="hero-title mb-3">
+                    <span class="highlight">Funcionalidades</span> do Sistema Afrodite
+                </h1>
+                <div class="hero-subtitle mb-4">
+                    Tudo o que você precisa para gerenciar sua loja de forma moderna, eficiente e intuitiva.<br>
+                    Veja abaixo os recursos disponíveis e como eles podem transformar o seu negócio.
+                </div>
+            </div>
+            <div class="mt-5">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-building"></i></div>
+                        <div class="feature-title">Gestão da Empresa</div>
+                        <div class="small text-secondary">
+                          Visualize, edite e personalize informações da empresa e colaboradores.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-box-seam"></i></div>
+                        <div class="feature-title">Estoque e Produtos</div>
+                        <div class="small text-secondary">
+                          Cadastre, organize e monitore produtos e estoque em tempo real.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-people"></i></div>
+                        <div class="feature-title">Clientes</div>
+                        <div class="small text-secondary">
+                          Gerencie clientes, aniversariantes e histórico de compras.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-cash-stack"></i></div>
+                        <div class="feature-title">Vendas e Fiado</div>
+                        <div class="small text-secondary">
+                          Registre vendas, controle vendas a prazo e acompanhe pagamentos.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-bar-chart-line"></i></div>
+                        <div class="feature-title">Metas e Relatórios</div>
+                        <div class="small text-secondary">
+                          Defina metas, acompanhe resultados e gere relatórios detalhados.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="card h-100 text-center border-0 shadow feature-card">
+                        <div class="feature-icon mb-2"><i class="bi bi-gift"></i></div>
+                        <div class="feature-title">Pedidos e Vale-Presente</div>
+                        <div class="small text-secondary">
+                          Gerencie pedidos especiais e vales-presente com controle de vencimento.
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="hero-cta text-center mt-5">
+                    <a href="{% url 'infosistema' %}" class="btn btn-primary btn-lg px-5 py-3 fs-5 fw-semibold shadow-lg">
+                        <i class="bi bi-rocket-takeoff me-2"></i>
+                        Comece agora grátis!
+                    </a>
+                    <div class="mt-3 text-muted">
+                        <i class="bi bi-telephone-fill me-1"></i>
+                        Entre em contato: <strong>(35) 99817-8265</strong>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="text-justify">
-            <b>Versão do sistema:</b> Versão 1.0 - Beta
-        </div>
-        <div>
-            <table class="table table-bordered border-success text-center">
-                <thead>
-                    <tr>
-                        <th scope="col">Funcionalidades</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Descrição</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">Visualizar Empresa</th>
-                        <td>Disponível</td>
-                        <td>
-                            Essa funcionalidade surge a partir do cadastro da empresa. Toda empresa cadastrada terá a opção de visualizar informações sobre sua própria organização e seus colaboradores. 
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Editar Empresa</th>
-                        <td>Disponível</td>
-                        <td>
-                            Toda empresa cadastrada terá a opção de visualizar e editar informações sobre sua própria organização e seus colaboradores. 
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cadastrar Colaborador</th>
-                        <td>Disponível</td>
-                        <td>
-                            Funcionalidade disponível para o dono da loja, permitindo o cadastro de novos colaboradores.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Listar Colaborador</th>
-                        <td>Disponível</td>
-                        <td>
-                            Funcionalidade disponível para o dono da loja, permitindo visualizar a listagem de colaboradores.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cadastrar Estoque</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite adicionar e organizar itens no estoque da sua empresa, facilitando o controle e a gestão de inventário.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cadastrar Produto</th>
-                        <td>Disponível</td>
-                        <td>
-                            Facilita a adição de novos produtos ao sistema, com todas as informações necessárias, como descrição, preço e quantidade.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Produtos Disponíveis</th>
-                        <td>Disponível</td>
-                        <td>
-                            Exibe uma lista de produtos que estão em estoque e prontos para venda, ajudando a monitorar a disponibilidade em tempo real.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Produtos Indisponiveis</th>
-                        <td>Disponível</td>
-                        <td>
-                            Mostra os produtos que estão fora de estoque, permitindo uma rápida identificação e reposição dos itens necessários.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cadastrar Meta</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite definir metas de vendas para períodos específicos, ajudando a alinhar os objetivos da equipe e acompanhar o desempenho.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Listar Metas</th>
-                        <td>Disponível</td>
-                        <td>
-                            Exibe todas as metas cadastradas, facilitando o monitoramento do progresso e a avaliação dos resultados ao longo do período de vendas.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Cadastrar Pedido</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite registrar pedidos de clientes que não encontraram o item desejado na loja, facilitando o acompanhamento e a realização de pedidos especiais.
-                        </td>
-                    </tr>   
-                    <tr>
-                        <th scope="row">Listar Pedidos</th>
-                        <td>Disponível</td>
-                        <td>
-                            Exibe todos os pedidos feitos por clientes, ajudando a monitorar o status de cada pedido e garantindo um melhor atendimento ao cliente.
-                        </td>
-                    </tr>   
-                    <tr>
-                        <th scope="row">Listar Pedidos</th>
-                        <td>Disponível</td>
-                        <td>
-                            Exibe todos os pedidos feitos por clientes, ajudando a monitorar o status de cada pedido e garantindo um melhor atendimento ao cliente.
-                        </td>
-                    </tr> 
-                    <tr>
-                        <th scope="row">Editar Pedido</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite editar pedidos de clientes que não encontraram o item desejado na loja, facilitando o acompanhamento e a realização de pedidos especiais.
-                        </td>
-                    </tr> 
-                    <tr>
-                        <th scope="row">Cadastrar Clientes</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite adicionar novos clientes ao sistema, armazenando informações importantes para facilitar o gerenciamento do relacionamento com o cliente.
-                        </td>
-                    </tr>    
-                    <tr>
-                        <th scope="row">Listar Clientes</th>
-                        <td>Disponível</td>
-                        <td>
-                            Exibe uma lista completa de todos os clientes cadastrados, permitindo fácil acesso e consulta às informações de cada cliente.
-                        </td>
-                    </tr>  
-                    <tr>
-                        <th scope="row">Clientes Aniversariantes</th>
-                        <td>Disponível</td>
-                        <td>
-                            Mostra uma lista de clientes que estão fazendo aniversário, ajudando a empresa a enviar mensagens de felicitações e promover um melhor relacionamento.
-                        </td>
-                    </tr>    
-                    <tr>
-                        <th scope="row">Cadastrar Clientes</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite adicionar novos clientes ao sistema, armazenando informações importantes para facilitar o gerenciamento do relacionamento com o cliente.
-                        </td>
-                    </tr>  
-                    <tr>
-                        <th scope="row">Cadastro de Venda</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite adicionar novos clientes ao sistema, armazenando informações importantes para facilitar o gerenciamento do relacionamento com o cliente.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Ver maiores detalhes sobre as vendas</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permitir visualizar informações detalhadas sobre cada venda realizada, incluindo produtos vendidos, quantidades, valores, data da venda e informações do cliente, facilitando o acompanhamento e a análise do desempenho de vendas.
-                        </td>
-                    </tr>                                                                                                                                          <tr>
-                        <th scope="row">Personalizar layout da empresa.</th>
-                        <td>Disponível</td>
-                        <td>
-                            Permite que cada empresa customize o layout do sistema conforme suas preferências, ajustando cores, logos e outros elementos visuais para refletir sua identidade corporativa.
-                        </td>
-                    </tr>                    
-                </tbody>
-            </table>
-        </div>       
     </div>
 
 {% endblock conteudo %}

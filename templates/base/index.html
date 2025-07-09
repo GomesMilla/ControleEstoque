@@ -66,8 +66,8 @@
                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
             </symbol>
         </svg>
-        {% if objuser and objuser.empresa.color %}
-            <style>
+        <style>        
+            {% if objuser and objuser.empresa.color %}
                 .cor-menu {
                     background-color: {{ objuser.empresa.color }}!important;
                 }
@@ -76,11 +76,16 @@
                 }
                 .nav-link {
                     color: {{ objuser.empresa.color_fonte }} !important;
-                }             
-            </style>
-        {% endif %}
+                }         
+            {% endif %}
+            .cor-extra{
+                background-image: radial-gradient(ellipse at 50% 30%, #23243a 60%, #181828 100%)!important;
+            } 
+        </style>
 
-        <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3 shadow-sm {% if objuser and objuser.empresa.color %} cor-menu {% endif %}">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary  shadow-sm
+        {% if objuser and objuser.empresa.color %} cor-menu{% endif %}
+        {% if not objuser %} cor-extra{% endif %}">    
             <div class="container-fluid">
                 <a class="navbar-brand ms-5 d-flex align-items-center" href="{% url 'inicio' %}">
                     {% if objuser and objuser.empresa.logo %}
@@ -260,7 +265,7 @@
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a href="{% url 'login' %}" class="btn btn-light rounded-pill">Acessar</a>
+                                <a href="{% url 'login' %}" class="btn btn-light rounded-pill me-5">Acessar</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -407,7 +412,7 @@
             {% endblock conteudo %}
         </main>
 
-        <footer class="text-center text-black bg-dark mt-5">
+        <footer class="text-center text-black bg-dark mt-5 {% if not objuser %} cor-extra{% endif %}">
             <div class="container pt-4">
                 <section class="mb-4">
                     <a
@@ -440,7 +445,7 @@
                     </a>
                 </section>
             </div>
-            <footer class="page-footer font-small bg-dark">
+            <footer class="page-footer font-small bg-dark {% if not objuser %} cor-extra{% endif %}">
                 <div class="footer-copyright text-center py-3 text-white">© 2024 GOMES TECHNOLOGY</div>
                 <span class="footer-copyright text-center py-3 text-white">Sistema Afrodite</span>
             </footer>       
