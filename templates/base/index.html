@@ -82,13 +82,12 @@
 
         <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3 shadow-sm {% if objuser and objuser.empresa.color %} cor-menu {% endif %}">
             <div class="container-fluid">
-                <a class="navbar-brand ms-2 d-flex align-items-center" href="{% url 'inicio' %}">
+                <a class="navbar-brand ms-5 d-flex align-items-center" href="{% url 'inicio' %}">
                     {% if objuser and objuser.empresa.logo %}
                         <img src="{{objuser.empresa.logo.url}}" alt="Logo" width="120" height="36" class="d-inline-block align-text-top me-2">
                     {% else %}
                         <img src="{% static 'images/logobrancaq.png' %}" alt="Logo" width="120" height="36" class="d-inline-block align-text-top me-2">
                     {% endif %}
-                    <span class="fw-bold d-none d-md-inline" style="font-family: 'Roboto Slab', serif; font-size: 1.2rem;">Afrodite</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -443,6 +442,7 @@
             </div>
             <footer class="page-footer font-small bg-dark">
                 <div class="footer-copyright text-center py-3 text-white">© 2024 GOMES TECHNOLOGY</div>
+                <span class="footer-copyright text-center py-3 text-white">Sistema Afrodite</span>
             </footer>       
         </footer>
         <script>

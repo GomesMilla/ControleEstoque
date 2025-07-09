@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-ui-checks-grid text-primary"></i> Cadastrar Tipo de Produto</h2>
+        <p class="lead">Cadastre tipos de produto como saia, vestido, camiseta, etc. para organizar melhor o seu estoque e facilitar buscas e relatórios.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Cadastrar Tipo de Produto</h2>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

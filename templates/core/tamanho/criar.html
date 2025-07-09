@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-arrows-expand text-primary"></i> Cadastrar Tamanho</h2>
+        <p class="lead">Cadastre novos tamanhos para ampliar as opções dos seus produtos e atender melhor seus clientes.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Cadastrar Tamanho de Produto</h2>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

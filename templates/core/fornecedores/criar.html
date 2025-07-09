@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-truck text-primary"></i> Cadastrar Fornecedor</h2>
+        <p class="lead">Adicione novos fornecedores ao sistema para facilitar o controle de compras e o relacionamento com parceiros.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Cadastrar Fornecedor</h2>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

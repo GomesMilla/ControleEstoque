@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-tags text-primary"></i> Cadastrar Marca</h2>
+        <p class="lead">Adicione novas marcas ao seu catálogo para diversificar e valorizar sua oferta de produtos.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Cadastrar Marca</h2>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

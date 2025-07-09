@@ -2,6 +2,11 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-ui-checks-grid text-primary"></i> Listagem de Tipos de Produto</h2>
+        <p class="lead">Gerencie os tipos de produto como saia, vestido, camiseta, etc. Mantenha o catálogo organizado e facilite a classificação dos seus itens.</p>
+    </div>
+
     <div class="container mt-5">
         <a href="{% url 'tipo_produto_criar' %}" class="btn btn-success mb-5">Cadastrar Tipo de Produto</a>
         <h2>Tipos de Produtos</h2>
