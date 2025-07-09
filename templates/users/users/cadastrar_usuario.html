@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-person-plus text-primary"></i> Cadastrar Colaborador</h2>
+        <p class="lead">Adicione novos colaboradores ao sistema para ampliar sua equipe e garantir o controle de acesso e informações dos usuários.</p>
+    </div>
+
     <div class="container mt-4">
-        <h2>Cadastrar Colaborador</h2>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{form.media}}

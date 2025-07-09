@@ -2,8 +2,12 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-box-seam text-primary"></i> Cadastrar Estoque</h2>
+        <p class="lead">Registre novas entradas de estoque para manter o controle preciso dos produtos disponíveis e garantir uma gestão eficiente do seu inventário.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Cadastrar Estoque</h2>
         <form method="post">
             {% csrf_token %}
             {{ form|bootstrap }}
