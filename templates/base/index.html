@@ -388,18 +388,20 @@
         </div>
         {% endif %}
             
-        <div class="row justify-content-md-start my-4 ms-3">
-            <div class="col-auto mb-2">
-                <a type="button" class="btn btn-lg btn-gradient-primary shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'cadastrar_venda' %}" style="font-size: 1.1rem;">
-                    <i class="bi bi-cart-plus me-2"></i> Cadastrar Venda
-                </a>
+        {% if objuser %}        
+            <div class="row justify-content-md-start my-4 ms-3">
+                <div class="col-auto mb-2">
+                    <a type="button" class="btn btn-lg btn-gradient-primary shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'cadastrar_venda' %}" style="font-size: 1.1rem;">
+                        <i class="bi bi-cart-plus me-2"></i> Cadastrar Venda
+                    </a>
+                </div>
+                <div class="col-auto mb-2">
+                    <a type="button" class="btn btn-lg btn-gradient-danger shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'nova_venda_fiado' %}" style="font-size: 1.1rem;">
+                        <i class="bi bi-cash-coin me-2"></i> Cadastrar Venda a Prazo
+                    </a>
+                </div>
             </div>
-            <div class="col-auto mb-2">
-                <a type="button" class="btn btn-lg btn-gradient-danger shadow-sm d-flex align-items-center px-4 py-2" href="{% url 'nova_venda_fiado' %}" style="font-size: 1.1rem;">
-                    <i class="bi bi-cash-coin me-2"></i> Cadastrar Venda a Prazo
-                </a>
-            </div>
-        </div>
+        {% endif %}
 
         <main>        
             {% block conteudo %} 
@@ -440,7 +442,7 @@
                 </section>
             </div>
             <footer class="page-footer font-small bg-dark">
-                <div class="footer-copyright text-center py-3">© 2024 GOMES TECHNOLOGY</div>
+                <div class="footer-copyright text-center py-3 text-white">© 2024 GOMES TECHNOLOGY</div>
             </footer>       
         </footer>
         <script>
