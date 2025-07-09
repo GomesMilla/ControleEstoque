@@ -10,6 +10,7 @@
     </style>
 
     <div class="container mt-5">
+        <a href="{% url 'cadastrar_vale_presente' %}" class="btn btn-success mb-5">Cadastrar Vale Presente</a>
         <div class="text-center mb-4">
             <h2 class="fw-bold"><i class="bi bi-gift text-primary"></i> Listagem de Vale-Presentes</h2>
             <p class="lead">Acompanhe seus vale-presentes e veja os vales dos seus clientes para uma gestão mais eficiente.</p>
@@ -21,7 +22,6 @@
             </form>
         </div>
         <div class="row">
-            <!-- Coluna de status -->
             <div class="col-md-2">
                 <ul class="list-group">
                     <a href="{% url 'filtrar_valespresente' 'pendente' %}"><li class="list-group-item list-group-item-action {% if status_atual == 'pendente' %} active{% endif %}">Pendente</li></a>
@@ -56,7 +56,9 @@
                                 <td>{{ vale.preco }}</td>
                                 <td>{{ vale.get_status_display }}</td>
                                 <td>
-                                    <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
+                                    {% if vale.status != 'comprado' %}
+                                        <a href="{% url 'editar_pedido' vale.pk %}" class="btn btn-primary">Editar</a>
+                                    {% endif %}                                    
                                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{vale.pk}}">
                                         Detalhes
                                     </button>
@@ -73,14 +75,18 @@
                                                         <li class="list-group-item"><b>Nome:</b> {{vale.cliente_nome|default:"-"}}</li>
                                                         <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email|default:"-"}}</li>
                                                         <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_telefone|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                        {% if vale.cliente %}
+                                                            <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                        {% endif %}
                                                     </ul>
                                                     <h6 class="text-danger-emphasis fst-italic mt-3">Informações sobre o cliente ganhador:</h6>
                                                     <ul class="list-group mt-3">
                                                         <li class="list-group-item"><b>Nome:</b> {{vale.cliente_ganhador_nome|default:"-"}}</li>
                                                         <li class="list-group-item"><b>E-mail:</b> {{vale.cliente_email_cliente_ganhador|default:"-"}}</li>
                                                         <li class="list-group-item"><b>Telefone:</b> {{vale.cliente_ganhador_telefone|default:"-"}}</li>
-                                                        <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente_ganhador.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                        {% if vale.cliente_ganhador %}
+                                                            <li class="list-group-item"><b>Cliente:</b> Clique <a href="{% url 'detalhe_cliente' vale.cliente_ganhador.pk %}">aqui</a> para ver maiores informações sobre o seu cliente</li>
+                                                        {% endif %}
                                                     </ul>
                                                     <h6 class="text-danger-emphasis fst-italic mt-3">Informações sobre a venda:</h6>
                                                     <ul class="list-group mt-3">

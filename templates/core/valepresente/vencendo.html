@@ -1,0 +1,40 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %}
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-gift text-primary"></i> Vales-Presentes Vencendo</h2>
+            <p class="lead">Acompanhe os vales-presentes que vencem hoje ou amanhã e entre em contato com os clientes para garantir o uso do benefício.</p>
+        </div>
+        {% if vales_vencendo %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Cliente</th>
+                        <th>Data de Vencimento</th>
+                        <th>Telefone</th>
+                        <th>Status</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vale in vales_vencendo %}
+                    <tr>
+                        <td>{{ vale.id }}</td>
+                        <td>{{ vale.cliente_nome }}</td>
+                        <td>{{ vale.data_periodo_final|date:'d/m/Y' }}</td>
+                        <td>{{ vale.cliente_telefone }}</td>
+                        <td>{{ vale.get_status_display }}</td>
+                        <td>{{ vale.descricao|safe|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                Não há vales-presentes vencendo hoje ou amanhã.
+            </div>
+        {% endif %}
+    </div>
+{% endblock conteudo %} 

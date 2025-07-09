@@ -24,6 +24,7 @@ from django.utils import timezone
 from django.db.models import DecimalField
 from django.db.models import Count
 from django.contrib.auth import get_user_model
+from datetime import datetime, timedelta
 
 class EstoqueCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Estoque
@@ -707,31 +708,44 @@ class GenericDetailView(ListView):
     template_name = 'core/notificacao/notificacao.html'
 
     def get_context_data(self, **kwargs):
-        from datetime import datetime, timedelta
         from django.utils import timezone
-        data_de_hoje = timezone.now().date()
         today = timezone.now().date()
+        tomorrow = today + timedelta(days=1)
         context = super().get_context_data(**kwargs)
 
-        inicio_do_dia = timezone.make_aware(datetime.combine(data_de_hoje, datetime.min.time()))
-        fim_do_dia = timezone.make_aware(datetime.combine(data_de_hoje, datetime.max.time()))
+        inicio_do_dia = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+        fim_de_amanha = timezone.make_aware(datetime.combine(tomorrow, datetime.max.time()))
 
         vales_presentes_vencendo = ValePresente.objects.filter(
-            data_periodo_final__range=(inicio_do_dia, fim_do_dia), 
+            data_periodo_final__range=(inicio_do_dia, fim_de_amanha), 
             empresa=self.request.user.empresa
         )
-        
         aniversariantes = Cliente.objects.filter(
-                    empresa=self.request.user.empresa,
-                    data_aniversario__month=today.month,
-                    data_aniversario__day=today.day)
+            empresa=self.request.user.empresa,
+            data_aniversario__month=today.month,
+            data_aniversario__day=today.day)
 
-        
         context["vales_presentes_vencendo"] = vales_presentes_vencendo
         context["aniversariantes"] = aniversariantes
         context["qtd_aniversariantes"] = aniversariantes.count()
         context["qtd_vales_presentes_vencendo"] = vales_presentes_vencendo.count()
         return context
+
+class ValePresenteVencendoListView(ListView):
+    model = ValePresente
+    template_name = 'core/valepresente/vencendo.html'
+    context_object_name = 'vales_vencendo'
+
+    def get_queryset(self):
+        from django.utils import timezone
+        today = timezone.now().date()
+        tomorrow = today + timedelta(days=1)
+        inicio_do_dia = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+        fim_de_amanha = timezone.make_aware(datetime.combine(tomorrow, datetime.max.time()))
+        return ValePresente.objects.filter(
+            data_periodo_final__range=(inicio_do_dia, fim_de_amanha),
+            empresa=self.request.user.empresa
+        )
 
 class ContaCorrenteListView(LoginRequiredMixin,ListView):
     model = ContaCorrente

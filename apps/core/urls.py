@@ -54,6 +54,7 @@ urlpatterns = [
     path('listar_vale_presente/', ValePresenteList.as_view(), name='listar_vale_presente'),
     path('editar_pedido/<int:pk>/', ValePresenteUpdateView.as_view(), name='editar_pedido'),
     path('valepresente/<str:status>/', ValePresenteFiltroView.as_view(), name='filtrar_valespresente'),
+    path('listar_vale_presente_vencendo/', ValePresenteVencendoListView.as_view(), name='listar_vale_presente_vencendo'),    
 
     #Notificações
     path('pendencias/', GenericDetailView.as_view(), name='pendencias'),
