@@ -2,8 +2,13 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-calendar-event text-primary"></i> Listagem de Eventos</h2>
+        <p class="lead">Acompanhe todos os eventos cadastrados na agenda, visualize detalhes e mantenha sua rotina organizada.</p>
+    </div>
+
     <div class="container mt-5">
-        <h2>Eventos</h2>
+        <a href="{% url 'agenda' %}" class="btn btn-danger mb-5">Voltar para a Agenda</a>
         <div class="row">
             <form method="get" class="form-inline mb-3 d-flex">
                 <input type="text" name="q" class="form-control me-2" placeholder="Pesquisar evento" value="{{ request.GET.q }}">
