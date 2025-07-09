@@ -301,46 +301,27 @@ class ContaCorrenteForm(forms.ModelForm):
             conta_corrente.save()
         return conta_corrente
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class VendaFiadoForm(forms.ModelForm):
     class Meta:
         model = VendaFiado
         fields = ['cliente', 'conta_corrente', 'num_parcelas', 'dia_vencimento', 'descricao']
         widgets = {
-            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),  # Restaurando o Select2
+            'cliente': Select2Widget(attrs={'data-minimum-input-length': 1}),
         }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Ajuste dos labels e help_text
         self.fields['cliente'].label = "Cliente:"
         self.fields['conta_corrente'].label = "Conta:"
         self.fields['num_parcelas'].label = "Número de parcelas:"
         self.fields['descricao'].help_text = "Use esse campo para maiores informações sobre a venda."
 
-        # Filtrar contas correntes baseadas na empresa do usuário
-        if self.user and hasattr(self.user, 'empresa'):
+        if self.user and hasattr(self.user, 'empresa') and self.user.empresa:
             self.fields['conta_corrente'].queryset = ContaCorrente.objects.filter(empresa=self.user.empresa)
         else:
-            raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
+            self.fields['conta_corrente'].queryset = ContaCorrente.objects.none()
 
 class ItemVendaFiadoForm(forms.ModelForm):
     class Meta:
@@ -350,12 +331,6 @@ class ItemVendaFiadoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-        # Filtrar os produtos baseados na empresa do usuário
-        if self.user and hasattr(self.user, 'empresa'):
-            self.fields['produto'].queryset = Produto.objects.filter(empresa=self.user.empresa)
-        else:
-            raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
 
 
 # Formset para gerenciar múltiplos itens de venda
@@ -369,7 +344,6 @@ class BaseItemVendaFiadoFormset(BaseModelFormSet):
         kwargs['user'] = self.user
         return super()._construct_form(i, **kwargs)
 
-# Usando o formset customizado
 ItemVendaFiadoFormset = modelformset_factory(
     ItemVendaFiado,
     form=ItemVendaFiadoForm,
@@ -402,7 +376,7 @@ def form_valid(self, form):
     from django.db import transaction
     with transaction.atomic():
         # 1. Salva a venda primeiro
-        self.object = form.save()
+        self.object = form.save(commit=False)
         # 2. Cria o formset já vinculado à venda criada
         item_formset = ItemVendaFormset(self.request.POST, instance=self.object, user=self.request.user)
         # 3. Valida o formset
@@ -425,7 +399,6 @@ def form_valid(self, form):
             item_formset.save_m2m()
             return super().form_valid(form)
         else:
-            # Se o formset for inválido, deleta a venda criada para não deixar lixo no banco
             self.object.delete()
             return self.form_invalid(form)
 

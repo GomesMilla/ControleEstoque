@@ -3,7 +3,10 @@
 {% block conteudo %} 
 
     <div class="container mt-5">
-        <h2>Cadastrar Conta Corrente</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold"><i class="bi bi-cash-coin text-primary"></i> Cadastrar Conta Correntes</h2>
+            <p class="lead">Cadastre contas correntes dos clientes, acompanhe saldos, limites de crédito e mantenha o controle financeiro do seu negócio de forma eficiente.</p>
+        </div>
         <form method="post">
             {% csrf_token %}
             {{form.media}}

@@ -27,91 +27,100 @@
         </div>
     </form>
     {% if vendas %}
-    <div class="row g-3 mb-4 justify-content-center">
-        <div class="col-md-3">
-            <div class="card shadow border-0 text-center">
-                <div class="card-body">
-                    <div class="mb-2"><i class="bi bi-receipt text-primary" style="font-size:2rem;"></i></div>
-                    <h6 class="text-muted">Total de Vendas</h6>
-                    <h4 class="fw-bold">{{ vendas|length }}</h4>
+        <div class="row g-3 mb-4 justify-content-center">
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-receipt text-primary" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Total de Vendas</h6>
+                        <h4 class="fw-bold">{{ vendas|length }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-currency-dollar text-success" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Valor Total (Vendas)</h6>
+                        <h4 class="fw-bold text-success">R$ {{ total_geral|default:'0,00'|floatformat:2 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-cash-coin text-info" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Total de Parcelas Pagas</h6>
+                        <h4 class="fw-bold text-info">R$ {{ total_parcelas_pagas|default:'0,00'|floatformat:2 }}</h4>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow border-0 text-center">
-                <div class="card-body">
-                    <div class="mb-2"><i class="bi bi-currency-dollar text-success" style="font-size:2rem;"></i></div>
-                    <h6 class="text-muted">Valor Total</h6>
-                    <h4 class="fw-bold text-success">R$ {{ total_geral|default:'0,00' }}</h4>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3"><i class="bi bi-box-seam"></i> Produtos Vendidos</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in produtos_resumo %}
+                            <tr>
+                                <td>{{ p.produto__nome }}</td>
+                                <td>{{ p.quantidade }}</td>
+                                <td>R$ {{ p.valor_total|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col-12">
-            <h5 class="mb-3"><i class="bi bi-box-seam"></i> Produtos Vendidos</h5>
-            <div class="table-responsive">
-                <table class="table table-striped align-middle">
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Quantidade</th>
-                            <th>Valor Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in produtos_resumo %}
-                        <tr>
-                            <td>{{ p.produto__nome }}</td>
-                            <td>{{ p.quantidade }}</td>
-                            <td>R$ {{ p.valor_total|floatformat:2 }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3"><i class="bi bi-list-check"></i> Vendas Realizadas</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Cliente</th>
+                                <th>Vendedor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for venda in vendas %}
+                            <tr>
+                                <td>{{ venda.id }}</td>
+                                <td>{{ venda.data_venda|date:'d/m/Y H:i' }}</td>
+                                <td>{{ venda.cliente.nome }}</td>
+                                <td>{{ venda.vendedor.nome }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col-12">
-            <h5 class="mb-3"><i class="bi bi-list-check"></i> Vendas Realizadas</h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Data</th>
-                            <th>Cliente</th>
-                            <th>Vendedor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for venda in vendas %}
-                        <tr>
-                            <td>{{ venda.id }}</td>
-                            <td>{{ venda.data_venda|date:'d/m/Y H:i' }}</td>
-                            <td>{{ venda.cliente.nome }}</td>
-                            <td>{{ venda.vendedor.nome }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
     {% elif data_inicio and data_fim %}
         <div class="alert alert-info text-center">Nenhuma venda encontrada para o período selecionado.</div>
     {% endif %}
 </div>
-<style>
-.btn-gradient-primary {
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    color: #fff;
-    border: none;
-}
-.btn-gradient-primary:hover {
-    background: linear-gradient(90deg, #0056b3 0%, #00aaff 100%);
-    color: #fff;
-}
-</style>
+    <style>
+        .btn-gradient-primary {
+            background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+            color: #fff;
+            border: none;
+        }
+        .btn-gradient-primary:hover {
+            background: linear-gradient(90deg, #0056b3 0%, #00aaff 100%);
+            color: #fff;
+        }
+    </style>
 {% endblock conteudo %} 

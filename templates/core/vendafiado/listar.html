@@ -3,24 +3,36 @@
 {% block conteudo %} 
 
 <div class="container mt-5">
-    <h2>Lista de Vendas a Prazo</h2>    
-    <div class="row text-center justify-content-center mt-3">
-        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">Qtd vendas em aberto:</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ vendas_meta_abertas }}</h5>
-            </div>
-        </div>                
-        <div class="card text-bg-success mb-3 mx-3" style="max-width: 18rem;">
-            <div class="card-header">Valor Alcançado:</div>
-            <div class="card-body">
-                <h5 class="card-title">R$ {{ total_fiado_meta }}</h5>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-cash-stack text-primary"></i> Lista de Vendas a Prazo (Fiado)</h2>
+        <p class="lead">Acompanhe todas as vendas a prazo realizadas, veja o valor alcançado, o que falta receber e detalhes de cada venda fiado.</p>
+    </div>
+    <div class="row text-center justify-content-center mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body">
+                    <div class="mb-2"><i class="bi bi-hourglass-split text-primary" style="font-size:2rem;"></i></div>
+                    <h6 class="text-muted">Qtd vendas em aberto</h6>
+                    <h4 class="fw-bold text-primary">{{ vendas_meta_abertas }}</h4>
+                </div>
             </div>
         </div>
-        <div class="card text-bg-danger mb-3" style="max-width: 18rem;">
-            <div class="card-header">A receber:</div>
-            <div class="card-body">
-                <h5 class="card-title">R$ {{ total_a_receber }}</h5>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body">
+                    <div class="mb-2"><i class="bi bi-graph-up-arrow text-success" style="font-size:2rem;"></i></div>
+                    <h6 class="text-muted">Valor Alcançado</h6>
+                    <h4 class="fw-bold text-success">R$ {{ total_fiado_meta|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 h-100">
+                <div class="card-body">
+                    <div class="mb-2"><i class="bi bi-cash-coin text-danger" style="font-size:2rem;"></i></div>
+                    <h6 class="text-muted">A Receber</h6>
+                    <h4 class="fw-bold text-danger">R$ {{ total_a_receber|floatformat:2 }}</h4>
+                </div>
             </div>
         </div>
     </div>
@@ -43,13 +55,13 @@
                 <td class="text-center">{{ venda.id }}</td>
                 <td class="text-center">{{ venda.cliente.nome }}</td>
                 <td class="text-center">{{ venda.data_venda|date:"d/m/Y" }}</td>
-                <td class="text-center">{{ venda.total }}</td>
+                <td class="text-center">{{ venda.total|floatformat:2 }}</td>
                 <td class="text-center">{{ venda.num_parcelas }}</td>
                 <td class="text-center">{{ venda.status }}</td>
                 <td class="text-center">
-                    <ul>
+                    <ul class="list-unstyled mb-0">
                         {% for item in venda.itens_venda.all %}
-                        <li>{{ item.produto.nome }} ({{ item.quantidade }} x R$ {{ item.preco_unitario }})</li>
+                        <li>{{ item.produto.nome }} ({{ item.quantidade }} x R$ {{ item.preco_unitario|floatformat:2 }})</li>
                         {% endfor %}
                     </ul>
                 </td>

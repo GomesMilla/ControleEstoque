@@ -2,86 +2,98 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
-    <div class="container mt-5">
-        <h2>Detalhes da Conta Corrente</h2>
-        <h5 class="text-danger-emphasis fst-italic mt-3">Informações sobre o cliente</h5>
-        <ul class="list-group">
-            <li class="list-group-item"><b>Cliente:</b> {{conta.cliente.nome|default:"-"}}</li>
-            <li class="list-group-item"><b>Telefone-Celular:</b> {{conta.cliente.telefone_celular|default:"-"}}</li>
-            <li class="list-group-item"><b>Data de Aniversário:</b> {{conta.cliente.data_aniversario|default:"-"}}</li>
-            <li class="list-group-item"><b>Descrição:</b> {{conta.cliente.observacoes|safe|default:"-"}}</li>
-            <li class="list-group-item"><b>Gênero:</b> {{conta.cliente.genero|default:"-"}}</li>            
-            
-        </ul>
-        <h5 class="text-danger-emphasis fst-italic mt-3">Informações sobre a conta</h5>
-        <ul class="list-group">
-            <li class="list-group-item"><b>Saldo Devedor:</b> R$ {{conta.saldo_devedor|default:"-"}}</li>
-            <li class="list-group-item"><b>Limite de Crédito:</b> {{conta.limite_credito|default:"-"}}</li>
-            <li class="list-group-item"><b>Descrição:</b> {{conta.descricao|safe|default:"-"}}</li>
-        </ul>
-        <h3 class="mt-3">Vendas a Prazo</h3>
-        {% if vendas_fiado %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th>Preço Unitário</th>
-                    <th>Total Produto</th>
-                    <th>Número da Parcela</th>
-                    <th>Valor Parcela</th>
-                    <th>Data de Vencimento</th>
-                    <th>Status</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for venda in vendas_fiado %}
-                    {% for produto in produtos_comprados %}
-                        {% if produto.venda_id == venda.id %}
-                        <tr class="mt-5">
-                            <!-- Dados do Produto -->
-                            <td>{{ produto.produto }}</td>
-                            <td>{{ produto.quantidade }}</td>
-                            <td>R$ {{ produto.preco_unitario }}</td>
-                            <td>R$ {{ produto.total }}</td>
-        
-                            <!-- Caso não haja parcela correspondente, as células de parcelas ficam vazias -->
-                            <td colspan="5" class="text-center">Sem parcelas</td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                    <!-- Exibe as parcelas da venda -->
-                    {% for parcela in venda.parcelas.all %}
-                    <tr>
-                        <!-- Células de produto ficam vazias para as linhas de parcela -->
-                        <td colspan="4"></td>
-                        <td>{{ forloop.counter }}</td>
-                        <td>R$ {{ parcela.valor }}</td>
-                        <td>{{ parcela.data_vencimento|date:"d/m/Y" }}</td>
-                        <td>
-                            {% if parcela.pendente %}
-                                <span style="color: red;">Pendente</span>
-                            {% else %}
-                                <span style="color: green;">Pago</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if parcela.pendente %}
-                                <a href="{% url 'pagar_parcela' parcela.pk %}" class="btn btn-primary">Pagar</a>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% endfor %}
-            </tbody>
-        </table>        
-    {% else %}
-        <div class="alert alert-info" role="alert">
-            Não há compras fiado associadas a esta conta.
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-person text-primary"></i> Detalhes da Conta Corrente: '{{ conta.cliente.nome }}'</h2>
+        <p class="lead">Monitore seu cliente e acompanhe suas compras para oferecer produtos alinhados aos valores e preferências dele.</p>
+    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-person-circle me-2"></i>Informações do Cliente</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Nome:</b> {{conta.cliente.nome|default:"-"}}</li>
+                        <li class="list-group-item"><b>Telefone:</b> {{conta.cliente.telefone_celular|default:"-"}}</li>
+                        <li class="list-group-item"><b>Aniversário:</b> {{conta.cliente.data_aniversario|date:'d/m/Y'|default:"-"}}</li>
+                        <li class="list-group-item"><b>Gênero:</b> {{conta.cliente.genero|default:"-"}}</li>
+                        <li class="list-group-item"><b>Descrição:</b> {{conta.cliente.observacoes|safe|default:"-"}}</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    {% endif %}
-
-<div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-wallet2 me-2"></i>Informações da Conta</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Saldo Devedor:</b> <span class="badge bg-danger">R$ {{conta.saldo_devedor|default:"-"}}</span></li>
+                        <li class="list-group-item"><b>Limite de Crédito:</b> <span class="badge bg-info text-dark">R$ {{conta.limite_credito|default:"-"}}</span></li>
+                        <li class="list-group-item"><b>Descrição:</b> {{conta.descricao|safe|default:"-"}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4 class="card-title text-primary mb-3"><i class="bi bi-cart4 me-2"></i>Vendas a Prazo</h4>
+            {% if vendas_fiado %}
+                <div class="row g-3">
+                    {% for venda in vendas_fiado %}
+                        <div class="col-12 mb-2">
+                            <div class="border rounded-3 p-3 bg-dark-subtle position-relative">
+                                <span class="badge bg-primary position-absolute" style="top:10px; left:10px;">Venda #{{ venda.id }}</span>
+                                <span class="badge bg-info text-dark position-absolute" style="top:10px; right:10px;">Venda Realizada: {{ venda.data_venda|date:'d/m/Y H:i' }}</span>
+                                <span class="badge bg-info text-dark position-absolute" style="top:10px; right:10px;">Total: R$ {{ venda.total|floatformat:2 }}</span>
+                                <div class="mb-2 mt-4">
+                                    <span class="fw-bold text-light">{{ venda.data_venda|date:"d/m/Y" }}</span>
+                                </div>
+                                <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
+                                    {% for produto in produtos_comprados %}
+                                        {% if produto.venda_id == venda.id %}
+                                            <div class="bg-white rounded-2 p-2 shadow-sm" style="min-width:180px;">
+                                                <div class="fw-semibold text-dark">{{ produto.produto }}</div>
+                                                <div class="small text-secondary">Qtd: {{ produto.quantidade }}</div>
+                                                <div class="small text-secondary">Unit: R$ {{ produto.preco_unitario|floatformat:2 }}</div>
+                                                <div class="small text-secondary">Total: R$ {{ produto.total|floatformat:2 }}</div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="mt-2">
+                                    <span class="fw-semibold text-light">Parcelas:</span>
+                                    <div class="d-flex flex-wrap gap-2 mt-1">
+                                        {% if venda.parcelas.all %}
+                                            {% for parcela in venda.parcelas.all %}
+                                                <div class="rounded-2 px-2 py-1 text-center {% if parcela.pendente %}bg-warning text-dark{% else %}bg-success text-white{% endif %}" style="min-width:110px;">
+                                                    <div class="fw-bold">{{ forloop.counter }}ª</div>
+                                                    <div>R$ {{ parcela.valor|floatformat:2 }}</div>
+                                                    <div class="small">{{ parcela.data_vencimento|date:"d/m/Y" }}</div>
+                                                    {% if parcela.pendente %}
+                                                        <span>Pendente</span><br>
+                                                        <a href="{% url 'pagar_parcela' parcela.pk %}" class="btn btn-sm btn-outline-primary mt-1">Pagar</a>
+                                                    {% else %}
+                                                        <span>Pago</span>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-muted">Sem parcelas</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center" role="alert">
+                    Não há compras fiado associadas a esta conta.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 {% endblock conteudo %}

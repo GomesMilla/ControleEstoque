@@ -846,24 +846,18 @@ class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('listar_contas')
 
     def get_form_kwargs(self):
-        """Passa o usuário autenticado para o formulário."""
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
-        """Passa o formset e o usuário autenticado para o contexto."""
         data = super().get_context_data(**kwargs)
-
-        if not hasattr(self.request.user, 'empresa'):
+        if not hasattr(self.request.user, 'empresa') or not self.request.user.empresa:
             raise ValueError("O usuário logado não tem uma empresa associada ou não está autenticado.")
-
-        # Criando o formset para os itens de venda, passando o 'user' para o formset
         if self.request.POST:
             data['itens_form'] = ItemVendaFiadoFormset(self.request.POST, queryset=ItemVendaFiado.objects.none(), user=self.request.user)
         else:
             data['itens_form'] = ItemVendaFiadoFormset(queryset=ItemVendaFiado.objects.none(), user=self.request.user)
-
         return data
 
     @transaction.atomic
@@ -876,45 +870,39 @@ class VendaFiadoCreateView(LoginRequiredMixin, CreateView):
 
         if itens_form.is_valid():
             total_venda = 0
-
+            self.object = form.save(commit=False)
+            # Calcule o total antes de salvar, se possível
             for item_form in itens_form.forms:
                 if item_form.cleaned_data:
                     produto = item_form.cleaned_data['produto']
                     quantidade = item_form.cleaned_data['quantidade']
-
-                    # Verificando se há estoque suficiente
                     if produto.quantidade < quantidade:
                         itens_form.add_error('quantidade', f"Estoque insuficiente para o produto {produto.nome}")
+                        transaction.set_rollback(True)
                         return self.form_invalid(form)
-
                     total_venda += produto.preco * quantidade
-                    produto.quantidade -= quantidade
-                    produto.save()
+            self.object.total = total_venda
+            self.object.save()  # Agora a venda tem um ID
 
-            form.instance.total = total_venda
-            self.object = form.save()
-
-            # Salvando os itens da venda
+            # Agora crie os itens
             for item_form in itens_form.forms:
                 if item_form.cleaned_data:
+                    produto = item_form.cleaned_data['produto']
+                    quantidade = item_form.cleaned_data['quantidade']
+                    produto.quantidade -= quantidade
+                    produto.save()
                     ItemVendaFiado.objects.create(
                         venda=self.object,
-                        produto=item_form.cleaned_data['produto'],
-                        quantidade=item_form.cleaned_data['quantidade'],
-                        preco_unitario=item_form.cleaned_data['produto'].preco,
+                        produto=produto,
+                        quantidade=quantidade,
+                        preco_unitario=produto.preco,
                         empresa=self.request.user.empresa
                     )
-
-            # Atualizando o saldo devedor da ContaCorrente
-            conta_corrente = form.instance.conta_corrente
+            conta_corrente = self.object.conta_corrente
             conta_corrente.saldo_devedor += total_venda
             conta_corrente.save()
-
-            # Gerar parcelas da venda fiado
             self.object.gerar_parcelas()
             return super().form_valid(form)
-
-        return self.form_invalid(form)
 
 
 
@@ -1031,6 +1019,7 @@ class VendasPorPeriodoView(LoginRequiredMixin, TemplateView):
         vendas = []
         total_geral = 0
         produtos_resumo = []
+        total_parcelas_pagas = 0
         if data_inicio and data_fim:
             vendas = Venda.objects.filter(
                 empresa=empresa,
@@ -1045,7 +1034,7 @@ class VendasPorPeriodoView(LoginRequiredMixin, TemplateView):
                 )
             )
             # 2. Some o campo anotado
-            total_vendido = itens.aggregate(total=Sum('valor_total'))['total'] or 0
+            total_geral = itens.aggregate(total=Sum('valor_total'))['total'] or 0
             # 3. Resumo por produto
             produtos_resumo = (
                 ItemVenda.objects.filter(venda__in=vendas)
@@ -1062,12 +1051,21 @@ class VendasPorPeriodoView(LoginRequiredMixin, TemplateView):
                 )
                 .order_by('-quantidade')
             )
+            # 4. Total de parcelas pagas no período
+            from core.models import Parcela
+            total_parcelas_pagas = Parcela.objects.filter(
+                venda__empresa=empresa,
+                pendente=False,
+                data_atualizacao__date__gte=data_inicio,
+                data_atualizacao__date__lte=data_fim
+            ).aggregate(total=Sum('valor'))['total'] or 0
         context.update({
             'vendas': vendas,
             'data_inicio': data_inicio,
             'data_fim': data_fim,
             'total_geral': total_geral,
             'produtos_resumo': produtos_resumo,
+            'total_parcelas_pagas': total_parcelas_pagas,
         })
         return context
 

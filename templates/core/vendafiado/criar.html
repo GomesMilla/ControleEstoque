@@ -2,7 +2,13 @@
 {% load static bootstrap %}
 {% block conteudo %}
 
+<div class="text-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-cash-stack text-primary"></i> Cadastrar Venda a Prazo (Fiado)</h2>
+    <p class="lead">Registre vendas a prazo para seus clientes, controle parcelas, produtos vendidos e mantenha o acompanhamento financeiro de forma eficiente.</p>
+</div>
+
 <div class="container mt-5">
+
     <h2>Cadastrar Venda a Prazo</h2>
     <form method="post">
         {% csrf_token %}
@@ -10,14 +16,13 @@
         {{ form|bootstrap }}
         <h3 class="mt-2">Itens da Venda</h3>
         <div id="formset-container">
-            {{ itens_form.management_form }}  <!-- Essencial para o formset -->
+            {{ itens_form.management_form }}
             {% for form in itens_form %}
                 <div class="formset-form">
                     {{ form|bootstrap }}
                 </div>
             {% endfor %}
         </div>
-        <button type="button" id="add-product" class="btn btn-primary mt-1">Adicionar mais produtos</button>
         <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
             <button type="submit" class="btn btn-success rounded-pill">Finalizar Venda</button>
         </div>
