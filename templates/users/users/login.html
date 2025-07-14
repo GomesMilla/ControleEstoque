@@ -2,22 +2,267 @@
 {% load static bootstrap %}
 {% block conteudo %} 
 
-    <div class="container mt-5 col-s6">
-        <h2 class="text-center">Login</h2>
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card w-100 justify-content-center">
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form|bootstrap }}
-                            <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
-                                <button type="submit" class="btn btn-primary">Login</button>
-                            </div>
-                        </form>
+<style>
+    body, .galaxy-bg {
+        background: radial-gradient(ellipse at 50% 30%, #23243a 60%, #181828 100%)!important;
+        min-height: 100vh;
+    }
+    .galaxy-bg {
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 0;
+    }
+    .galaxy-bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url('{% static "images/stars.png" %}') repeat;
+        opacity: 0.15;
+        z-index: 0;
+    }
+    .login-container {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .login-card {
+        background: rgba(35, 36, 58, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 179, 71, 0.2);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        padding: 3rem;
+        max-width: 450px;
+        width: 100%;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .login-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    .login-logo {
+        font-size: 3rem;
+        color: #ffb347;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 12px #ffb34755;
+    }
+    .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+    .login-subtitle {
+        color: #b0b0b0;
+        font-size: 1rem;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.75rem;
+        color: #fff;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #ffb347;
+        box-shadow: 0 0 0 0.2rem rgba(255, 179, 71, 0.25);
+        color: #fff;
+    }
+    .form-control::placeholder {
+        color: #b0b0b0;
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #ffb347 0%, #ffcc80 100%);
+        border: none;
+        border-radius: 0.75rem;
+        color: #23243a;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 0.875rem 2rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(255, 179, 71, 0.3);
+    }
+    .btn-login:hover {
+        background: linear-gradient(135deg, #ffcc80 0%, #ffb347 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 179, 71, 0.4);
+        color: #181828;
+    }
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #b0b0b0;
+        font-size: 0.9rem;
+    }
+    .login-footer a {
+        color: #ffb347;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .login-footer a:hover {
+        color: #ffcc80;
+    }
+    .error-message {
+        background: rgba(220, 53, 69, 0.2);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 0.5rem;
+        color: #ff6b6b;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+    }
+    .form-label {
+        color: #fff;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .password-input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #b0b0b0;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+    .password-toggle:hover {
+        color: #ffb347;
+        background: rgba(255, 179, 71, 0.1);
+    }
+    .password-toggle:focus {
+        outline: none;
+        color: #ffb347;
+        background: rgba(255, 179, 71, 0.2);
+    }
+    .password-input-group .form-control {
+        padding-right: 50px;
+    }
+</style>
+
+<div class="galaxy-bg">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="bi bi-shop"></i>
+                </div>
+                <h1 class="login-title">Bem-vindo ao Afrodite</h1>
+                <p class="login-subtitle">Faça login para acessar sua conta</p>
+            </div>
+
+            {% if form.errors %}
+            <div class="error-message">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Usuário ou senha incorretos. Tente novamente.
+            </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        <i class="bi bi-person me-2"></i>Usuário
+                    </label>
+                    {{ form.username }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        <i class="bi bi-lock me-2"></i>Senha
+                    </label>
+                    <div class="password-input-group">
+                        {{ form.password }}
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                        </button>
                     </div>
                 </div>
+
+                <button type="submit" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Entrar no Sistema
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Precisa de ajuda? Entre em contato</p>
+                <p><i class="bi bi-telephone me-1"></i><strong>(35) 99817-8265</strong></p>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar classes Bootstrap aos campos do formulário
+    const usernameField = document.getElementById('{{ form.username.id_for_label }}');
+    const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+    
+    if (usernameField) {
+        usernameField.classList.add('form-control');
+        usernameField.placeholder = 'Digite seu usuário';
+    }
+    
+    if (passwordField) {
+        passwordField.classList.add('form-control');
+        passwordField.placeholder = 'Digite sua senha';
+    }
+    
+    // Funcionalidade de mostrar/ocultar senha
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordIcon = document.getElementById('passwordIcon');
+    
+    if (passwordToggle && passwordField) {
+        passwordToggle.addEventListener('click', function() {
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordIcon.classList.remove('bi-eye');
+                passwordIcon.classList.add('bi-eye-slash');
+                passwordToggle.setAttribute('title', 'Ocultar senha');
+            } else {
+                passwordField.type = 'password';
+                passwordIcon.classList.remove('bi-eye-slash');
+                passwordIcon.classList.add('bi-eye');
+                passwordToggle.setAttribute('title', 'Mostrar senha');
+            }
+        });
+        
+        // Adicionar tooltip inicial
+        passwordToggle.setAttribute('title', 'Mostrar senha');
+    }
+});
+</script>
+
 {% endblock conteudo %}
