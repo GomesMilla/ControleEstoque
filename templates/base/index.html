@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="{% if objuser %}{{ objuser.theme }}{% else %}dark{% endif %}">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -55,6 +55,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
     <body>
+        {% csrf_token %}
         <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
             <symbol id="check-circle-fill" viewBox="0 0 16 16">
                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -252,6 +253,11 @@
                         {% if objuser %}
                             <li class="nav-item">
                                 <span class="navbar-text fw-semibold me-3"><i class="bi bi-person-circle"></i> {{objuser.nome}}</span>
+                            </li>
+                            <li class="nav-item">
+                                <button class="btn btn-link nav-link theme-toggle" type="button" title="Alternar tema">
+                                    <i class="bi bi-{% if objuser.theme == 'dark' %}sun{% else %}moon{% endif %}-fill"></i>
+                                </button>
                             </li>
                             <li class="nav-item">
                                 <a href="{% url 'pendencias' %}" class="nav-link position-relative">
@@ -462,6 +468,47 @@
         <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            
+            // Funcionalidade de alternar tema
+            document.addEventListener('DOMContentLoaded', function() {
+                const themeToggle = document.querySelector('.theme-toggle');
+                if (themeToggle) {
+                    themeToggle.addEventListener('click', function() {
+                        fetch('{% url "toggle_theme" %}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Atualiza o ícone
+                                const icon = themeToggle.querySelector('i');
+                                if (data.new_theme === 'dark') {
+                                    icon.className = 'bi bi-sun-fill';
+                                    themeToggle.title = 'Alternar para tema claro';
+                                } else {
+                                    icon.className = 'bi bi-moon-fill';
+                                    themeToggle.title = 'Alternar para tema escuro';
+                                }
+                                
+                                // Atualiza o tema da página
+                                document.documentElement.setAttribute('data-bs-theme', data.new_theme);
+                                
+                                // Recarrega a página para aplicar todas as mudanças de tema
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 300);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erro ao alternar tema:', error);
+                        });
+                    });
+                }
+            });
         </script>
         <style>
             .btn-gradient-primary {
@@ -481,6 +528,23 @@
             .btn-gradient-danger:hover {
                 background: linear-gradient(90deg, #b71c1c 0%, #ff5252 100%);
                 color: #fff;
+            }
+            .theme-toggle {
+                transition: all 0.3s ease;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 0.5rem;
+            }
+            .theme-toggle:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: scale(1.1);
+            }
+            .theme-toggle i {
+                font-size: 1.2rem;
             }
         </style>
     </body>

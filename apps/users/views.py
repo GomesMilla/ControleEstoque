@@ -362,3 +362,30 @@ class AniversariantesListView(LoginRequiredMixin, ListView):
             data_aniversario__month=today.month,
             data_aniversario__day=today.day
         )
+
+
+class ToggleThemeView(LoginRequiredMixin, View):
+    """View para alternar o tema do usuário"""
+    
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        current_theme = user.theme
+        
+        # Alterna entre dark e light
+        if current_theme == 'dark':
+            user.theme = 'light'
+        else:
+            user.theme = 'dark'
+        
+        user.save()
+        
+        # Retorna JSON para requisições AJAX
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            from django.http import JsonResponse
+            return JsonResponse({
+                'success': True,
+                'new_theme': user.theme
+            })
+        
+        # Redireciona para a página anterior
+        return redirect(request.META.get('HTTP_REFERER', 'home'))

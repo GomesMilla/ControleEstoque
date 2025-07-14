@@ -25,4 +25,7 @@ urlpatterns = [
     path('lista_clientes/', ClienteListView.as_view(), name='lista_clientes'),
     path('visualizar_cliente/<int:pk>/', DetalheCliente.as_view(), name='detalhe_cliente'),
     path('aniversariantes/', AniversariantesListView.as_view(), name='aniversariantes'),
+    
+    # tema
+    path('toggle_theme/', ToggleThemeView.as_view(), name='toggle_theme'),
 ]
