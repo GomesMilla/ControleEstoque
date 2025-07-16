@@ -31,7 +31,18 @@
                 var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
-                    events: '{% url "eventos_json" %}',
+                    events: function(info, successCallback, failureCallback) {
+                        // Fazer requisição AJAX com os parâmetros de data
+                        fetch('{% url "eventos_json" %}?start=' + info.startStr + '&end=' + info.endStr)
+                            .then(response => response.json())
+                            .then(data => {
+                                successCallback(data);
+                            })
+                            .catch(error => {
+                                console.error('Erro ao carregar eventos:', error);
+                                failureCallback(error);
+                            });
+                    },
                     locale: 'pt-br',
                     eventDidMount: function(info) {
                         // Adicionar a descrição ao título do evento no calendário
