@@ -11,8 +11,8 @@
             <div class="d-flex justify-content-end mb-3">
                 <div class="btn-group" role="group" aria-label="Visualização do calendário">
                     <button type="button" class="btn btn-outline-primary active" id="btn-mes">Mês</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-semana">Semana</button>
                     <button type="button" class="btn btn-outline-primary" id="btn-dia">Dia</button>
-
                 </div>
             </div>
             <div class="row d-flex align-items-start">
@@ -55,6 +55,10 @@
                 };
                 document.getElementById('btn-dia').onclick = function() {
                     calendar.changeView('dayGridDay');
+                    setActive(this);
+                };
+                document.getElementById('btn-semana').onclick = function() {
+                    calendar.changeView('timeGridWeek');
                     setActive(this);
                 };
                 document.getElementById('btn-ano').onclick = function() {
