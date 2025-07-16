@@ -2,12 +2,16 @@
 {% load static bootstrap form_tags %}
 {% block conteudo %}
 
+    <audio id="coinSound" preload="auto">
+        <source src="{% static 'sounds/mixkit-gold-coin-prize-1999.wav' %}" type="audio/wav">
+    </audio>
 
     <div class="container mt-5">
         <div class="text-center mb-4">
             <h2 class="fw-bold"><i class="bi bi-cart-plus text-primary"></i> Cadastrar Venda</h2>
             <p class="lead">Cadastre suas vendas, acompanhe seu estoque e otimize a comunicação interna com nosso sistema.</p>
         </div>
+        <button onclick="playCoinSound()">Testar som</button>
         <form method="post">
             {% csrf_token %}
             {{form.media}}
@@ -116,6 +120,16 @@
                 }
             });
         });
+        {% comment %} Carrega o som {% endcomment %}
+        function playCoinSound() {
+            const audio = document.getElementById("coinSound");
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(error => {
+                    console.log("Erro ao tocar o som:", error);
+                });
+            }
+        }
         function reindexFormsetRows() {
             var forms = $('.formset-row');
             forms.each(function(index) {
