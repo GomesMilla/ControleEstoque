@@ -137,22 +137,47 @@ class EventosAnualList(LoginRequiredMixin, ListView):
         return queryset
 
 
+PRIORIDADE_CORES = {
+    'urgente':   {'background': '#dc3545', 'border': '#a71d2a'},  # vermelho
+    'alta':      {'background': '#fd7e14', 'border': '#b85c0b'},  # laranja
+    'media':     {'background': '#ffc107', 'border': '#b38600'},  # amarelo
+    'baixa':     {'background': '#0d6efd', 'border': '#084298'},  # azul
+}
+
 def eventos_json(request):
-    eventos = Evento.objects.filter(empresa=request.user.empresa)
     eventos_list = []
-    
+    ano_atual = timezone.now().year
+    eventos = Evento.objects.filter(
+        empresa=request.user.empresa,
+        data_inicio__year=ano_atual
+    )
+
     for evento in eventos:
-        ano_atual = timezone.now().year 
-        eventos = Evento.objects.filter(
-                empresa=request.user.empresa,
-                data_inicio__year=ano_atual
-            )
-        end_date = evento.data_fim + timedelta(days=1) if evento.data_fim else None
-        eventos_list.append({
+        cor = PRIORIDADE_CORES.get(evento.prioridade, PRIORIDADE_CORES['baixa'])
+        if evento.data_fim:
+            end_date = evento.data_fim
+        else:
+            end_date = evento.data_inicio + timedelta(hours=1)
+        # Evento de dia inteiro: começa e termina à meia-noite, e a diferença é >= 1 dia
+        all_day = (
+            evento.data_inicio.hour == 0 and evento.data_inicio.minute == 0 and evento.data_inicio.second == 0 and
+            evento.data_fim and evento.data_fim.hour == 0 and evento.data_fim.minute == 0 and evento.data_fim.second == 0 and
+            (evento.data_fim.date() - evento.data_inicio.date()).days >= 1
+        )
+        evento_dict = {
             'title': evento.titulo,
             'start': evento.data_inicio.isoformat(),
-            'end': end_date.isoformat() if end_date else None,
+            'end': end_date.isoformat(),
             'description': evento.resumo,
-        })
-    
+            'tipo': evento.get_tipo_display(),
+            'prioridade': evento.get_prioridade_display(),
+            'recorrencia': evento.get_recorrencia_display() if evento.recorrencia else '',
+            'backgroundColor': cor['background'],
+            'borderColor': cor['border'],
+            'textColor': '#fff',
+        }
+        if all_day:
+            evento_dict['allDay'] = True
+        # NÃO envie allDay para eventos com hora!
+        eventos_list.append(evento_dict)
     return JsonResponse(eventos_list, safe=False)

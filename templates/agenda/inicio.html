@@ -9,6 +9,22 @@
         .btn_cadastrar_venda{
             display: none;
         }
+        .fc-event, .fc-event-title, .fc-event-time, .fc-event .fc-event-title, .fc-event .fc-event-time {
+            color: #fff !important;
+        }
+        .fc-event {
+            border: none !important;
+        }
+        .fc-event, .fc-event-title, .fc-event-time, .fc-event .fc-event-title, .fc-event .fc-event-time {
+            color: #fff !important;
+        }
+        .fc-daygrid-event {
+            min-height: 40px !important;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: bold;
+        }
     </style>
 
     {% if objuser.empresa.agenda %}
@@ -51,16 +67,19 @@
                     events: '{% url "eventos_json" %}',
                     locale: 'pt-br',
                     eventDidMount: function(info) {
-                        // Adicionar a descrição ao título do evento no calendário
                         var tooltip = info.event.extendedProps.description || '';
-                        if (tooltip) {
-                            info.el.innerHTML = `
-                                <div>
-                                    <strong>${info.event.title}</strong><br>
-                                    <small>${tooltip}</small>
-                                </div>
-                            `;
-                        }
+                        var tipo = info.event.extendedProps.tipo || '';
+                        var prioridade = info.event.extendedProps.prioridade || '';
+                        var recorrencia = info.event.extendedProps.recorrencia || '';
+                        var isTimed = !info.event.allDay;
+                        info.el.innerHTML = `
+                            <div>
+                                ${isTimed ? '<span style="margin-right:4px;">⏰</span>' : ''}
+                                <strong>${info.event.title}</strong><br>
+                                ${recorrencia ? `<span><b>Recorrência:</b> ${recorrencia}</span>` : ''}
+                            </div>
+                        `;
+                        info.el.style.color = '#fff';
                     }
                 });
                 calendar.render();
@@ -90,12 +109,6 @@
                 }
             });    
         </script>
-        <style>
-            /* Força o texto dos eventos a ficar branco */
-            .fc-event, .fc-event-title, .fc-event-time, .fc-event .fc-event-title, .fc-event .fc-event-time {
-                color: #fff !important;
-            }
-        </style>
     {% else %}
         <div class="container mt-5">
             <div class="alert alert-danger" role="alert">
