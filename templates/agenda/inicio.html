@@ -2,12 +2,34 @@
 {% load static bootstrap %}
 {% block conteudo %}
 
+    <style>
+        .btn_cadastrar_venda_a_prazo{
+            display: none;
+        }
+        .btn_cadastrar_venda{
+            display: none;
+        }
+    </style>
+
     {% if objuser.empresa.agenda %}
-        <div class="container mt-5">
+        <div class="ms-5 me-5 mt-5">
             <div class="text-center mb-5">
                 <h2 class="fw-bold"><i class="bi bi-calendar3 text-primary"></i> Agenda</h2>
                 <p class="lead">Visualize, cadastre e acompanhe todos os seus eventos em um só lugar.</p>
             </div>
+            <div class="d-flex">
+                <div class="me-2">
+                    <a href="{% url 'cadastrar_evento' %}" class="btn btn-success btn-lg">Cadastrar Evento</a>
+                </div>
+                <div class="me-2">
+                    <a href="{% url 'evento_anual' %}" class="btn btn-warning btn-lg">Eventos do Ano</a>
+                </div>
+                <div>
+                    <a href="{% url 'evento_mes' %}" class="btn btn-info btn-lg">Eventos do Mês</a>
+                </div>
+            </div>
+            
+            
             <div class="d-flex justify-content-end mb-3">
                 <div class="btn-group" role="group" aria-label="Visualização do calendário">
                     <button type="button" class="btn btn-outline-primary active" id="btn-mes">Mês</button>
@@ -16,12 +38,7 @@
                 </div>
             </div>
             <div class="row d-flex align-items-start">
-                <div class="col-auto d-flex flex-column me-3">
-                    <a href="{% url 'cadastrar_evento' %}" class="btn btn-success btn-lg mb-2">Cadastrar Evento</a>
-                    <a href="{% url 'evento_anual' %}" class="btn btn-warning btn-lg mb-2">Eventos do Ano</a>
-                    <a href="{% url 'evento_mes' %}" class="btn btn-info btn-lg mb-2">Eventos do Mês</a>
-                </div>
-                <div class="col">
+                <div class="col-12">
                     <div id="calendar"></div>
                 </div>
             </div>        
