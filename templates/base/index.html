@@ -184,16 +184,14 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}"><i class="bi bi-house-door"></i> Home</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="{% url 'cadastrar_venda' %}"><i class="bi bi-cart-plus"></i> Cadastrar Venda</a>
-                                </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-bullseye"></i> Meta
+                                        <i class="bi bi-cart-plus"></i> Vendas
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'cadastrar_meta'%}"><i class="bi bi-plus-circle"></i> Cadastrar Meta</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'lista_metas'%}"><i class="bi bi-list-ul"></i> Lista de Metas</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'cadastrar_venda' %}"><i class="bi bi-plus-circle"></i> Cadastrar Venda</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'lista_produtos_empresa' objuser.empresa.pk %}"><i class="bi bi-plus-circle"></i> Cadastrar Venda a Prazo</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'listar_vendas_fiado' %}"><i class="bi bi-cash-stack"></i> Listar Venda a Prazo</a></li>
                                     </ul>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -234,17 +232,11 @@
                                         <li><a class="dropdown-item" href="{% url 'lista_clientes' %}"><i class="bi bi-people"></i> Clientes</a></li>
                                     </ul>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-cash-stack"></i> Vendas a Prazo
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'nova_venda_fiado' %}"><i class="bi bi-cash-stack"></i> Cadastrar</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'listar_vendas_fiado' %}"><i class="bi bi-cash-stack"></i> Listar</a></li>
-                                    </ul>
-                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-bar-chart-line"></i> Relatórios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-calendar3"></i> Agenda</a>
                                 </li>
                             {% endif %}
                         {% endif %}
@@ -252,7 +244,7 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                         {% if objuser %}
                             <li class="nav-item">
-                                <span class="navbar-text fw-semibold me-3"><i class="bi bi-person-circle"></i> {{objuser.nome}}</span>
+                                <span class="navbar-text fw-semibold me-3"><i class="bi bi-person-circle"></i> {{nome_e_sobrenome}}</span>
                             </li>
                             <li class="nav-item">
                                 <button class="btn btn-link nav-link theme-toggle" type="button" title="Alternar tema">

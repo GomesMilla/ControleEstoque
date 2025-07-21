@@ -25,10 +25,19 @@ def base(request):
     area_url = request.META.get('PATH_INFO')
     if request.user.is_authenticated and not "/admin/" in area_url:
         objeuser = request.user
+        if objeuser.nome:
+            nome_parts = objeuser.nome.strip().split()
+            if len(nome_parts) == 1:
+                nome_formatado = nome_parts[0]
+            else:
+                nome_formatado = f"{nome_parts[0]} {nome_parts[-1]}"
+        else:
+            nome_formatado = "Afrodite"
         alertas = Alerta.objects.filter(empresa=objeuser.empresa, is_active=True)
         context = {
             'now': timezone.now().time(),
             "objuser" : objeuser,
+            "nome_e_sobrenome" : nome_formatado,
             "alertas" : alertas,
         }
     
