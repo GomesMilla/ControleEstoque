@@ -2,6 +2,15 @@
 {% load static bootstrap form_tags %}
 {% block conteudo %} 
 
+    <style>
+        .btn_cadastrar_venda_a_prazo{
+            display: none;
+        }
+        .btn_cadastrar_venda{
+            display: none;
+        }
+    </style>
+
     <div class="text-center mb-4">
         <h2 class="fw-bold"><i class="bi bi-calendar-plus text-primary"></i> Cadastrar Evento</h2>
         <p class="lead">Cadastre novos eventos na agenda para não perder compromissos importantes e manter o controle das suas atividades.</p>
@@ -19,17 +28,21 @@
     </div>
     <script>
         $('document').ready(function() {
-            $('#id_data_inicio').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                locale: 'pt-br'
-            });  
-            $('#id_data_fim').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                locale: 'pt-br'
+            flatpickr("#id_data_inicio", {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                time_24hr: true,
+                locale: "pt"
+            });
+            flatpickr("#id_data_fim", {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                time_24hr: true,
+                locale: "pt"
+            });
+            flatpickr("#id_data_fim_recorrencia", {
+                dateFormat: "d/m/Y",
+                locale: "pt"
             });
         });
     </script>

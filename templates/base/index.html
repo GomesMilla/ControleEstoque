@@ -22,6 +22,9 @@
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.mask.min.js'%}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap-datepicker.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/flatpickr.min.css' %}">
+    <script src="{% static 'js/flatpickr.min.js' %}"></script>
+    <script src="{% static 'js/pt.js' %}"></script>
     
     {% comment %} Importação de cdn de charts {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
@@ -236,7 +239,7 @@
                                     <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-bar-chart-line"></i> Relatórios</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'relatorios_home' %}"><i class="bi bi-calendar3"></i> Agenda</a>
+                                    <a class="nav-link" href="{% url 'agenda' %}"><i class="bi bi-calendar3"></i> Agenda</a>
                                 </li>
                             {% endif %}
                         {% endif %}
