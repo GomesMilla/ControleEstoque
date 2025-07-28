@@ -1,6 +1,18 @@
 {% extends "base/index.html" %}
 {% load static bootstrap form_tags %}
 {% block conteudo %} 
+    <!-- CSS -->
+    {% comment %} <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> {% endcomment %}
+
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script> {% endcomment %}
+
+    <link rel="stylesheet" href="{% static 'css/flatpickr.min.css' %}">
+
+    <!-- Scripts do Flatpickr -->
+    <script src="{% static 'js/flatpickr.min.js' %}"></script>
+    <script src="{% static 'js/pt.js' %}"></script>
+
 
     <style>
         .btn_cadastrar_venda_a_prazo{
@@ -28,17 +40,17 @@
     </div>
     <script>
         $('document').ready(function() {
-            $('#id_data_inicio').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                locale: 'pt-br'
-            });  
-            $('#id_data_fim').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true,
-                locale: 'pt-br'
+            flatpickr("#id_data_inicio", {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                time_24hr: true,
+                locale: "pt"
+            });
+            flatpickr("#id_data_fim", {
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                time_24hr: true,
+                locale: "pt"
             });
             $('#id_data_fim_recorrencia').datepicker({
                 format: 'dd/mm/yyyy',

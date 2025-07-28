@@ -43,9 +43,7 @@
                 <div>
                     <a href="{% url 'evento_mes' %}" class="btn btn-info btn-lg">Eventos do Mês</a>
                 </div>
-            </div>
-            
-            
+            </div>          
             <div class="d-flex justify-content-end mb-3">
                 <div class="btn-group" role="group" aria-label="Visualização do calendário">
                     <button type="button" class="btn btn-outline-primary active" id="btn-mes">Mês</button>
@@ -80,11 +78,52 @@
                             </div>
                         `;
                         info.el.style.color = '#fff';
+                    },
+                    eventClick: function(info) {
+                        const tipoIcones = {
+                            "Conta a Pagar": "bi-cash-stack",
+                            "Conta a Receber": "bi-cash-coin",
+                            "Pagamento de Funcionários": "bi-person-badge",
+                            "Impostos e Tributos": "bi-bank",
+                            "Reembolso": "bi-arrow-counterclockwise",
+                            "Brinde": "bi-gift",
+                            "Ação Promocional": "bi-megaphone",
+                            "Contato com Cliente": "bi-telephone",
+                            "Renovação de Contrato": "bi-file-earmark-text",
+                            "Proposta Comercial": "bi-file-earmark-bar-graph",
+                            "Entrega Agendada": "bi-truck",
+                            "Reunião Interna": "bi-people",
+                            "Visita Técnica": "bi-tools",
+                            "Treinamento / Capacitação": "bi-mortarboard",
+                            "Manutenção": "bi-wrench",
+                            "Aniversário de Cliente": "bi-cake",
+                            "Aniversário de Funcionário": "bi-cake2",
+                            "Feriado": "bi-calendar2-week",
+                            "Data Comemorativa": "bi-star",
+                            "Outros": "bi-info-circle"
+                        };
+                        const prioridadeBadges = {
+                            "Urgente": '<span class="badge bg-danger"><i class="bi bi-exclamation-triangle"></i> Urgente</span>',
+                            "Alta": '<span class="badge bg-warning text-dark"><i class="bi bi-arrow-up"></i> Alta</span>',
+                            "Média": '<span class="badge bg-primary"><i class="bi bi-arrow-right"></i> Média</span>',
+                            "Baixa": '<span class="badge bg-secondary"><i class="bi bi-arrow-down"></i> Baixa</span>',
+                        };
+                        document.getElementById('modalTitulo').textContent = info.event.title;
+                        document.getElementById('modalResumo').textContent = info.event.extendedProps.description || '';
+                        document.getElementById('modalTipo').textContent = info.event.extendedProps.tipo || '';
+                        document.getElementById('modalPrioridadeBadge').innerHTML = prioridadeBadges[info.event.extendedProps.prioridade] || '';
+                        document.getElementById('modalRecorrencia').textContent = info.event.extendedProps.recorrencia || 'Não se repete';
+                        document.getElementById('modalInicio').textContent = info.event.start ? info.event.start.toLocaleString('pt-BR') : '';
+                        document.getElementById('modalFim').textContent = info.event.end ? info.event.end.toLocaleString('pt-BR') : '';
+                        let tipo = info.event.extendedProps.tipo || 'Outros';
+                        let icone = tipoIcones[tipo] || 'bi-info-circle';
+                        document.getElementById('modalIcone').innerHTML = `<i class="bi ${icone}"></i>`;
+                        var myModal = new bootstrap.Modal(document.getElementById('eventoModal'));
+                        myModal.show();
+                        info.jsEvent.preventDefault();
                     }
                 });
                 calendar.render();
-
-                // Troca de visualização
                 document.getElementById('btn-mes').onclick = function() {
                     calendar.changeView('dayGridMonth');
                     setActive(this);
@@ -95,10 +134,6 @@
                 };
                 document.getElementById('btn-semana').onclick = function() {
                     calendar.changeView('timeGridWeek');
-                    setActive(this);
-                };
-                document.getElementById('btn-ano').onclick = function() {
-                    calendar.changeView('dayGridYear'); // Vai tentar usar um plugin de ano, se não existir, pode customizar
                     setActive(this);
                 };
                 function setActive(btn) {
@@ -119,4 +154,54 @@
             </div>
         </div>
     {% endif %}
+
+    <div class="modal fade" id="eventoModal" tabindex="-1" aria-labelledby="eventoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg rounded-4">              
+                <div class="modal-header bg-primary text-white rounded-top-4">
+                    <div class="d-flex align-items-center">
+                    <span id="modalIcone" class="me-2 fs-4"></span>
+                    <h5 class="modal-title fw-semibold mb-0" id="eventoModalLabel">Detalhes do Evento</h5>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>          
+                <div class="modal-body py-4 px-4">
+                    <div class="col-md-6 text-md-start">
+                        <span class="badge bg-light text-dark p-2"><i class="bi bi-tag me-1"></i><span id="modalTipo"></span></span>
+                        <span class="p-2" id="modalPrioridadeBadge"></span>
+                    </div>  
+                    <h4 class="fw-bold mb-1 mt-2" id="modalTitulo"></h4>
+                    <p class="text-muted mb-3" id="modalResumo"></p>                   
+                    <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center">
+                            <i class="bi bi-arrow-repeat fs-4 text-primary"></i>
+                            <p class="mb-0 small text-muted">Recorrência</p>
+                            <div id="modalRecorrencia" class="fw-semibold"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded-3 p-3 text-center">
+                        <i class="bi bi-calendar-event fs-4 text-success"></i>
+                        <p class="mb-0 small text-muted">Início</p>
+                        <div id="modalInicio" class="fw-semibold"></div>
+                        </div>
+                    </div>
+                        <div class="col-md-4">
+                            <div class="border rounded-3 p-3 text-center">
+                                <i class="bi bi-calendar-check fs-4 text-danger"></i>
+                                <p class="mb-0 small text-muted">Fim</p>
+                                <div id="modalFim" class="fw-semibold"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>          
+                <div class="modal-footer border-0 px-4 py-3">
+                    <button type="button" class="btn btn-outline-primary rounded-pill" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock conteudo %}
+
