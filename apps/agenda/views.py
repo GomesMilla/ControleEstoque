@@ -16,8 +16,8 @@ from django.utils.timezone import now
 import datetime
 from django.views.generic.edit import UpdateView
 from django.utils import timezone
-from datetime import timedelta
-
+from datetime import datetime, time, timedelta
+from dateutil.relativedelta import relativedelta
 class InicioView(LoginRequiredMixin, TemplateView):
     template_name = "agenda/inicio.html"
     login_url = '/login/'
@@ -36,8 +36,41 @@ class EventoCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         if not self.request.user.is_superuser:
             form.instance.user = self.request.user
-            form.instance.empresa = self.request.user.empresa 
-        return super().form_valid(form)
+            form.instance.empresa = self.request.user.empresa
+
+        # Salva o evento original
+        response = super().form_valid(form)
+
+        # Dados da recorrência
+        recorrencia = form.cleaned_data.get('recorrencia')
+        data_fim = form.cleaned_data.get('data_fim_recorrencia')
+        data_inicio = form.instance.data_inicio  # Deve ser DateTimeField
+
+        if recorrencia and data_fim:
+            nova_data = data_inicio
+
+            # Torna data_fim_datetime "aware" para comparação correta
+            naive_data_fim = datetime.combine(data_fim, time.max)
+            data_fim_datetime = timezone.make_aware(naive_data_fim, timezone.get_current_timezone())
+
+            while True:
+                if recorrencia == 'semanal':
+                    nova_data += timedelta(weeks=1)
+                elif recorrencia == 'quinzenal':
+                    nova_data += timedelta(weeks=2)
+                elif recorrencia == 'mensal':
+                    nova_data += relativedelta(months=1)
+                elif recorrencia == 'anual':
+                    nova_data += relativedelta(years=1)
+
+                if nova_data > data_fim_datetime:
+                    break
+
+                form.instance.pk = None
+                form.instance.data_inicio = nova_data
+                form.instance.save()
+
+        return response
 
     def test_func(self):
         return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario

@@ -21,12 +21,10 @@
         $('document').ready(function() {
             $('#id_telefone_celular').mask('(00) 0000-0000');
             $('#id_cpf').mask('000.000.000-00');    
-        });
-        $('#id_data_aniversario').datepicker({
-            format: 'dd/mm/yyyy',
-            autoclose: true,
-            todayHighlight: true,
-            language: 'pt-BR'
+            flatpickr("#id_data_aniversario", {
+                dateFormat: "d/m/Y",
+                locale: "pt"
+            });
         });
     </script>
 
