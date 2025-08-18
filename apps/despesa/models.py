@@ -10,7 +10,7 @@ class TipoDespesa(models.Model):
         return self.nome
 
 class Despesa(BaseModel):
-    titulo = models.CharField("Descrição", max_length=25)
+    titulo = models.CharField("Descrição", max_length=250)
     descricao = RichTextUploadingField("Observações:", null=True, blank=True)
     valor = models.DecimalField("Valor", max_digits=10, decimal_places=2)
     data = models.DateField("Data")

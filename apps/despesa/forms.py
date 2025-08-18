@@ -23,6 +23,7 @@ class DespesaForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super(DespesaForm, self).__init__(*args, **kwargs)
         self.fields['titulo'].label = "Título:"
+        self.fields['data'].label = "Data de Pagamento:"
         if not user.is_superuser:
             self.fields['empresa'].widget = forms.HiddenInput()
             self.fields['empresa'].required = False

@@ -8,6 +8,6 @@ class TipoDespesaAdmin(admin.ModelAdmin):
 
 @admin.register(Despesa)
 class DespesaAdmin(admin.ModelAdmin):
-    list_display = ('descricao', 'valor', 'data', 'tipo', 'eh_extra')
+    list_display = ('titulo','descricao', 'valor', 'data', 'tipo', 'eh_extra')
     list_filter = ('tipo', 'eh_extra', 'data')
     search_fields = ('descricao',)

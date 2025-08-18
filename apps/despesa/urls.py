@@ -8,5 +8,6 @@ urlpatterns = [
     path('listar_tipo_despesa', TiposdeDespesasListView.as_view(), name='listar_tipo_despesa'),
 
     path('criar_despesa', DespesaCreateView.as_view(), name='criar_despesa'),
+    path('listar_despesa', DespesasMesList.as_view(), name='listar_despesa'),
 
 ]
