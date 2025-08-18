@@ -2,7 +2,6 @@ from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView
-from django.shortcuts import redirect
 from .models import *
 from .forms import *
 from django.shortcuts import redirect, get_object_or_404

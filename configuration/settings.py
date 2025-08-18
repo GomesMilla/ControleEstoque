@@ -34,6 +34,7 @@ INSTALLED_APPS += [
     'core',
     'users',
     'agenda',
+    'despesa',
 ]
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
