@@ -16,6 +16,7 @@ class Despesa(BaseModel):
     data = models.DateField("Data")
     tipo = models.ForeignKey(TipoDespesa, on_delete=models.CASCADE, verbose_name="Tipo de Despesa")
     eh_extra = models.BooleanField("É despesa extra?", default=False)
+    despesa_paga = models.BooleanField("Despesa Paga", default=False)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name='despesa_empresa', null=True, blank=True)
 
     def __str__(self):
