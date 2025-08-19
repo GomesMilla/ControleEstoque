@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from django.utils import timezone
 from datetime import datetime, time, timedelta
 from django.db.models import Q
+from django.db.models import Sum, F
 class TipodeDespesaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = TipoDespesa
     form_class = TipodeDespesaForm
@@ -88,25 +89,35 @@ class DespesasMesList(LoginRequiredMixin, ListView):
         query = self.request.GET.get('q')
 
         if self.request.user.is_superuser:
-            queryset = Despesa.objects.all()
-
+            queryset = Despesa.objects.filter(data__range=(first_day_of_month, last_day_of_month))
         else:
             queryset = Despesa.objects.filter(
-            empresa=self.request.user.empresa,
-            data__gte=first_day_of_month,
-            data__lte=last_day_of_month
-        )        
+                empresa=self.request.user.empresa,
+                data__range=(first_day_of_month, last_day_of_month)
+            )
+
         if query:
             queryset = queryset.filter(
                 Q(titulo__icontains=query) |
-                Q(resumo__icontains=query) |
-                Q(empresa=self.request.user.empresa) |
-                Q(data_inicio__gte=first_day_of_month) |
-                Q(data_fim__lte=last_day_of_month)
+                Q(resumo__icontains=query)
             )
-        
+
         return queryset
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        despesas = self.get_queryset()
+
+        total_despesas = despesas.aggregate(total=Sum('valor'))['total'] or 0
+        total_pagas = despesas.filter(despesa_paga=True).aggregate(total=Sum('valor'))['total'] or 0
+        total_nao_pagas = despesas.filter(despesa_paga=False).aggregate(total=Sum('valor'))['total'] or 0
+
+        context['total_despesas'] = total_despesas
+        context['total_pagas'] = total_pagas
+        context['total_nao_pagas'] = total_nao_pagas
+
+        return context
+
     def test_func(self):
         return self.request.user.is_superuser or not self.request.user.if_funcionario or self.request.user.if_funcionario
 

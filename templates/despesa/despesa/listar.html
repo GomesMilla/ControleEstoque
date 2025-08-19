@@ -19,16 +19,16 @@
                     <div class="card-body">
                         <div class="mb-2"><i class="bi bi-bullseye text-primary" style="font-size:2rem;"></i></div>
                         <h6 class="text-muted">Despesa Total</h6>
-                        <h4 class="fw-bold">R$ {{ valor_meta|default:"SEM META" }}</h4>
+                        <h4 class="fw-bold">R$ {{ total_despesas|default:"-" }}</h4>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card shadow border-0 text-center">
                     <div class="card-body">
-                        <div class="mb-2"><i class="bi bi-trophy text-success" style="font-size:2rem;"></i></div>
+                        <div class="mb-2"><i class="bi bi-check-circle-fill text-success mb-3" style="font-size:2rem;"></i></div>
                         <h6 class="text-muted">Pago</h6>
-                        <h4 class="fw-bold text-success">R$ {{ valor_alcancado|default:"0,00" }}</h4>
+                        <h4 class="fw-bold text-success">R$ {{ total_pagas|default:"0,00" }}</h4>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                     <div class="card-body">
                         <div class="mb-2"><i class="bi bi-exclamation-triangle text-danger" style="font-size:2rem;"></i></div>
                         <h6 class="text-muted">Em aberto</h6>
-                        <h4 class="fw-bold text-danger">R$ {{ falta_para_meta|default:"0,00" }}</h4>
+                        <h4 class="fw-bold text-danger">R$ {{ total_nao_pagas|default:"0,00" }}</h4>
                     </div>
                 </div>
             </div>
@@ -53,6 +53,7 @@
                         <th>Data de Vencimento</th>
                         <th>Tipo</th>
                         <th>Status</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +64,23 @@
                         <td>{{ despesa.valor|default:"-" }}</td>
                         <td>{{ despesa.data|default:"-" }}</td>
                         <td>{{ despesa.tipo|default:"-" }}</td>
-                        <td {% if not despesa.despesa_paga %}class="table-danger"{% endif %}> {% if despesa.despesa_paga %}Pago {% else %}Em aberto{% endif %}</td>
+                        <td>
+                            {% if despesa.despesa_paga %}
+                                <span class="badge bg-success">Pago</span>
+                            {% else %}
+                                <span class="badge bg-danger">Em Aberto</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="#" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
