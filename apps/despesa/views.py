@@ -11,6 +11,9 @@ from django.utils import timezone
 from datetime import datetime, time, timedelta
 from django.db.models import Q
 from django.db.models import Sum, F
+from django.views.generic.edit import UpdateView
+from django.shortcuts import get_object_or_404, redirect
+from django.views import View
 class TipodeDespesaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = TipoDespesa
     form_class = TipodeDespesaForm
@@ -57,7 +60,7 @@ class DespesaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Despesa
     form_class = DespesaForm
     template_name = 'despesa/despesa/criar.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('listar_despesa')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -71,6 +74,60 @@ class DespesaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_superuser or not self.request.user.if_funcionario
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class DespesaUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Despesa
+    form_class = DespesaForm
+    template_name = 'despesa/despesa/editar.html'
+
+    def get_success_url(self):
+        return reverse_lazy('listar_despesa')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        if not self.request.user.is_superuser:
+            form.instance.empresa = self.request.user.empresa
+
+            # COLOCANDO DATA DE PAGAMENTO DA DESPESA
+            if form.instance.despesa_paga:
+                form.instance.data_desativacao = datetime.now()
+
+        return super().form_valid(form)
+
+    def test_func(self):
+        produto = self.get_object()
+        return self.request.user.is_superuser or self.request.user.empresa is not None
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().handle_no_permission()
+
+class PagarDespesaView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        despesa = get_object_or_404(Despesa, pk=pk)
+
+        if not self.test_func():
+            return self.handle_no_permission()
+
+        despesa.despesa_paga = True
+        # COLOCANDO DATA DE PAGAMENTO DA DESPESA
+        despesa.data_desativacao = datetime.now()
+        despesa.save()
+        return redirect(reverse_lazy('listar_despesa'))
+
+    def test_func(self):
+        # Opcional: ajuste a lógica conforme sua regra de acesso
+        return self.request.user.is_superuser or self.request.user.empresa is not None
 
     def handle_no_permission(self):
         if self.request.user.is_authenticated:

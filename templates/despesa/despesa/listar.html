@@ -73,12 +73,14 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="#" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-pencil-square"></i>
+                                <a href="{% url 'editar_despesa' despesa.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square"> Editar</i>
                                 </a>
-                                <a href="#" class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-currency-dollar"></i>
-                                </a>
+                                {% if not despesa.despesa_paga %}
+                                    <a href="{% url 'pagar_despesa' despesa.pk %}" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-currency-dollar"> Pagar</i>
+                                    </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
