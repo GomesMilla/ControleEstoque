@@ -1,0 +1,37 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-cash-stack text-primary"></i> Editar Despesa
+        </h2>
+        <p class="lead">Edite suas despesas para acompanhar seus gastos e tomar decisões mais estratégicas.</p>
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.media}}
+        {{ form|bootstrap }}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        <div class="d-grid gap-2 col-6 mx-auto mt-3 mb-2">
+            <button type="submit" class="btn btn-success rounded-pill">Cadastrar</button>
+            <button type="button" onclick="history.back()" class="btn btn-danger rounded-pill">Cancelar</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('document').ready(function() {
+        flatpickr("#id_data", {
+            enableTime: true,
+            dateFormat: "d/m/Y",
+            time_24hr: true,
+            locale: "pt"
+        });
+    });
+</script>
+{% endblock conteudo %}

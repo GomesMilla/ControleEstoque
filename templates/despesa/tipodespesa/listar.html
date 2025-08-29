@@ -1,0 +1,37 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-receipt text-primary"></i> Listagem de Tipos de Despesas</h2>
+        <p class="lead">Gerencie e padronize os tamanhos disponíveis dos seus produtos, garantindo mais organização no controle de estoque.</p>
+    </div>
+
+    <div class="container mt-5">
+        <a href="{% url 'criar_tipo_despesa' %}" class="btn btn-success mb-5">Cadastrar Tipo de Despesa</a>
+        <h2>Tipos de Despesas</h2>
+        {% if tiposdedespesa %}
+            <table class="table table-hover text-center mt-3">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tiposdedespesa in tiposdedespesa %}
+                    <tr>
+                        <td>{{ tiposdedespesa.id }}</td>
+                        <td>{{ tiposdedespesa.nome|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Você ainda não cadastrou nenhum tipo de despesa. Comece adicionando um para organizar seus lançamentos
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock conteudo %}

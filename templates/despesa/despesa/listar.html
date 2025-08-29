@@ -1,0 +1,97 @@
+{% extends "base/index.html" %}
+{% load static bootstrap %}
+{% block conteudo %} 
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-receipt text-primary"></i> Listagem de Despesas Mensais
+        </h2>
+        <p class="lead">
+            Acompanhe suas despesas mês a mês e mantenha o controle financeiro em dia.
+        </p>
+    </div>
+
+
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4 g-3">
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-bullseye text-primary" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Despesa Total</h6>
+                        <h4 class="fw-bold">R$ {{ total_despesas|default:"-" }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-check-circle-fill text-success mb-3" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Pago</h6>
+                        <h4 class="fw-bold text-success">R$ {{ total_pagas|default:"0,00" }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow border-0 text-center">
+                    <div class="card-body">
+                        <div class="mb-2"><i class="bi bi-exclamation-triangle text-danger" style="font-size:2rem;"></i></div>
+                        <h6 class="text-muted">Em aberto</h6>
+                        <h4 class="fw-bold text-danger">R$ {{ total_nao_pagas|default:"0,00" }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Despesas Mensais</h2>
+        {% if despesasmensais %}
+            <table class="table table-hover text-center mt-3">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titulo</th>
+                        <th>Valor</th>
+                        <th>Data de Vencimento</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for despesa in despesasmensais %}
+                    <tr>
+                        <td>{{ despesa.id }}</td>
+                        <td>{{ despesa.titulo|default:"-" }}</td>
+                        <td>{{ despesa.valor|default:"-" }}</td>
+                        <td>{{ despesa.data|default:"-" }}</td>
+                        <td>{{ despesa.tipo|default:"-" }}</td>
+                        <td>
+                            {% if despesa.despesa_paga %}
+                                <span class="badge bg-success">Pago</span>
+                            {% else %}
+                                <span class="badge bg-danger">Em Aberto</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{% url 'editar_despesa' despesa.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square"> Editar</i>
+                                </a>
+                                {% if not despesa.despesa_paga %}
+                                    <a href="{% url 'pagar_despesa' despesa.pk %}" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-currency-dollar"> Pagar</i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Você ainda não cadastrou nenhuma despesa. Comece adicionando um para organizar seus lançamentos.
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock conteudo %}
