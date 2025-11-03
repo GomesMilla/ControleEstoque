@@ -244,7 +244,15 @@
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="nav-link" href="{% url 'agenda' %}"><i class="bi bi-calendar3"></i> Agenda</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li> <a class="nav-link" href="{% url 'listar_despesa'%}"><i class="bi bi-receipt"></i> Despesas</a></li>
+                                        <a class="dropdown-item disabled">Despesas</a>
+                                        <li> 
+                                            <a class="nav-link" href="{% url 'listar_despesa'%}"><i class="bi bi-receipt"></i> Listar</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li> 
+                                            <a class="nav-link" href="{% url 'criar_despesa'%}"><i class="bi bi-receipt"></i> Cadastrar </a>
+                                        </li>
+                                        
                                     </ul>
                                 </li>
                                 {% comment %} <li class="nav-item">
